@@ -25,9 +25,9 @@ class Api extends Oauth_Controller
 			$action_id = $this->emoome_model->add_action($log_id, $this->input->post('action'));
 
 			// Add Descriptors			
-//			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_1'));
-//			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_2'));
-//			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_3'));
+			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_1'));
+			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_2'));
+			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_3'));
 		
             $message = array('status' => 'success', 'message' => 'Success logged feeling', 'data' => $log_id.' '.$action_id.' '.$feeling);		
 		}
