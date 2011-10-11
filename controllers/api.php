@@ -11,6 +11,21 @@ class Api extends Oauth_Controller
 
         $this->load->model('emoome_model');
 	}
+	
+	function get_logs_user_get()
+	{
+		if ($logs = $this->emoome_model->get_logs_user(211))
+		{
+            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'logs' => $logs);		
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'You have not recorded any logs');
+		}
+
+        $this->response($message, 200);	
+	}
+	
 
 	// Log Feeling
 	function log_feeling_authd_post()

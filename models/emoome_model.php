@@ -9,10 +9,14 @@ class Emoome_model extends CI_Model
         $this->load->library('natural_language');        
     }
 
-	// Log 
-	function get_log_user($user_id)
+	// Logs	
+	function get_logs_user($user_id)
 	{
-		return FALSE;
+		$this->db->select('*');
+		$this->db->from('emoome_log');
+		$this->db->where('user_id', $user_id);
+ 		$result = $this->db->get();
+ 		return $result->result();	
 	}
 	
 	function add_log($user_id, $type)
