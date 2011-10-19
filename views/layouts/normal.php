@@ -6,15 +6,12 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
 	<title><?= site_title($sub_title, $page_title, $site_title) ?></title>
 	<meta name="description" content="">
 	<meta name="author" content="">
-
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-
 	<link rel="stylesheet" href="<?= $this_module_assets ?>css/style.css">
-
+	<link rel="icon" type="image/png" href="<?= $this_module_assets ?>favicon.ico">
 	<script src="<?= $this_module_assets ?>js/libs/modernizr-2.0.6.min.js"></script>
 </head>
 <body>
