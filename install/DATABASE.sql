@@ -3,9 +3,10 @@ INSERT INTO `settings` VALUES(NULL, 1, 'emoome', 'enabled', 'TRUE');
 CREATE TABLE `emoome_words_link` (
   `link_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `log_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `word_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`link_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `emoome_words` (
   `word_id` int(11) unsigned NOT NULL AUTO_INCREMENT,

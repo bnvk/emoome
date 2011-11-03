@@ -12,11 +12,21 @@ class Api extends Oauth_Controller
         $this->load->model('emoome_model');
 	}
 	
-	function get_logs_user_authd_get()
+	function get_logs_user_get()
 	{
-		if ($logs = $this->emoome_model->get_logs_user($this->oauth_user_id))
+		if ($logs = $this->emoome_model->get_logs_user($this->get('id')))
 		{
-            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'logs' => $logs);		
+			$log_array	= array();
+			$output		= array();
+
+			foreach ($logs as $log)
+			{
+				$log_array[] = $log->log_id;
+			}
+			
+			$words = $this->emoome_model->get_words_links($log_array);
+			
+            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'logs' => $logs, 'words' => $words);
 		}
 		else
 		{
@@ -24,8 +34,7 @@ class Api extends Oauth_Controller
 		}
 
         $this->response($message, 200);	
-	}
-	
+	}	
 
 	// Log Feeling
 	function log_feeling_authd_post()
@@ -34,15 +43,18 @@ class Api extends Oauth_Controller
 		if ($log_id = $this->emoome_model->add_log($this->oauth_user_id, 'feeling'))
 		{
 			// Add Word
-			$feeling = $this->emoome_model->add_word_link($log_id, $this->input->post('feeling'));
+			$feeling = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'));
 			
 			// Add Action
 			$action_id = $this->emoome_model->add_action($log_id, $this->input->post('action'));
 
 			// Add Descriptors			
-			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_1'));
-			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_2'));
-			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->input->post('describe_3'));
+			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'));
+			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'));
+			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'));
+			
+			// Increment User Maps
+			
 		
             $message = array('status' => 'success', 'message' => 'Success logged feeling', 'data' => $log_id.' '.$action_id.' '.$feeling);		
 		}
@@ -100,6 +112,52 @@ class Api extends Oauth_Controller
 		}
 
         $this->response($message, 200);	
-	}	
+	}
+	
+	// Stats
+	function get_users_map_get()
+	{
+		$this->emoome_model->get_logs_user();
+
+		if ($_POST)
+		{
+            $message = array('status' => 'success', 'message' => 'Success item added to cart', 'data' => $_POST);		
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'Could not find any classes');
+		}
+
+        $this->response($message, 200);
+	}
+	
+	
+	// Utilities
+	function update_word_log_get()
+	{
+		if ($logs = $this->emoome_model->get_logs_user($this->get('id')))
+		{
+			$log_array	= array();
+			$output		= array();
+
+			foreach ($logs as $log)
+			{
+				$log_array[] = $log->log_id;
+			}
+
+			$words = $this->emoome_model->get_words_links($log_array);
+
+			foreach ($words as $word)
+			{
+				$update = $this->emoome_model->add_user_id_to_word_link($this->get('id'), $word->link_id);
+			}
+
+			$message = array('status' => 'success', 'message' => 'Updated');
+			
+		}	
+	
+        $this->response($message, 200);	
+	}
+	
 	
 }

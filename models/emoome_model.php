@@ -14,6 +14,7 @@ class Emoome_model extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('emoome_log');
+		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_log.log_id');
 		$this->db->where('user_id', $user_id);
  		$result = $this->db->get();
  		return $result->result();	
@@ -105,7 +106,17 @@ class Emoome_model extends CI_Model
     }	
 	
 	// Log Link
-	function add_word_link($log_id, $word)
+	function get_words_links($log_array)
+	{	
+		$this->db->select('*');
+		$this->db->from('emoome_words_link');
+		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
+ 		$this->db->or_where_in('log_id', $log_array);
+ 		$result = $this->db->get();
+ 		return $result->result();	
+	}
+	
+	function add_word_link($log_id, $user_id, $word)
 	{	
 		$check_word = $this->check_word(strtolower($word));
 	
@@ -120,6 +131,7 @@ class Emoome_model extends CI_Model
 		
 		$link_data = array(
 			'log_id'	=> $log_id,
+			'user_id'	=> $user_id,
 			'word_id'	=> $word_id
 		);			
 
@@ -130,5 +142,22 @@ class Emoome_model extends CI_Model
 		return $word.' '.$word_id.' '.$word_link_id;
 		
 	}
+	
+	
+	/* Utilities */
+	function add_user_id_to_word_link($user_id, $link_id)
+	{
+		$update['user_id'] = $user_id;
+		$this->db->where('link_id', $link_id);
+		$this->db->update('emoome_words_link', $update);
+		return true;
+	}
+	
+	
+	function update_word_type_count()
+	{
+		
+	}
+	
 
 }
