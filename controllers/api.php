@@ -113,11 +113,11 @@ class Api extends Oauth_Controller
 
         $this->response($message, 200);	
 	}
-	
+
 	// Stats
-	function get_users_map_get()
+	function get_user_word_types_get()
 	{
-		$this->emoome_model->get_logs_user();
+		$words = $this->emoome_model->get_user_word_type_count($this->get('id'));
 
 		if ($_POST)
 		{
@@ -133,31 +133,7 @@ class Api extends Oauth_Controller
 	
 	
 	// Utilities
-	function update_word_log_get()
-	{
-		if ($logs = $this->emoome_model->get_logs_user($this->get('id')))
-		{
-			$log_array	= array();
-			$output		= array();
-
-			foreach ($logs as $log)
-			{
-				$log_array[] = $log->log_id;
-			}
-
-			$words = $this->emoome_model->get_words_links($log_array);
-
-			foreach ($words as $word)
-			{
-				$update = $this->emoome_model->add_user_id_to_word_link($this->get('id'), $word->link_id);
-			}
-
-			$message = array('status' => 'success', 'message' => 'Updated');
-			
-		}	
 	
-        $this->response($message, 200);	
-	}
 	
 	
 }

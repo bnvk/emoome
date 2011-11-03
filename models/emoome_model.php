@@ -145,7 +145,7 @@ class Emoome_model extends CI_Model
 	
 	
 	/* Utilities */
-	function add_user_id_to_word_link($user_id, $link_id)
+	function count_user_word_type($user_id)
 	{
 		$update['user_id'] = $user_id;
 		$this->db->where('link_id', $link_id);
@@ -153,10 +153,44 @@ class Emoome_model extends CI_Model
 		return true;
 	}
 	
+	function get_user_word_type_count($user_id)
+	{
+		$this->db->select('*');
+		$this->db->from('users_meta');
+		$this->db->where('user_id' => $user_id, 'module' => 'emoome', 'meta' => 'word_type_count');
+		$this->db->limit(1);    
+ 		$type_count = $this->db->get()->row();	
+ 		
+ 		if (!$type_count)
+ 		{
+ 			$this->count_user_word_type();
+ 		
+ 			$type_count = $this->add_user_word_type_count();
+ 		}
+ 		
+ 		return $result;
+	}
 	
+	function add_user_word_type_count($user_id, $count)
+	{
+		$count_data = array(
+			'user_id'		=> $user_id,
+			'site_id'		=> config_item('site_id'),
+			'module'		=> 'emoome',
+			'meta'			=> 'word_type_count',
+			'value'			=> $count,
+			'created_at'	=> unix_to_mysql(now()),
+			'updated_at'	=> unix_to_mysql(now())
+		);			
+
+		$this->db->insert('users_meta', $count_data);		
+	}
+
 	function update_word_type_count()
 	{
-		
+		$update['user_id'] = $user_id;
+		$this->db->where('link_id', $link_id);
+		$this->db->update('emoome_words_link', $update);		
 	}
 	
 
