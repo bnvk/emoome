@@ -12,4 +12,15 @@
 * Description: this file Social Igniter
 */
 
-$config['custom_value']		= '';
+$config['emoome_path']			= 'emoome';
+
+/*	Word Types
+	E - emotional
+	I - intellectual
+	S - sensory
+	D - descriptor
+	A - action
+	P - physical
+	U - unclassifiable
+*/	
+$config['emoome_word_types']	= array('E', 'I', 'S', 'D', 'A', 'P', 'U');

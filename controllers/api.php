@@ -9,12 +9,13 @@ class Api extends Oauth_Controller
     {
         parent::__construct();
 
+		$this->load->config('emoome');
         $this->load->model('emoome_model');
 	}
 	
-	function get_logs_user_get()
+	function get_logs_user_authd_get()
 	{
-		if ($logs = $this->emoome_model->get_logs_user($this->get('id')))
+		if ($logs = $this->emoome_model->get_logs_user($this->oauth_user_id))
 		{
 			$log_array	= array();
 			$output		= array();
@@ -42,21 +43,40 @@ class Api extends Oauth_Controller
 		// Add Log	
 		if ($log_id = $this->emoome_model->add_log($this->oauth_user_id, 'feeling'))
 		{
-			// Add Word
-			$feeling = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'));
-			
-			// Add Action
-			$action_id = $this->emoome_model->add_action($log_id, $this->input->post('action'));
-
-			// Add Descriptors			
+			// Add Word / Action / Descriptors
+			$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'));			
+			$action_id	= $this->emoome_model->add_action($log_id, $this->input->post('action'));
 			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'));
 			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'));
 			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'));
+
+			// User Meta Maps
+			$word_updates	= array();
+			/*
+			$word_types		= array($feeling['type'], $describe_1['type'], $describe_2['type'], $describe_3['type']);
+
+			foreach ($word_types as $type)
+			{
+				if (($type != '') AND (!array_key_exists($type, $word_updates)))
+				{
+					$word_updates[$word] = 1;
+				}
+				elseif (($type != '') AND (array_key_exists($type, $word_updates)))
+				{
+					$word_updates[$word] = $word_updates[$word] + 1;
+				}
+				else
+				{
+					$word_updates[$word] = 0;
+				}
+			}
+			*/
 			
-			// Increment User Maps
-			
-		
-            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'data' => $log_id.' '.$action_id.' '.$feeling);		
+			// Update Word Map
+			$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
+
+			// Message
+            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map);		
 		}
 		else
 		{
@@ -114,26 +134,51 @@ class Api extends Oauth_Controller
         $this->response($message, 200);	
 	}
 
-	// Stats
-	function get_user_word_types_get()
-	{
-		$words = $this->emoome_model->get_user_word_type_count($this->get('id'));
 
-		if ($_POST)
+	// Utilities & Stats
+	function get_user_word_maps_get()
+	{
+		if ($word_map = $this->emoome_model->get_users_meta_map($this->get('id')))
 		{
-            $message = array('status' => 'success', 'message' => 'Success item added to cart', 'data' => $_POST);		
+            $message = array('status' => 'success', 'message' => 'Success word types found', 'word_map' => $word_map);		
 		}
 		else
 		{
-            $message = array('status' => 'error', 'message' => 'Could not find any classes');
+            $message = array('status' => 'error', 'message' => 'Could not find any word types');
 		}
 
         $this->response($message, 200);
 	}
+
+	function add_user_word_maps_get()
+	{
+		if ($word_map = $this->emoome_model->add_users_meta_map($this->get('id')))
+		{
+            $message = array('status' => 'success', 'message' => 'Success word types found', 'word_map' => $word_map);		
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'Could not find any word types');
+		}
+
+        $this->response($message, 200);
+	}	
 	
-	
-	// Utilities
-	
+	function update_user_word_maps_get()
+	{
+		$word_map = $this->emoome_model->update_users_meta_map($this->get('id'), array('E' => 2 , 'I' => 1));
+
+		if ($word_map)
+		{
+            $message = array('status' => 'success', 'message' => 'Success word types found', 'word_map' => $word_map);		
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'Could not find any word types');
+		}
+
+        $this->response($message, 200);
+	}	
 	
 	
 }

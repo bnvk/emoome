@@ -9,7 +9,16 @@ class Emoome_model extends CI_Model
         $this->load->library('natural_language');        
     }
 
-	// Logs	
+
+	// Logs
+	function count_logs_user($user_id)
+	{		
+ 		$this->db->select('*');
+ 		$this->db->from('emoome_log');  
+	 	$this->db->where('user_id', $user_id);
+ 		return $this->db->count_all_results();
+	}	
+	
 	function get_logs_user($user_id)
 	{
 		$this->db->select('*');
@@ -37,6 +46,7 @@ class Emoome_model extends CI_Model
 
 	    return FALSE;
 	}
+
 
 
 	// Actions
@@ -68,7 +78,8 @@ class Emoome_model extends CI_Model
 	}
 
 
-	// Words & Word Link
+
+	// Words
 	function check_word($word)
 	{
 		$this->db->select('*');
@@ -83,7 +94,6 @@ class Emoome_model extends CI_Model
 
 		return FALSE;
 	}
-
 
     function add_word($word)
     {
@@ -103,94 +113,169 @@ class Emoome_model extends CI_Model
     	}
     
 	    return FALSE;
-    }	
-	
-	// Log Link
+    }
+
+
+
+	// Words Link
 	function get_words_links($log_array)
-	{	
+	{
 		$this->db->select('*');
 		$this->db->from('emoome_words_link');
 		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
- 		$this->db->or_where_in('log_id', $log_array);
+ 		$this->db->or_where_in('emoome_words_link.log_id', $log_array);
  		$result = $this->db->get();
- 		return $result->result();	
+ 		return $result->result();
 	}
-	
+
 	function add_word_link($log_id, $user_id, $word)
-	{	
+	{
 		$check_word = $this->check_word(strtolower($word));
-	
+		$word_type	= '';
+
+		// Word Exists
 		if ($check_word)
 		{
-			$word_id = $check_word->word_id;		
+			$word_id	= $check_word->word_id;
+			$word_type	= $check_word->type;
 		}
 		else
 		{
 			$word_id = $this->add_word(strtolower($word));
 		}
-		
+
 		$link_data = array(
 			'log_id'	=> $log_id,
 			'user_id'	=> $user_id,
 			'word_id'	=> $word_id
-		);			
+		);
 
-		$this->db->insert('emoome_words_link', $link_data);	
-		
-		$word_link_id = $this->db->insert_id();
-	
-		return $word.' '.$word_id.' '.$word_link_id;
-		
+		$this->db->insert('emoome_words_link', $link_data);
+
+		if ($word_link_id = $this->db->insert_id())
+		{
+			return array('word_link_id' => $word_link_id, 'type' => $word_type);
+		}
+
+		return FALSE;
 	}
 	
 	
-	/* Utilities */
-	function count_user_word_type($user_id)
-	{
-		$update['user_id'] = $user_id;
-		$this->db->where('link_id', $link_id);
-		$this->db->update('emoome_words_link', $update);
-		return true;
+	/*	Utilities (counts various data / logs)
+	 *
+	 */
+	function count_user_word_type($user_id, $type)
+	{		
+ 		$this->db->select('*');
+ 		$this->db->from('emoome_words_link');  
+		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');		
+	 	$this->db->where('emoome_words_link.user_id', $user_id);
+		$this->db->where('emoome_words.type', $type);
+ 		return $this->db->count_all_results();
 	}
-	
-	function get_user_word_type_count($user_id)
+
+
+	/* Users Meta Values (mostly map reduced user info) 
+	 *
+	 */
+	function get_users_meta_map($user_id)
 	{
 		$this->db->select('*');
 		$this->db->from('users_meta');
-		$this->db->where('user_id' => $user_id, 'module' => 'emoome', 'meta' => 'word_type_count');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('module', 'emoome');
+		$this->db->where('meta', 'word_type_map');
 		$this->db->limit(1);    
- 		$type_count = $this->db->get()->row();	
+ 		$result = $this->db->get()->row();
  		
- 		if (!$type_count)
+ 		if ($result)
  		{
- 			$this->count_user_word_type();
- 		
- 			$type_count = $this->add_user_word_type_count();
+ 			return $result;	
  		}
- 		
- 		return $result;
+
+ 		return FALSE;
 	}
 	
-	function add_user_word_type_count($user_id, $count)
+	function add_users_meta_map($user_id)
 	{
-		$count_data = array(
-			'user_id'		=> $user_id,
-			'site_id'		=> config_item('site_id'),
-			'module'		=> 'emoome',
-			'meta'			=> 'word_type_count',
-			'value'			=> $count,
-			'created_at'	=> unix_to_mysql(now()),
-			'updated_at'	=> unix_to_mysql(now())
-		);			
+		$users_meta	= $this->get_users_meta_map($user_id);
+		$word_count = array();
 
-		$this->db->insert('users_meta', $count_data);		
+		if (!$users_meta)
+		{
+			foreach (config_item('emoome_word_types') as $type)
+			{
+	 			$word_count[$type] = $this->count_user_word_type($user_id, $type);
+			}
+	
+			$add_data = array(
+				'user_id'		=> $user_id,
+				'site_id'		=> config_item('site_id'),
+				'module'		=> 'emoome',
+				'meta'			=> 'word_type_map',
+				'value'			=> json_encode($word_count),
+				'created_at'	=> unix_to_mysql(now()),
+				'updated_at'	=> unix_to_mysql(now())
+			);
+	
+			$this->db->insert('users_meta', $add_data);
+			
+			if ($user_meta_id = $this->db->insert_id())
+			{
+				$add_data['user_meta_id'] = $user_meta_id;
+				return $add_data;
+			}		
+		}
+
+		return FALSE;		
 	}
 
-	function update_word_type_count()
+
+	function update_users_meta_map($user_id)
 	{
-		$update['user_id'] = $user_id;
-		$this->db->where('link_id', $link_id);
-		$this->db->update('emoome_words_link', $update);		
+		$users_meta	= $this->get_users_meta_map($user_id);
+		$word_count	= array();
+
+		if ($users_meta)
+		{
+			// Loops Existing Counts
+/*
+			foreach (json_decode($users_meta->value) as $count_key => $count_value)
+			{
+				$word_count[$count_key] = $count_value;						
+			}
+
+			// Loop Updates Counts
+			foreach ($word_updates as $update_key => $update_value)
+			{
+				$existing_value = $word_count[$update_key];
+				$word_count[$update_key] = $existing_value + $update_value;
+			}
+*/
+			foreach (config_item('emoome_word_types') as $type)
+			{
+	 			$word_count[$type] = $this->count_user_word_type($user_id, $type);
+			}			
+			
+			$update_data = array(
+				'user_id'		=> $user_id,
+				'site_id'		=> config_item('site_id'),
+				'module'		=> 'emoome',
+				'meta'			=> 'word_type_map',
+				'value'			=> json_encode($word_count),
+				'updated_at'	=> unix_to_mysql(now())			
+			);
+
+			$this->db->where('user_meta_id', $users_meta->user_meta_id);
+			$this->db->update('users_meta', $update_data);
+			return $update_data;
+		}
+		else
+		{
+			return $this->add_users_meta_map($user_id);
+		}
+
+		return FALSE;	
 	}
 	
 
