@@ -1,8 +1,10 @@
+<style type="text/css">
+#person_map h4 { font-size: 14px; margin: 0 0 10px 0; }
+</style>
 <?php if ($this->uri->segment(4)): ?>
 
 <h2><?= $person->name ?></h2>
-
-<h3>Word Map</h3>
+<h3>Logged <?= $log_count ?> Items</h3>
 <div id="person_map"></div>
 <p></p>
 <?php if ($devices): ?>
@@ -13,29 +15,30 @@
 <?php endif; ?>
 
 <script type="text/javascript">
-var map_data	= <?= $word_map ?>;
-var total		= 0;
-var percents	= '';
 
-console.log(map_data);
- 
+	var map_data	= <?= $word_map ?>;
+	var total		= 0;
+	var percents	= '';
+
+	console.log(map_data);
+
 	// Do Total
-$.each(map_data, function(key, value)
-{    	
-	total = value + total;
-});
-
-var word_types = {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","U":"Undecided"};
-
-$.each(map_data, function(key, value)
-{
-	var percentage = Math.round(value / total * 100);
-	percents += '<h4>' + percentage + '% ' + word_types[key] + '</h4>';
-});
-
-console.log('total: ' + total);
-
-$('#person_map').html(percents);
+	$.each(map_data, function(key, value)
+	{    	
+		total = value + total;
+	});
+	
+	var word_types = {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","U":"Undecided"};
+	
+	$.each(map_data, function(key, value)
+	{
+		var percentage = Math.round(value / total * 100);
+		percents += '<h4>' + percentage + '% ' + word_types[key] + '</h4>';
+	});
+	
+	console.log('total: ' + total);
+	
+	$('#person_map').html(percents);
 	
 </script>
 
