@@ -10,13 +10,47 @@ class Home extends Dashboard_Controller
 		$this->load->config('emoome');
 	}
 	
-	function custom()
+	function people()
 	{
-		$this->data['sub_title'] = 'Custom';
-	
-		$this->render();
+		$this->data['sub_title']	= 'People';
+		
+		if ($this->uri->segment(4))
+		{			
+			$person			= $this->social_auth->get_user('user_id', $this->uri->segment(4));
+			$person_meta	= $this->social_auth->get_user_meta($this->uri->segment(4));
+			$devices		= array();
+			
+			foreach ($person_meta as $meta)
+			{
+				// Word Map
+				if ($meta->meta == 'word_type_map')
+				{
+					$word_map = $meta->value;
+				}
+				
+				// Devices
+				if ($meta->meta == 'device')
+				{
+					$devices[] = $meta->value;
+				}
+			}
+
+			$this->data['word_map']		= $word_map;
+			$this->data['devices']		= $devices;
+			$this->data['person']		= $person;
+			$this->data['person_meta']	=  $person_meta;
+		}
+		else
+		{
+			$this->data['people'] = $this->social_auth->get_users('active', 1);
+		}
+		
+		
+		$this->render('dashboard_wide');
 	}
 	
+	
+	// Old Site
 	function emotion()
 	{
 

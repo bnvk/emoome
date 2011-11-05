@@ -238,20 +238,7 @@ class Emoome_model extends CI_Model
 
 		if ($users_meta)
 		{
-			// Loops Existing Counts
-/*
-			foreach (json_decode($users_meta->value) as $count_key => $count_value)
-			{
-				$word_count[$count_key] = $count_value;						
-			}
-
-			// Loop Updates Counts
-			foreach ($word_updates as $update_key => $update_value)
-			{
-				$existing_value = $word_count[$update_key];
-				$word_count[$update_key] = $existing_value + $update_value;
-			}
-*/
+			// Loops Existing Word Types
 			foreach (config_item('emoome_word_types') as $type)
 			{
 	 			$word_count[$type] = $this->count_user_word_type($user_id, $type);

@@ -49,34 +49,12 @@ class Api extends Oauth_Controller
 			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'));
 			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'));
 			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'));
-
-			// User Meta Maps
-			$word_updates	= array();
-			/*
-			$word_types		= array($feeling['type'], $describe_1['type'], $describe_2['type'], $describe_3['type']);
-
-			foreach ($word_types as $type)
-			{
-				if (($type != '') AND (!array_key_exists($type, $word_updates)))
-				{
-					$word_updates[$word] = 1;
-				}
-				elseif (($type != '') AND (array_key_exists($type, $word_updates)))
-				{
-					$word_updates[$word] = $word_updates[$word] + 1;
-				}
-				else
-				{
-					$word_updates[$word] = 0;
-				}
-			}
-			*/
 			
 			// Update Word Map
 			$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
 
 			// Message
-            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map);		
+            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map);
 		}
 		else
 		{
