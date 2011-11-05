@@ -1,5 +1,7 @@
 <?php if ($this->uri->segment(4)): ?>
 
+<h2><?= $person->name ?></h2>
+
 <h3>Word Map</h3>
 <div id="person_map"></div>
 <p></p>

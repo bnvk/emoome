@@ -38,7 +38,7 @@ class Home extends Dashboard_Controller
 			$this->data['word_map']		= $word_map;
 			$this->data['devices']		= $devices;
 			$this->data['person']		= $person;
-			$this->data['person_meta']	=  $person_meta;
+			$this->data['person_meta']	= $person_meta;
 		}
 		else
 		{
