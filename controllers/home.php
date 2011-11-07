@@ -5,7 +5,8 @@ class Home extends Dashboard_Controller
     {
         parent::__construct();
 
-		$this->data['page_title'] = 'Emoome';
+		$this->data['page_title']		= 'Emoome';
+		$this->data['emoome_assets']	= base_url().'application/modules/emoome/assets/';
 
 		$this->load->config('emoome');
 		$this->load->model('emoome_model');

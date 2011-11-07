@@ -1,52 +1,85 @@
 <style type="text/css">
-#person_map h4 { font-size: 14px; margin: 0 0 10px 0; }
+#person_circles	{ width: 900px; margin: 20px 0 20px 0; }
+#person_map		{  }
+#person_map h4	{ font-size: 14px; margin: 0 0 10px 0; }
 </style>
 <?php if ($this->uri->segment(4)): ?>
-
-<h2><?= $person->name ?></h2>
-<h3>Logged <?= $log_count ?> Items</h3>
-<div id="person_map"></div>
-<p></p>
-<?php if ($devices): ?>
-<h3>Devices</h3>
-<pre>
-<?php print_r($devices); ?>
-</pre>
-<?php endif; ?>
-
-<script type="text/javascript">
-
-	var map_data	= <?= $word_map ?>;
-	var total		= 0;
-	var percents	= '';
-
-	console.log(map_data);
-
-	// Do Total
-	$.each(map_data, function(key, value)
-	{    	
-		total = value + total;
-	});
+	<h2><?= $person->name ?></h2>
+	<h3>Logged <?= $log_count ?> Items</h3>
+	<div id="person_circles"></div>
+	<div id="person_map"></div>
+	<p></p>
+	<?php if ($devices): ?>
+	<h3>Devices</h3>
+	<?php foreach ($devices as $device): $device_json = json_decode($device); ?>
+		<h4><?= $device_json->name ?></h4>
+	<?php endforeach; endif; ?>
+	<script type="text/javascript" src="<?= $emoome_assets ?>js/raphael.js"></script>
+	<script type="text/javascript">
 	
-	var word_types = {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","U":"Undecided"};
+		var map_data	= <?= $word_map ?>;
+		var total		= 0;
+		var largest		= 0;
+		var percents	= '';
 	
-	$.each(map_data, function(key, value)
-	{
-		var percentage = Math.round(value / total * 100);
-		percents += '<h4>' + percentage + '% ' + word_types[key] + '</h4>';
-	});
-	
-	console.log('total: ' + total);
-	
-	$('#person_map').html(percents);
-	
-</script>
+		// Do Total
+		$.each(map_data, function(key, value)
+		{
+			total = value + total;
+			if (value > largest) largest = value;
+		});
+		
+		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided"};
+		var largest_percent	= Math.round(largest / total * 100);
+		var loop_count		= 0;
+		var circle_x		= 0;
+		var circle_radius	= 100;
+		var circle_margin	= 35;
+	    var paper			= new Raphael(document.getElementById('person_circles'), 900, 200);
+
+		console.log('total: ' + total + ' largest: ' + largest + ' largest percent: ' + largest_percent);
+		
+		$.each(map_data, function(key, value)
+		{
+			loop_count++;
+			var percentage = Math.round(value / total * 100);
+
+			// Render Circles
+			if (percentage > 0)
+			{
+				if (percentage == largest_percent) circle_size = circle_radius;
+				else circle_size = percentage + largest_percent;
+				
+				var circle_diameter = circle_size * 2;
+
+				console.log('Loop Count: ' + loop_count);
+
+				if (loop_count > 1)
+				{
+					circle_x = circle_x + circle_size + circle_margin;
+				}
+				else
+				{
+					circle_x = circle_size;
+				}
 
 
+				console.log(key + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
+
+				paper.circle(circle_x, 100, circle_size).attr({fill: '#d6d6d6', 'stroke-width': 1, 'stroke': '#c6c6c6'});
+				paper.text(circle_x, 100, percentage + '% ' + key).attr({fill: '#888888'});
+
+				circle_x = circle_x + circle_size;
+
+				percents += '<h4>' + percentage + '% ' + word_types[key] + '</h4>';
+			}
+		});
+
+				
+		$('#person_map').html(percents);
+		
+	</script>
 <?php else: ?>
-
-
-
 <ul>
 <?php foreach($people as $person): ?>
 	<li><a href="<?= base_url().'home/emoome/people/'.$person->user_id ?>"><?= $person->name ?></a></li>
