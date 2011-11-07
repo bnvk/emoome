@@ -30,12 +30,13 @@
 		});
 		
 		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided"};
-		var largest_percent	= Math.round(largest / total * 100);
 		var loop_count		= 0;
 		var circle_x		= 0;
 		var circle_radius	= 100;
-		var circle_margin	= 35;
-	    var paper			= new Raphael(document.getElementById('person_circles'), 900, 200);
+		var circle_margin	= 45;
+		var largest_percent	= Math.round(largest / total * 100);
+		var largest_diff	= circle_radius - largest_percent;
+	    var paper			= new Raphael(document.getElementById('person_circles'), 900, 400);
 
 		console.log('total: ' + total + ' largest: ' + largest + ' largest percent: ' + largest_percent);
 		
@@ -48,26 +49,37 @@
 			if (percentage > 0)
 			{
 				if (percentage == largest_percent) circle_size = circle_radius;
-				else circle_size = percentage + largest_percent;
+				else circle_size = percentage + largest_diff;
 				
 				var circle_diameter = circle_size * 2;
 
 				console.log('Loop Count: ' + loop_count);
 
-				if (loop_count > 1)
+				if (loop_count == 1)
 				{
-					circle_x = circle_x + circle_size + circle_margin;
+					circle_x = circle_radius;
+					circle_y = circle_radius;
+				}
+				else if (loop_count > 1 && loop_count < 5)
+				{
+					circle_x = circle_x + circle_size + circle_margin;					
+					circle_y = circle_radius;
+				}
+				else if (loop_count == 5)
+				{
+					circle_x = circle_size;
+					circle_y = circle_radius * 3;
 				}
 				else
 				{
-					circle_x = circle_size;
+					circle_x = circle_x + circle_size + circle_margin;					
+					circle_y = circle_radius * 3;
 				}
 
+				console.log(key + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
 
-				console.log(key + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
-
-				paper.circle(circle_x, 100, circle_size).attr({fill: '#d6d6d6', 'stroke-width': 1, 'stroke': '#c6c6c6'});
-				paper.text(circle_x, 100, percentage + '% ' + key).attr({fill: '#888888'});
+				paper.circle(circle_x, circle_y, circle_size).attr({fill: '#d6d6d6', 'stroke-width': 1, 'stroke': '#c6c6c6'});
+				paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#888888'});
 
 				circle_x = circle_x + circle_size;
 
