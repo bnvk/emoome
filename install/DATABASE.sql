@@ -30,3 +30,11 @@ CREATE TABLE `emoome_actions` (
   `action` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`action_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `emoome_words_taxonomy` (
+  `word_taxonomy_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `word_id` int(11) NOT NULL,
+  `taxonomy` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `count` int(5) NOT NULL,
+  PRIMARY KEY (`word_taxonomy_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

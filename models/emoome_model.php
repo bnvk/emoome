@@ -161,6 +161,38 @@ class Emoome_model extends CI_Model
 	}
 	
 	
+	
+    // Word Taxonomy
+    function get_word_taxonomy($word_id, $taxonomy)
+    {
+ 		$this->db->select('*');
+ 		$this->db->from('emoome_words_taxonomy');    
+ 		$this->db->where('word_id', $word_id); 				
+ 		$this->db->where('taxonomy', $taxonomy); 
+ 		$result = $this->db->get()->row();	
+ 		return $result;    	
+    }
+    
+    function add_word_taxonomy($word_id, $taxonomy, $count)
+    {
+ 		$data = array(
+			'word_id'		=> $word_id,
+			'taxonomy'  	=> $taxonomy,
+			'count' 		=> $count
+		);	
+		$insert = $this->db->insert('emoome_words_taxonomy', $data);
+		return $insert;    
+    }
+    
+    function update_word_taxonomy($word_taxonomy_id, $count)
+    {
+		$this->db->where('word_taxonomy_id', $word_taxonomy_id);
+		$this->db->update('emoome_words_taxonomy', array('count' => $count));        
+    }
+	
+	
+	
+	
 	/*	Utilities (counts various data / logs)
 	 *
 	 */
