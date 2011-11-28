@@ -144,7 +144,7 @@ class Api extends Oauth_Controller
 	
 	function update_user_word_maps_get()
 	{
-		$word_map = $this->emoome_model->update_users_meta_map($this->get('id'), array('E' => 2 , 'I' => 1));
+		$word_map = $this->emoome_model->update_users_meta_map($this->get('id'));
 
 		if ($word_map)
 		{
