@@ -23,4 +23,4 @@ $config['emoome_path']			= 'emoome';
 	P - physical
 	U - unclassifiable
 */	
-$config['emoome_word_types']	= array('E','I','S','D','A','P','G','M','U','O','F');
+$config['emoome_word_types']	= array('E','I','S','D','A','P','G','M','U','O','F','C');

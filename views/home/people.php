@@ -29,7 +29,7 @@
 			if (value > largest) largest = value;
 		});
 		
-		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","O":"Objects","F":"Food"};
+		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","O":"Objects","F":"Food","C","Common"};
 		var loop_count		= 0;
 		var circle_x		= 0;
 		var circle_radius	= 100;
