@@ -6,6 +6,7 @@
 <?php if ($this->uri->segment(4)): ?>
 	<h2><?= $person->name ?></h2>
 	<h3>Logged <?= $log_count ?> Items</h3>
+	<p>Update: &nbsp;<a href="<?= $this->uri->segment(4) ?>" id="update_word_types">Word Types</a>, &nbsp; <a href="<?= $this->uri->segment(4) ?>" id="update_word_taxonomies">Word Use Taxonomies</a>
 	<div id="person_circles"></div>
 	<div id="person_map"></div>
 	<p></p>
@@ -16,6 +17,29 @@
 	<?php endforeach; endif; ?>
 	<script type="text/javascript" src="<?= $emoome_assets ?>js/raphael.js"></script>
 	<script type="text/javascript">
+	$(document).ready(function()
+	{
+		// Update Word Types
+		$('#update_word_types').bind('click', function(e)
+		{
+			e.preventDefault();
+			var user_id = $(this).attr('href');
+			$.ajax(
+			{
+				oauth 		: user_data,		
+				url			: base_url + 'api/emoome/update_user_word_maps/id/' + user_id,
+				type		: 'GET',
+				dataType	: 'json',
+			  	success		: function(result)
+			  	{							  	
+					$('html, body').animate({scrollTop:0});
+					$('#content_message').notify({scroll:true,status:result.status,message:result.message});									
+			  	}		
+			});						
+		});	
+	
+	});	
+	
 	
 		var map_data	= <?= $word_map ?>;
 		var total		= 0;
@@ -28,8 +52,8 @@
 			total = value + total;
 			if (value > largest) largest = value;
 		});
-		
-		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","O":"Objects","F":"Food","C","Common"};
+
+		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","O":"Objects","F":"Food","C":"Common"};
 		var loop_count		= 0;
 		var circle_x		= 0;
 		var circle_radius	= 100;

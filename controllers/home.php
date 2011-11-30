@@ -20,7 +20,9 @@ class Home extends Dashboard_Controller
 			$person_meta	= $this->social_auth->get_user_meta($this->uri->segment(4));
 			$log_count		= $this->emoome_model->count_logs_user($this->uri->segment(4));
 			$devices		= array();
+			$word_map		= '';
 			
+			// Get Meta Values
 			foreach ($person_meta as $meta)
 			{
 				// Word Map
