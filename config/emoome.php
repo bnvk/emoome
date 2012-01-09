@@ -24,3 +24,4 @@ $config['emoome_path']			= 'emoome';
 	U - unclassifiable
 */	
 $config['emoome_word_types']	= array('E','I','S','D','A','P','G','M','U','O','F','C');
+$config['emoome_speech_types']	= array('V' => 'verb', 'N' => 'noun', 'P' => 'pro noun', 'A' => 'adjective', 'D' => 'adverb', 'R' => 'propositon', 'C' => 'conjunction', 'I' => 'interjection');

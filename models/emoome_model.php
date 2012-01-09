@@ -102,7 +102,8 @@ class Emoome_model extends CI_Model
  		$word_data = array(
 			'word' 	 	=> $word,
 			'stem'		=> $stem,
-			'type'		=> 'U'
+			'type'		=> 'U',
+			'speech'	=> 'U'
 		);	
 
 		$this->db->insert('emoome_words', $word_data);

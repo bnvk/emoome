@@ -132,7 +132,7 @@ class Api extends Oauth_Controller
 	{
 		if ($word_map = $this->emoome_model->add_users_meta_map($this->get('id')))
 		{
-            $message = array('status' => 'success', 'message' => 'Success word types found', 'word_map' => $word_map);		
+            $message = array('status' => 'success', 'message' => 'Success word types were added', 'word_map' => $word_map);		
 		}
 		else
 		{
@@ -148,7 +148,7 @@ class Api extends Oauth_Controller
 
 		if ($word_map)
 		{
-            $message = array('status' => 'success', 'message' => 'Success word types found', 'word_map' => $word_map);		
+            $message = array('status' => 'success', 'message' => 'Success word types were found and updated', 'word_map' => $word_map);		
 		}
 		else
 		{
