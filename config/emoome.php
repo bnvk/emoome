@@ -37,7 +37,6 @@ $config['emoome_word_types']	= array(
 	'G' => 'Slang',
 	'M' => 'Moral',
 	'U' => 'Undecided',
-	'O' => 'Objects',
 	'F' => 'Food',
 	'C' => 'Common'
 );

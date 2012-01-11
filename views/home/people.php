@@ -47,12 +47,13 @@
 		// Do Total
 		$.each(map_data, function(key, value)
 		{
+			console.log(key);
 			total = value + total;
 			if (value > largest) largest = value;
 		});
 
 		var speech_types	= {"V":"Verb","N":"Noun","P":"Pro Noun","A":"Adjective","D":"Adverb","R":"Prepositon","C":"Conjunction","I":"Interjection"};
-		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","O":"Objects","F":"Food","C":"Common"};
+		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","F":"Food","C":"Common"};
 		var loop_count		= 0;
 		var circle_x		= 0;
 		var circle_radius	= 100;
@@ -99,14 +100,14 @@
 					circle_y = circle_radius * 3;
 				}
 
-				console.log(key + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
+				//console.log(key + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
 
 				paper.circle(circle_x, circle_y, circle_size).attr({fill: '#d6d6d6', 'stroke-width': 1, 'stroke': '#c6c6c6'});
 				paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#888888'});
 
 				circle_x = circle_x + circle_size;
 
-				percents += '<h4>' + percentage + '% ' + word_types[key] + '</h4>';
+				percents += '<h4>' + percentage + '% ' + key + '</h4>';
 			}
 		});
 				
