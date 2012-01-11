@@ -37,9 +37,7 @@
 			  	}		
 			});						
 		});	
-	
-	});	
-	
+
 	
 		var map_data	= <?= $word_map ?>;
 		var total		= 0;
@@ -111,10 +109,10 @@
 				percents += '<h4>' + percentage + '% ' + word_types[key] + '</h4>';
 			}
 		});
-
 				
 		$('#person_map').html(percents);
-		
+
+	});
 	</script>
 <?php else: ?>
 <ul>

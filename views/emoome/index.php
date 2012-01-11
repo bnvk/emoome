@@ -1,4 +1,3 @@
-
 <div class="content_double">
 	<div id="about_project"><a class="img_link" href="<?= base_url() ?>site/about"><h2 class="hide">About The Project</h2></a></div>
 		

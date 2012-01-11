@@ -1,0 +1,1 @@
+<p><a href="<?= base_url() ?>emoome/contribute/memory_tag">Add Memories to Map</a></p>
