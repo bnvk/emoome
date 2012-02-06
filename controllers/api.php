@@ -13,9 +13,9 @@ class Api extends Oauth_Controller
         $this->load->model('emoome_model');
 	}
 	
-	function get_logs_user_authd_get()
+	function get_logs_user_get()
 	{
-		if ($logs = $this->emoome_model->get_logs_user($this->oauth_user_id))
+		if ($logs = $this->emoome_model->get_logs_user($this->get('id')))
 		{
 			$log_array	= array();
 			$output		= array();
