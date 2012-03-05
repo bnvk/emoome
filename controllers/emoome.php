@@ -9,13 +9,13 @@ class Emoome extends Site_Controller
 
         $this->layout = 'normal';		
 	}
-	
+
 	function index()
 	{
 		$this->data['page_title']	= 'Welcome to ';
-		$this->data['content']		= $this->load->view('../modules/emoome/views/emoome/index', $this->data, true);
-		
-		$this->load->view('layouts/'.$this->layout, $this->data);	
+		//$this->data['content']		= $this->load->view('../modules/emoome/views/emoome/index', $this->data, true);
+
+		$this->render();
 	}
 
 	function start()
