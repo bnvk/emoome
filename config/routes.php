@@ -1,12 +1,13 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
-* Name:		Social Igniter : Module Template : Routes
+* Name:		Social Igniter : Emoome : Routes
 * Author: 	Brennan Novak
 * 		  	contact@social-igniter.com
 *
-* Project:	http://social-igniter.com/
-* Source: 	http://github.com/socialigniter/module-template
+* Project:	http://emoo.me/
+* Source: 	http://github.com/brennannovak/emoome (private)
 *
-* Standard installed routes for Module Template. 
+* Standard installed routes for Emoome 
 */
-$route['module-template'] 			= 'module_template';
+$route['emoome'] 					= 'emoome';
+$route['emoome/visualize']			= 'visualize/index';

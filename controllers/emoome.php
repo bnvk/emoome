@@ -23,7 +23,7 @@ class Emoome extends Site_Controller
 		$this->data['page_title']	= 'Welcome to ';
 		$this->data['content']		= $this->load->view('../modules/emoome/views/emoome/start', $this->data, true);
 		
-		$this->load->view('layouts/'.$this->layout, $this->data);	
+		$this->render();
 	}
 
 	function about()
@@ -31,7 +31,7 @@ class Emoome extends Site_Controller
 		$this->data['page_title']	= 'Welcome to ';
 		$this->data['content']		= $this->load->view('../modules/emoome/views/emoome/about', $this->data, true);
 		
-		$this->load->view('layouts/'.$this->layout, $this->data);	
+		$this->render();		
 	}	
 
 	// little helper function to print the results
