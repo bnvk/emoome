@@ -52,8 +52,6 @@
 			if (value > largest) largest = value;
 		});
 
-		var speech_types	= {"V":"Verb","N":"Noun","P":"Pro Noun","A":"Adjective","D":"Adverb","R":"Prepositon","C":"Conjunction","I":"Interjection"};
-		var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","G":"Slang","M":"Moral","U":"Undecided","F":"Food","C":"Common"};
 		var loop_count		= 0;
 		var circle_x		= 0;
 		var circle_radius	= 100;
