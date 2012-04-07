@@ -1,7 +1,8 @@
-<h2><?= $this->session->userdata('name') ?>: Emotional Word Map</h2>
+<h1>Map : <?= $this->session->userdata('name') ?></h1>
 
 <div id="user_word_colors"></div>
 <div id="user_word_map_container">
+	<div id="user_word_map_dates"></div>
 	<div id="user_word_map"></div>
 </div>
 <div class="clear"></div>
@@ -16,7 +17,7 @@ $(document).ready(function()
 	    $.each(array, function(i,v) { if (v === item) count++; });
 	    return count;
 	}
-	
+
 
 	$.oauthAjax(
 	{
@@ -32,22 +33,29 @@ $(document).ready(function()
 			var circle_size	= 10;
 			var height		= 40;
 			var logs		= {}
+			var words		= {}
 			var canvas_width= 0;
 			var color_height= {};
 
-			// Group Logs
+			// Group Words By Logs
   			for (link in result.words)
   			{
-  				if (logs[result.words[link].log_id] === undefined)
+  				if (words[result.words[link].log_id] === undefined)
   				{			
-  					logs[result.words[link].log_id] = new Array(result.words[link].type);  								
+  					words[result.words[link].log_id] = new Array(result.words[link].type);  								
   				}
   				else
   				{
-  					logs[result.words[link].log_id].push(result.words[link].type);
+  					words[result.words[link].log_id].push(result.words[link].type);
   				}
 			}
-			
+
+			// Group Logs
+  			for (log in result.logs)
+  			{
+  				logs[result.logs[log].log_id] = {"created_at":result.logs[log].created_at,"action":result.logs[log].action};
+			}
+
 			// Do Color Key
 	  		for (color in type_colors)
 	  		{
@@ -62,12 +70,13 @@ $(document).ready(function()
 				height = height + 100;
 			}
 			
+			$date_row = $('#user_word_map_dates');
 
 			// Loop Groups of Types			
-	  		$.each(logs, function(key, value)
-	  		{
-	  			circle_x = circle_x + 40;
-					  				  		
+	  		$.each(words, function(log_id, value)
+	  		{	  		
+	  			circle_x = circle_x + 40;			
+				
 	  			// Do 4 Types	
 				for (type in word_types)
 				{					
@@ -77,7 +86,16 @@ $(document).ready(function()
 					
 					if (size > 0)
 					{
-						paper.circle(circle_x, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+						//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);
+					
+						paper.circle(circle_x, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'})
+							.animate({opacity: 1}, 1500)
+							.hover(function() {
+								
+															
+								
+					         })					        
+					        
 					}
 	  				// circle_y = circle_y + 40;
 				}
