@@ -5,6 +5,8 @@ class Contribute extends Site_Controller
     {
         parent::__construct();       
 
+	    if (!$this->social_auth->logged_in()) redirect('login');
+
 		$this->load->config('emoome');
 
         $this->layout = 'normal';

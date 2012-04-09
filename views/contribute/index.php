@@ -4,13 +4,17 @@
 		
 	<p>
 	<a id="button_cat_feeling" class="category_button" href="<?= base_url() ?>emoome/contribute/feeling">
-	  How Do You Feel Right Now?
+	  <span class="cat_link_icon" id="cat_feeling_icon"></span>
+	  <span class="cat_link_text">How Do You Feel Right Now?</span>
+	  <br class="clear">
 	</a>
 	</p>
 	
 	<p>
 	<a id="button_cat_memory" class="category_button" href="<?= base_url() ?>emoome/contribute/memory">
-	  Memory Mapper
+	  <span class="cat_link_icon" id="cat_memory_icon"></span>
+	  <span class="cat_link_text">Memory Mapper</span>
+	  <br class="clear">
 	</a>
 	</p>
 	
@@ -34,8 +38,8 @@ $(document).ready(function()
 	
 //	var c = paper.image("http://localhost/application/modules/emoome/assets/icons/brain_685.svg", 10, 10, 80, 80);
 
-	var feelings = Raphael(document.getElementById('button_cat_feeling'), 100, 100).importSVG(emoome_icons.profile);
-	var brain = Raphael(document.getElementById('button_cat_memory'), 100, 100).importSVG(emoome_icons.brain);
+	var feelings = Raphael(document.getElementById('cat_feeling_icon'), 100, 100).importSVG(emoome_icons.profile);
+	var brain = Raphael(document.getElementById('cat_memory_icon'), 100, 100).importSVG(emoome_icons.brain);
 
 
 

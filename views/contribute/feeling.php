@@ -35,10 +35,9 @@
 $(document).ready(function()
 {
 	$('#log_feeling, #log_action, #log_describe, #log_thanks').hide();
-	$('#log_feeling').delay(500).fadeIn();	
+	$('#log_feeling').delay(250).fadeIn('slow');	
 
 	// Hijack Spacebar in a few places...
-/*
 	$('#log_val_feeling').jkey('space',function()
 	{
 		alert('Please enter only single word feeling (no spaces)');
@@ -48,7 +47,6 @@ $(document).ready(function()
 	{
 		alert('Please enter only single words to describe your action (no spaces)');
 	});
-*/
 
 });
 </script>

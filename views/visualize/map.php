@@ -1,11 +1,10 @@
 <h1>Map : <?= $this->session->userdata('name') ?></h1>
 
-<div id="user_word_colors"></div>
-<div id="user_word_map_container">
-	<div id="user_word_map_dates"></div>
-	<div id="user_word_map"></div>
+<div id="user_word_container">
+	
+	<div id="user_word_map"><div id="user_word_colors"></div></div>
+	<div class="clear"></div>
 </div>
-<div class="clear"></div>
 
 <script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
 <script type="text/javascript">
@@ -18,7 +17,6 @@ $(document).ready(function()
 	    return count;
 	}
 
-
 	$.oauthAjax(
 	{
 		oauth 		: user_data,
@@ -27,7 +25,6 @@ $(document).ready(function()
 		dataType	: 'json',
 	  	success		: function(result)
 	  	{	  			
-		    var paper 		= new Raphael(document.getElementById('user_word_map'), 0, 1100);
 			var circle_x 	= 0;
 			var circle_y	= 0;
 			var circle_size	= 10;
@@ -70,39 +67,71 @@ $(document).ready(function()
 				height = height + 100;
 			}
 			
-			$date_row = $('#user_word_map_dates');
+			$word_map_container = $('#user_word_map');
+			var set_width = 80 -125;
 
 			// Loop Groups of Types			
 	  		$.each(words, function(log_id, value)
 	  		{	  		
 	  			circle_x = circle_x + 40;			
-				
-	  			// Do 4 Types	
-				for (type in word_types)
-				{					
-					var color 		= type_colors[type];
-					var circle_y	= color_height[type];
-					var size 		= circle_size * countElementsArray(type, value);
+
+				if (log_id !== 'undefined')
+				{
+					// Make Container
+					set_width = set_width + 80;
 					
-					if (size > 0)
-					{
-						//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);
+					$word_map_container.append('<div class="word_map_column" data-action="' + logs[log_id].action + '" data-created_at="' + logs[log_id].created_at + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
+	
+					// Make Paper
+				    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
 					
-						paper.circle(circle_x, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'})
-							.animate({opacity: 1}, 1500)
-							.hover(function() {
-								
-															
-								
-					         })					        
-					        
+		  			// Do 4 Types
+					for (type in word_types)
+					{					
+						var color 		= type_colors[type];
+						var circle_y	= color_height[type];
+						var size 		= circle_size * countElementsArray(type, value);
+						
+						if (size > 0)
+						{
+							//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);
+						
+							paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'})
+								.animate({opacity: 1}, 1500);					        
+						}
 					}
-	  				// circle_y = circle_y + 40;
 				}
 				
-				canvas_width = canvas_width + 40;
-				paper.setSize(canvas_width, 700)
-	  		});						
+				//canvas_width = canvas_width + 40;
+				//paper.setSize(canvas_width, 700)
+	  		});
+	  		
+	  		// Size Containers
+	  		
+
+			// Do ToolTips
+			$('.word_map_column').qtip({
+				content: {
+					text: function(api) {
+						return $(this).data('action') + ' <span>' + mysqlDateParser($(this).data('created_at')).date('short') + '</span>';
+					}
+				},
+				position: {
+					my: 'top left',
+					target: 'mouse',
+					viewport: $(window), // Keep it on-screen at all times if possible
+					adjust: {
+						x: 10,  y: 10
+					}
+				},
+				hide: {
+					fixed: true // Helps to prevent the tooltip from hiding ocassionally when tracking!
+				},
+				style: {
+					classes: 'ui-tooltip-tipsy'
+				}				
+			});
+
 	  	}		
 	});
 });

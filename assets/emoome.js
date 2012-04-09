@@ -20,7 +20,6 @@ function requestComplete(message)
 }
 
 
-
 /* Log - Feeling */
 function logFeeling()
 {
@@ -54,7 +53,7 @@ function logFeelingComplete()
 
 function logAction()
 {
-	$('#log_describe_this').html($('#log_val_action').val());
+	$('#log_describe_this').html('"' + $('#log_val_action').val() + '"');
 
 	$.validator(
 	{
