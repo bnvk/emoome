@@ -1,5 +1,5 @@
 <?php
-class Contribute extends Site_Controller
+class Record extends Site_Controller
 {
     function __construct()
     {
@@ -14,21 +14,21 @@ class Contribute extends Site_Controller
 	
 	function index()
 	{
-		$this->data['page_title'] 	= 'Contribute';
+		$this->data['page_title'] 	= 'Record';
 		
 		$this->render();
 	}
 
 	function feeling()
 	{
-		$this->data['page_title'] 	= 'Feeling';
+		$this->data['page_title'] 	= 'Record A Feeling';
 		
 		$this->render();
 	}
 
 	function memory()
 	{
-		$this->data['page_title']	= 'Memory Mapper ';
+		$this->data['page_title']	= 'Record A Mapper';
 		
 		$this->render();
 	}

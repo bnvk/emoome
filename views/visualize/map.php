@@ -20,7 +20,7 @@ $(document).ready(function()
 	$.oauthAjax(
 	{
 		oauth 		: user_data,
-		url			: base_url + 'api/emoome/get_logs_user/id/<?= $this->uri->segment(4) //$this->session->userdata('user_id') ?>',
+		url			: base_url + 'api/emoome/get_logs_user/id/<?= $this->uri->segment(3) //$this->session->userdata('user_id') ?>',
 		type		: 'GET',
 		dataType	: 'json',
 	  	success		: function(result)
