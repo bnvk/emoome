@@ -96,8 +96,7 @@ $(document).ready(function()
 						{
 							//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);
 						
-							paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'})
-								.animate({opacity: 1}, 1500);					        
+							paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);					        
 						}
 					}
 				}
@@ -107,7 +106,9 @@ $(document).ready(function()
 	  		});
 	  		
 	  		// Size Containers
-	  		
+	  		var new_width = $('#user_word_map').width() + 180;
+	  		$('#user_word_map').width(new_width);
+			console.log($('#user_word_map').width());	  		
 
 			// Do ToolTips
 			$('.word_map_column').qtip({
