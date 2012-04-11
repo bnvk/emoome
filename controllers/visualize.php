@@ -18,6 +18,47 @@ class Visualize extends Site_Controller
 		$person			= $this->social_auth->get_user('user_id', $this->session->userdata('user_id'));
 		$person_meta	= $this->social_auth->get_user_meta($this->session->userdata('user_id'));
 		$log_count		= $this->emoome_model->count_logs_user($this->session->userdata('user_id'));
+		$words_link		= $this->emoome_model->get_words_links_user($this->session->userdata('user_id'));
+		$common_words		= array();
+		$common_words_count = array();
+		
+		// Check Popular Words
+		foreach ($words_link as $link)
+		{
+			if (array_key_exists($link->word, $common_words_count))
+			{
+				$common_words_count[$link->word] = $common_words_count[$link->word] + 1;
+			}
+			else
+			{			
+				$common_words_count[$link->word] =  1;
+			}
+		}
+		
+		foreach ($common_words_count as $word => $count)
+		{
+			if ($count > 1)
+			{		
+				if (array_key_exists($count, $common_words))
+				{
+					$common_words[$count][] = $word;
+				}
+				else
+				{
+					$common_words[$count] = array($word); 
+				}
+			}
+		}
+		
+		// Sort Words
+		krsort($common_words);
+/*			
+		echo '<pre>';
+		print_r($common_words);
+		echo '</pre>';
+		die();
+*/				
+
 		$devices		= array();
 		$word_map		= '';
 		
@@ -32,6 +73,7 @@ class Visualize extends Site_Controller
 		}		
 		
 		$this->data['word_map']		= $word_map;
+		$this->data['common_words']	= $common_words;
 
 		$this->render();
 	}

@@ -1,17 +1,32 @@
-<h1>Hi, <?= $this->session->userdata('name') ?></h1>
+<h1>Visualizing : <?= $this->session->userdata('name') ?></h1>
 
-<h2>Your Language Is</h2>
+<h2>Your Language Type</h2>
 <div id="person_circles"></div>
 
-<h2>Common Feelings</h2>
-<p>Feelings listed more than once</p>
+<h2>Common Words & Feelings</h2>
+<?php foreach ($common_words as $count => $words): ?>
+<div class="common_words">
+	<div class="common_words_count"><?= $count ?></div>
+	<div class="common_words_words">
+	<?php 
+	$word_count = count($words); $i = 1; $comma = ', ';
+	foreach ($words as $word): 
+		$i++; if ($i > $word_count) $comma = ' '; 
+		echo $word.$comma;
+	endforeach; ?></div>
+	<div class="clear"></div>
+</div>
+<div class="common_words_line"></div>
+<?php endforeach; ?>
 
 <h2>Strong Experiences</h2>
 <p>Experiences weighted with more than 1 of the same "type" of word</p>
 
+<!-- Do NLP on Actions look for names of People, Places, Media
 <h2>Significant Words</h2>
 <p>We don't know what these words mean, but you have mentioned them in your activities more than once.</p>
 <p>These words might be people, places, or things you do. You can help us better understand you by flagging these words.</p>
+-->
 
 <script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
 <script type="text/javascript">
@@ -77,11 +92,9 @@ $(document).ready(function()
 			var type 	= key.charAt(0);
 			var color 	= type_colors[type];
 
-			console.log('key: ' + key.charAt(0) + ' color: ' + color + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
-
+			//console.log('key: ' + key.charAt(0) + ' color: ' + color + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
 			paper.circle(circle_x, circle_y, circle_size).attr({fill: color, 'stroke-width': 1, 'stroke': '#c3c3c3'});
 			paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#000000'});
-
 			circle_x = circle_x + circle_size;
 		}
 	});	

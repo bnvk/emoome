@@ -129,6 +129,16 @@ class Emoome_model extends CI_Model
  		return $result->result();
 	}
 
+	function get_words_links_user($user_id)
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_words_link');
+		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
+ 		$this->db->where('emoome_words_link.user_id', $user_id);
+ 		$result = $this->db->get();
+ 		return $result->result();
+	}
+
 	function add_word_link($log_id, $user_id, $word)
 	{
 		$check_word = $this->check_word(strtolower($word));
