@@ -9,13 +9,6 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-	function countElementsArray(item, array)
-	{
-	    var count = 0;
-	    $.each(array, function(i,v) { if (v === item) count++; });
-	    return count;
-	}
-
 	$.oauthAjax(
 	{
 		oauth 		: user_data,
@@ -94,19 +87,13 @@ $(document).ready(function()
 						if (size > 0)
 						{
 							//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);
-						
 							paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'})
 								.animate({opacity: 1}, 1500);					        
 						}
 					}
 				}
-				
-				//canvas_width = canvas_width + 40;
-				//paper.setSize(canvas_width, 700)
 	  		});
-	  		
-	  		// Size Containers
-	  		
+
 
 			// Do ToolTips
 			$('.word_map_column').qtip({
@@ -124,13 +111,12 @@ $(document).ready(function()
 					}
 				},
 				hide: {
-					fixed: true // Helps to prevent the tooltip from hiding ocassionally when tracking!
+					fixed: true // Helps to prevent the tooltip from hiding ocassionally when tracking!-
 				},
 				style: {
 					classes: 'ui-tooltip-tipsy'
 				}				
 			});
-
 	  	}		
 	});
 });

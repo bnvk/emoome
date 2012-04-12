@@ -15,16 +15,40 @@ class Visualize extends Site_Controller
 	{
 		$this->data['page_title']	= 'Visualize';
 
-		$person			= $this->social_auth->get_user('user_id', $this->session->userdata('user_id'));
-		$person_meta	= $this->social_auth->get_user_meta($this->session->userdata('user_id'));
-		$log_count		= $this->emoome_model->count_logs_user($this->session->userdata('user_id'));
-		$words_link		= $this->emoome_model->get_words_links_user($this->session->userdata('user_id'));
+		$person				= $this->social_auth->get_user('user_id', $this->session->userdata('user_id'));
+		$person_meta		= $this->social_auth->get_user_meta($this->session->userdata('user_id'));
+		$log_count			= $this->emoome_model->count_logs_user($this->session->userdata('user_id'));
+		$user_logs			= $this->emoome_model->get_logs_user($this->session->userdata('user_id'));
+		$words_link			= $this->emoome_model->get_words_links_user($this->session->userdata('user_id'));
+
+		$word_map			= '';
 		$common_words		= array();
 		$common_words_count = array();
-		
-		// Check Popular Words
+		$log_word_types		= array();
+
+		// Do Word Map
+		foreach ($person_meta as $meta)
+		{
+			if ($meta->meta == 'word_type_map')
+			{
+				$word_map = $meta->value;
+			}
+		}
+
+		// Check Popular Words & Strong Logs
 		foreach ($words_link as $link)
 		{
+			// Build Word Types
+			if (array_key_exists($link->log_id, $log_word_types))
+			{
+				$log_word_types[$link->log_id][] = $link->type; 
+			}
+			else
+			{
+				$log_word_types[$link->log_id] = array($link->type);
+			}
+		
+			// Do Common Words
 			if (array_key_exists($link->word, $common_words_count))
 			{
 				$common_words_count[$link->word] = $common_words_count[$link->word] + 1;
@@ -35,6 +59,7 @@ class Visualize extends Site_Controller
 			}
 		}
 		
+		// Build Similar Word Count Array of Words
 		foreach ($common_words_count as $word => $count)
 		{
 			if ($count > 1)
@@ -49,31 +74,14 @@ class Visualize extends Site_Controller
 				}
 			}
 		}
-		
+
 		// Sort Words
 		krsort($common_words);
-/*			
-		echo '<pre>';
-		print_r($common_words);
-		echo '</pre>';
-		die();
-*/				
 
-		$devices		= array();
-		$word_map		= '';
-		
-		// Get Meta Values
-		foreach ($person_meta as $meta)
-		{
-			// Word Map
-			if ($meta->meta == 'word_type_map')
-			{
-				$word_map = $meta->value;
-			}
-		}		
-		
 		$this->data['word_map']		= $word_map;
 		$this->data['common_words']	= $common_words;
+		$this->data['logs']			= json_encode($user_logs);
+		$this->data['word_links']	= json_encode($log_word_types);
 
 		$this->render();
 	}

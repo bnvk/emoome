@@ -2,6 +2,7 @@
 
 <h2>Your Language Type</h2>
 <div id="person_circles"></div>
+<p><a class="button" href="<?= base_url() ?>visualize/map">Your Map</a></p>
 
 <h2>Common Words & Feelings</h2>
 <?php foreach ($common_words as $count => $words): ?>
@@ -20,7 +21,8 @@
 <?php endforeach; ?>
 
 <h2>Strong Experiences</h2>
-<p>Experiences weighted with more than 1 of the same "type" of word</p>
+<div id="strong_experiences"></div>
+<p><a class="button" href="<?= base_url() ?>visualize/experiences">Your Experiences</a></p>	
 
 <!-- Do NLP on Actions look for names of People, Places, Media
 <h2>Significant Words</h2>
@@ -98,6 +100,39 @@ $(document).ready(function()
 			circle_x = circle_x + circle_size;
 		}
 	});	
+	
+	
+	
+	// Make Strong Experiences
+	var words	= <?= $word_links ?>;
+	var logs_raw= <?= $logs ?>;
+	var logs	= new Array();
+	
+	$strong_experiences	= $('#strong_experiences');
+
+	for (var log in logs_raw)
+	{
+		var log_id = logs_raw[log].log_id;		
+		
+		if (log_id !== undefined)
+		{		
+			for (var type in word_types)
+			{
+				var type_count 	= countElementsArray(type, words[log_id]);
+
+				if (type_count > 2)
+				{
+					var color	= type_colors[type];
+					var size	= type_count * 10;
+
+					$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_action">"' + logs_raw[log].action + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_at).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+
+				    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), 80, 80);
+					paper.circle(40, 40, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+				}
+			}
+		}
+	}
 
 });
 </script>

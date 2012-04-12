@@ -24,6 +24,7 @@ class Emoome_model extends CI_Model
 		$this->db->select('*');
 		$this->db->from('emoome_log');
 		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_log.log_id');
+		$this->db->order_by('emoome_log.created_at', 'desc');
 		$this->db->where('user_id', $user_id);
  		$result = $this->db->get();
  		return $result->result();	
