@@ -27,12 +27,20 @@ class Visualize extends Site_Controller
 		$log_word_types		= array();
 
 		// Do Word Map
-		foreach ($person_meta as $meta)
+		if ($person_meta)
 		{
-			if ($meta->meta == 'word_type_map')
+			foreach ($person_meta as $meta)
 			{
-				$word_map = $meta->value;
+				if ($meta->meta == 'word_type_map')
+				{
+					$word_map = $meta->value;
+					break;
+				}
 			}
+		}
+		else
+		{
+			$word_map = json_encode(array());
 		}
 
 		// Check Popular Words & Strong Logs

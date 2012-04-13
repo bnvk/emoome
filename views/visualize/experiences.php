@@ -16,23 +16,28 @@ $(document).ready(function()
 		type		: 'GET',
 		dataType	: 'json',
 	  	success		: function(result)
-	  	{	  			
-	  		$.each(result.logs, function(key, value)
-	  		{
-				var action_words = '';
-				
-	  			for (var link in result.words)
-	  			{
-	  				if (result.words[link].log_id == value.log_id)
-	  				{	  				
-	  					action_words += '<a class="related_words" href="' + result.words[link].stem + '">' + result.words[link].word + '</a><br>';
-	  				}
-				}
-	  				  			
-	  			var action_data = '<div class="log_column">' + value.action + '<p>' + action_words + '</p> <p>' + $.relativetime({time:value.created_at}) + '</p></div>';
-	  			
-	  			$('#user_experiences').prepend(action_data);
-	  		});												
+	  	{	
+	  		if (result.status == 'success')
+	  	  	{
+	  	  		result.logs.reverse();
+	  	  	
+		  		$.each(result.logs, function(key, value)
+		  		{
+					var action_words = '';
+					
+		  			for (var link in result.words)
+		  			{
+		  				if (result.words[link].log_id == value.log_id)
+		  				{	  				
+		  					action_words += '<a class="related_words" href="' + result.words[link].stem + '">' + result.words[link].word + '</a><br>';
+		  				}
+					}
+		  				  			
+		  			var action_data = '<div class="log_column">' + value.action + '<p>' + action_words + '</p> <p>' + mysqlDateParser(value.created_at).date('short') + '</p></div>';
+		  			
+		  			$('#user_experiences').prepend(action_data);
+		  		});	
+	  		}											
 	  	}		
 	});
 

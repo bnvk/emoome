@@ -14,19 +14,7 @@
 
 $config['emoome_path'] = 'emoome';
 
-/*	Word Types
-	E - emotional
-	I - intellectual
-	S - sensory
-	D - descriptor
-	A - action
-	P - physical
-	U - unclassifiable
-
-	NEW CATEGORIES ???
-	P - Perception / R - Relative (honest, good)
-*/	
-
+/*	Word Types */	
 $config['emoome_word_types'] = array(
 	'E' => 'Emotional',
 	'I' => 'Intellectual',
