@@ -1,4 +1,4 @@
-<div id="visualize_waiting" class="content_center text_center">
+<div id="visualize_waiting" class="content_center text_center hide">
 	<h1>We are computing your emotions</h1>
 	<div id="logs_needed">
 		<p>You need to record</p>
@@ -7,13 +7,17 @@
 	</div>
 </div>
 
-<div id="visualize">
-	<h1>Visualizing : <?= $this->session->userdata('name') ?></h1>
-	
+
+<h1 id="visualize_title" class="hide">Visualizing : <?= $this->session->userdata('name') ?></h1>
+
+<div id="visualize_language" class="hide">
 	<h2>Your Language Type</h2>
-	<div id="person_circles"></div>
-	<p><a class="button" href="<?= base_url() ?>visualize/map">Your Language Map</a></p>
-	
+	<div id="person_circles"><div class="clear"></div></div>
+	<p class="visualize_buttons"><a class="button" href="<?= base_url() ?>visualize/map">Your Language Map</a></p>
+</div>
+
+
+<div id="visualize_common" class="hide">
 	<h2>Common Words & Feelings</h2>
 	<?php foreach ($common_words as $count => $words): ?>
 	<div class="common_words">
@@ -29,19 +33,21 @@
 	</div>
 	<div class="common_words_line"></div>
 	<?php endforeach; ?>
-	
+</div>
+
+
+<div id="visualize_experiences" class="hide">
 	<h2>Strong Experiences</h2>
 	<div id="strong_experiences"></div>
-	<p><a class="button" href="<?= base_url() ?>visualize/experiences">Your Experiences</a></p>	
-
-
-	<!-- Do NLP on Actions look for names of People, Places, Media
-	<h2>Significant Words</h2>
-	<p>We don't know what these words mean, but you have mentioned them in your activities more than once.</p>
-	<p>These words might be people, places, or things you do. You can help us better understand you by flagging these words.</p>
-	-->
-
+	<p class="visualize_buttons"><a class="button" href="<?= base_url() ?>visualize/experiences">Your Experiences</a></p>	
 </div>
+
+<!-- Do NLP on Actions look for names of People, Places, Media
+<h2>Significant Words</h2>
+<p>We don't know what these words mean, but you have mentioned them in your activities more than once.</p>
+<p>These words might be people, places, or things you do. You can help us better understand you by flagging these words.</p>
+-->
+
 
 <script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
 <script type="text/javascript">
@@ -56,81 +62,70 @@ $(document).ready(function()
 	var largest		= 0;
 	var percents	= '';
 
-	// Hide or Show Visualization
-	if (logs_count < 5)
+
+	function doTitle()
 	{
-		$('#visualize').hide();
-		$('#logs_needed_count').html(5 - logs_count);
-		$('#visualize_waiting').fadeIn('slow');
+		$('#visualize_title').delay(250).fadeIn();
 	}
-	else
-	{
-		$('#visualize_waiting').hide();	
+
 	
+	function doPercentageMap()
+	{
 		// Do Total (key = 'Emotional' and value = 36)
 		$.each(word_map, function(key, value)
 		{
-			//console.log(key);
 			total = value + total;
 			if (value > largest) largest = value;
 		});
 	
-		var loop_count		= 0;
 		var circle_x		= 0;
 		var circle_radius	= 100;
 		var circle_margin	= 45;
 		var largest_percent	= Math.round(largest / total * 100);
 		var largest_diff	= circle_radius - largest_percent;
-	    var paper			= new Raphael(document.getElementById('person_circles'), 900, 400);
+		
+		$person_circles = $('#person_circles');
 	
 		//console.log('total: ' + total + ' largest: ' + largest + ' largest percent: ' + largest_percent);
 		$.each(word_map, function(key, value)
 		{
-			loop_count++;
 			var percentage = Math.round(value / total * 100);
-	
+		
 			// Render Circles
 			if (percentage > 0)
 			{
-				if (percentage == largest_percent) circle_size = circle_radius;
-				else circle_size = percentage + largest_diff;
-				
-				var circle_diameter = circle_size * 2;
-	
-				//console.log('Loop Count: ' + loop_count);
-				if (loop_count == 1)
-				{
-					circle_x = circle_radius;
-					circle_y = circle_radius;
-				}
-				else if (loop_count > 1 && loop_count < 5)
-				{
-					circle_x = circle_x + circle_size + circle_margin;					
-					circle_y = circle_radius;
-				}
-				else if (loop_count == 5)
-				{
-					circle_x = circle_size;
-					circle_y = circle_radius * 3;
-				}
-				else
-				{
-					circle_x = circle_x + circle_size + circle_margin;					
-					circle_y = circle_radius * 3;
-				}
-	
 				var type 	= key.charAt(0);
 				var color 	= type_colors[type];
+			
+				if (percentage == largest_percent) size = circle_radius;
+				else size = percentage + largest_diff;
+				
+				var diameter = size * 2;	
+				
+				var circle_x = size;					
+				var circle_y = size;
+				
+				$person_circles.prepend('<div class="person_circles_circle" id="person_circle_' + type + '" style="width:' + diameter + 'px;"><p>' + percentage + '% ' + key + '</p></div>');
 	
-				//console.log('key: ' + key.charAt(0) + ' color: ' + color + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
-				paper.circle(circle_x, circle_y, circle_size).attr({fill: color, 'stroke-width': 1, 'stroke': '#c3c3c3'});
-				paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#000000'});
-				circle_x = circle_x + circle_size;
+				var paper = new Raphael(document.getElementById('person_circle_' + type), diameter, diameter);
+	
+				paper.circle(circle_x, circle_y, size).attr({fill: color, 'stroke-width': 1, 'stroke': '#c3c3c3'});
+				//paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#333333'});				
 			}
-		});	
+		});
 		
-		
-		
+		$('#visualize_language').delay(500).fadeIn();		
+	}
+
+	
+	function doCommonLanguage()
+	{
+		$('#visualize_common').delay(750).fadeIn();
+	}
+	
+
+	function doStrongExperiences()
+	{		
 		// Make Strong Experiences
 		$strong_experiences	= $('#strong_experiences');
 	
@@ -157,6 +152,34 @@ $(document).ready(function()
 				}
 			}
 		}
+
+		$('#visualize_experiences').delay(1000).fadeIn();		
+	}
+		
+
+	// Hide or Show Visualization
+	if (logs_count < 5)
+	{
+		$('#logs_needed_count').html(5 - logs_count);
+		$('#visualize_waiting').fadeIn('slow');
+	}
+	else if (logs_count < 10)
+	{
+		doTitle();
+		doPercentageMap();
+	}
+	else if (logs_count < 15)
+	{
+		doTitle();
+		doPercentageMap();
+		doCommonLanguage();		
+	}
+	else
+	{
+		doTitle();
+		doPercentageMap();
+		doCommonLanguage();
+		doStrongExperiences();
 	}
 
 });
