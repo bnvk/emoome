@@ -141,7 +141,7 @@ class Emoome_model extends CI_Model
  		return $result->result();
 	}
 
-	function add_word_link($log_id, $user_id, $word)
+	function add_word_link($log_id, $user_id, $word, $use)
 	{
 		$check_word = $this->check_word(strtolower($word));
 		$word_type	= '';
@@ -160,7 +160,8 @@ class Emoome_model extends CI_Model
 		$link_data = array(
 			'log_id'	=> $log_id,
 			'user_id'	=> $user_id,
-			'word_id'	=> $word_id
+			'word_id'	=> $word_id,
+			'use'		=> $use
 		);
 
 		$this->db->insert('emoome_words_link', $link_data);

@@ -44,12 +44,12 @@ class Api extends Oauth_Controller
 		if ($log_id = $this->emoome_model->add_log($this->oauth_user_id, 'feeling'))
 		{
 			// Add Word / Action / Descriptors
-			$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'));			
+			$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
 			$action_id	= $this->emoome_model->add_action($log_id, $this->input->post('action'));
-			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'));
-			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'));
-			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'));
-			
+			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
+			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
+			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
+
 			// Update Word Map
 			$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
 
