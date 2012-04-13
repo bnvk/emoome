@@ -1,4 +1,4 @@
-<div id="content_test" class="content_center text_left">
+<div id="content_test" class="content_left text_left">
 
 	<div id="index_define">
 		<h1 id="index_name"><span>emoome</span></h1>		

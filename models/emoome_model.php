@@ -104,6 +104,7 @@ class Emoome_model extends CI_Model
 			'word' 	 	=> $word,
 			'stem'		=> $stem,
 			'type'		=> 'U',
+			'type_sub'	=> 'U',
 			'speech'	=> 'U'
 		);	
 

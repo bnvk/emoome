@@ -26,9 +26,9 @@
 </form>
 
 <!-- Log Complete Screen -->
-<div id="log_thanks" class="view_center">
+<div id="log_thanks" class="content_center text_center">
 	<h1>Thanks :)</h1>
-	<p><a id="log_action_next" class="button" href="#">Another</a></p>
+	<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
 </div>
 
 <script type="text/javascript">

@@ -34,12 +34,20 @@ $config['emoome_word_types'] = array(
 	'D' => 'Descriptor',
 	'A' => 'Action',
 	'P' => 'Physical',
-	'G' => 'Slang',
-	'M' => 'Moral',
-	'U' => 'Undecided',
-	'F' => 'Food',
-	'C' => 'Common'
+	'U' => 'Undecided'
 );
+
+$config['emoome_word_types_sub'] = array(
+	'M' => 'Moral',
+	'S' => 'Slang',
+	'P' => 'Perception',
+	'Y' => 'Psychological',
+	'L' => 'Feeling',
+	'F' => 'Food',
+	'C' => 'Common',
+	'U' => 'Undecided'
+);
+
 $config['emoome_speech_types'] = array(
 	'V' => 'verb', 
 	'N' => 'noun', 
