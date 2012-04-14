@@ -1,5 +1,5 @@
 <div id="content_test" class="content_center text_center">
-	
+
 	<h1>Record</h1>
 		
 	<p>
