@@ -128,7 +128,7 @@ $(document).ready(function()
 	{		
 		// Make Strong Experiences
 		$strong_experiences	= $('#strong_experiences');
-	
+			
 		for (var log in logs_raw)
 		{
 			var log_id = logs_raw[log].log_id;		
@@ -136,7 +136,7 @@ $(document).ready(function()
 			if (log_id !== undefined)
 			{		
 				for (var type in word_types)
-				{
+				{				
 					var type_count 	= countElementsArray(type, words[log_id]);
 	
 					if (type_count > 2)
@@ -157,7 +157,8 @@ $(document).ready(function()
 	}
 		
 
-	// Hide or Show Visualization
+	// Display Visualizations 
+	// Based on log count
 	if (logs_count < 5)
 	{
 		$('#logs_needed_count').html(5 - logs_count);

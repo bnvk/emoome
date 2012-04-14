@@ -45,45 +45,7 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		//$.get(base_url + 'emoome/dialogs/related_words',function(partial_html)
-		//{		
-			$('<div />').html('loading words...').dialog(
-			{
-				width	: 325,
-				modal	: true,
-				close	: function(){$(this).remove()},
-				title	: 'Related Words',
-				create	: function()
-				{
-					$parent_dialog = $(this);
-					// Do Custom Things
-				},
-				buttons	:
-				{
-					'Send':function()
-					{
-						var data = $('#form_name').serializeArray();
-						data.push({'name':'module','value':'widgets'});
-	
-						 $.oauthAjax(
-						 {
-							oauth 	: user_data,
-							url		: base_url + 'api/settings/create',
-							type		: 'POST',
-							dataType	: 'json',
-							data		: data,
-						  	success	: function(result)
-						  	{							  	
-								$('#content_message').notify({scroll:true,status:result.status,message:result.message});									
-								$parent_dialog.dialog('close');
-						  	}		
-						});
-					},
-					'Cancel':function()
-					{
-						$parent_dialog.dialog('close');
-					}
-				}
-	    	});
+		//{
 		//});		
 	});
 

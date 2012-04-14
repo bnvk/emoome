@@ -165,6 +165,11 @@ function logThanks()
 function countElementsArray(item, array)
 {
     var count = 0;
-    $.each(array, function(i,v) { if (v === item) count++; });
+
+	if (array !== undefined)
+	{
+    	$.each(array, function(i,v) { if (v === item) count++; });
+   	}
+
     return count;
 }
