@@ -1,7 +1,7 @@
 /* Author: Brennan Novak */
-var type_colors		= {"E":"#ff0000","I":"#142bd7","D":"#dfd20a","S":"#0aa80e","A":"#ee9700","P":"#cf00ee","G":"#997a38","M":"#ffffff","F":"#18d9f0","C":"#666666","U":"#c3c3c3"}
+var type_colors		= {"E":"#ff0000","I":"#142bd7","D":"#dfd20a","S":"#0aa80e","A":"#ee9700","P":"#cf00ee","U":"#c3c3c3"}
 var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","U":"Undecided"};
-var word_types_sub	= {	"M":"Moral","S":"Slang","P":"Perception","Y":"Psychological","L":"Feeling","F":"Food","C":"Common","U":"Undecided"}
+var word_types_sub	= {"M":"Moral","S":"Slang","P":"Perception","Y":"Psychological","L":"Feeling","F":"Food","C":"Common","U":"Undecided"}
 var speech_types	= {"V":"Verb","N":"Noun","P":"Pro Noun","A":"Adjective","D":"Adverb","R":"Prepositon","C":"Conjunction","I":"Interjection"};
 
 var emoome_icons	= {
@@ -173,3 +173,37 @@ function countElementsArray(item, array)
 
     return count;
 }
+
+
+	
+/* Geo Location */
+function showPosition(position)
+{
+	var lat = position.coords.latitude;
+	var lon = position.coords.longitude;
+	
+	$('#geo_lat').val(lat);
+	$('#geo_lon').val(lon);
+}
+
+// report errors to user
+function geoErrorHandler(error)
+{
+	switch (error.code)
+	{ 
+		case error.PERMISSION_DENIED:
+			alert("Maybe next time try enabling location as the more details you provide, the more meaning we can give you :)");
+		break;
+		case error.POSITION_UNAVAILABLE:
+			alert("Dang, we could not get your position as this is not available right now");
+		break;
+		case error.TIMEOUT:
+			//alert("Attempt to get position timed out");
+		break;
+	default:
+			//alert("Sorry, an error occurred. Code: " + error.code + " Message: " + error.message);
+		break;	
+	}
+}
+
+

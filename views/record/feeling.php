@@ -1,7 +1,7 @@
 <!-- Log Type: Feeling -->
 <div id="log_feeling" class="content_center text_center hide">
 	<h1>How do you feel right now?</h1>	
-	<p><input type="text" name="log_feeling" id="log_val_feeling" value=""></p>		
+	<p><input type="text" name="log_feeling" id="log_val_feeling" value=""></p>
 	<p><a id="log_feel_next" class="button" href="javascript:logFeeling()">Next</a></p>
 </div>
 
@@ -21,6 +21,8 @@
 </div>
 
 <form name="log_data" id="log_data">
+	<input type="hidden" name="geo_lat" id="geo_lat" value="">
+	<input type="hidden" name="geo_lon" id="geo_lon" value="">
 	<input type="hidden" name="log_type" value="feeling">
 </form>
 
@@ -34,6 +36,12 @@
 $(document).ready(function()
 {
 	$('#log_feeling').delay(250).fadeIn('slow');	
+
+	// Do Geo Location
+	if (navigator.geolocation)
+	{
+		navigator.geolocation.getCurrentPosition(showPosition, geoErrorHandler);
+	}
 
 	// Hijack Spacebar in a few places...
 	$('#log_val_feeling').jkey('space', function()

@@ -40,8 +40,8 @@ class Api extends Oauth_Controller
 	// Log Feeling
 	function log_feeling_authd_post()
 	{
-		// Add Log	
-		if ($log_id = $this->emoome_model->add_log($this->oauth_user_id, 'feeling'))
+		// Add Log
+		if ($log_id = $this->emoome_model->add_log($this->oauth_user_id, 'feeling', $this->input->post('geo_lat'), $this->input->post('geo_lon')))
 		{
 			// Add Word / Action / Descriptors
 			$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
