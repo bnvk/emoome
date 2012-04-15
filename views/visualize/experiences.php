@@ -5,7 +5,7 @@
 <div class="clear"></div>
 </div>
 
-<script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
+<script type="text/javascript" src="<?= $this_module_assets ?>js/raphael.js"></script>
 <script type="text/javascript">
 $(document).ready(function()
 {

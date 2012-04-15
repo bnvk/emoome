@@ -5,14 +5,14 @@
 	<div class="clear"></div>
 </div>
 
-<script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
+<script type="text/javascript" src="<?= $this_module_assets ?>js/raphael.js"></script>
 <script type="text/javascript">
 $(document).ready(function()
 {
 	$.oauthAjax(
 	{
 		oauth 		: user_data,
-		url			: base_url + 'api/emoome/get_logs_user/id/<?= $this->session->userdata('user_id') ?>',
+		url			: base_url + 'api/emoome/get_logs_user/id/' + user_data.user_id,
 		type		: 'GET',
 		dataType	: 'json',
 	  	success		: function(result)

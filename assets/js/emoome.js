@@ -195,7 +195,7 @@ function geoErrorHandler(error)
 			alert("Maybe next time try enabling location as the more details you provide, the more meaning we can give you :)");
 		break;
 		case error.POSITION_UNAVAILABLE:
-			alert("Dang, we could not get your position as this is not available right now");
+			//alert("Dang, we could not get your position as this is not available right now");
 		break;
 		case error.TIMEOUT:
 			//alert("Attempt to get position timed out");
