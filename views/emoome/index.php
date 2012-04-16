@@ -133,7 +133,7 @@ $(document).ready(function()
 			success	: function()
 			{
 				var login_data = $('#user_login').serializeArray();
-				login_data.push({'name':'session','value':'1'});		
+				login_data.push({'name':'session','value':'1'});
 			
 				$.ajax(
 				{
@@ -142,7 +142,7 @@ $(document).ready(function()
 					dataType	: 'json',
 					data		: login_data,
 			  		success		: function(result)
-			  		{			  		
+			  		{	  		
 						if (result.status == 'success')
 						{
 							setTimeout(function() { window.location.href = base_url + 'record/feeling' });					
