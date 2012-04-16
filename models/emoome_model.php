@@ -65,9 +65,12 @@ class Emoome_model extends CI_Model
 
 	function add_action($log_id, $action) 
 	{	
+		$word_count = count(explode(' ', $action));
+	
 		$action_data = array(
-			'log_id' 		 => $log_id,
-			'action' 	 	 => $action
+			'log_id'		=> $log_id,
+			'action'		=> $action,
+			'word_count'	=> $word_count
 		);
 		
 		$this->db->insert('emoome_actions', $action_data);

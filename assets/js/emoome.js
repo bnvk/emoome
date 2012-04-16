@@ -12,12 +12,12 @@ var emoome_icons	= {
 /* General Functions */
 function requestMade(element, message)
 {
-	console.log(message);
+	//console.log(message);
 }
 
 function requestComplete(message)
 {
-	console.log(message)
+	//console.log(message)
 }
 
 
