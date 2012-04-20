@@ -21,6 +21,12 @@
 </div>
 
 <form name="log_data" id="log_data">
+	<input type="hidden" name="time_feel" id="time_feel" value="">
+	<input type="hidden" name="time_action" id="time_action" value="">
+	<input type="hidden" name="time_desc_1" id="time_desc_1" value="">
+	<input type="hidden" name="time_desc_2" id="time_desc_2" value="">
+	<input type="hidden" name="time_desc_3" id="time_desc_3" value="">
+	
 	<input type="hidden" name="geo_lat" id="geo_lat" value="">
 	<input type="hidden" name="geo_lon" id="geo_lon" value="">
 	<input type="hidden" name="log_type" value="feeling">
@@ -35,7 +41,7 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-	$('#log_feeling').delay(250).fadeIn('slow');	
+	logFeelingStart();	
 
 	// Do Geo Location
 	if (navigator.geolocation)
