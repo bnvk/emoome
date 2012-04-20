@@ -113,7 +113,6 @@ $(document).ready(function()
 					var paper = new Raphael(document.getElementById('person_circle_' + type), diameter, diameter);
 		
 					paper.circle(circle_x, circle_y, size).attr({fill: color, 'stroke-width': 1, 'stroke': '#c3c3c3'});
-					//paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#333333'});				
 				}
 			}
 		});

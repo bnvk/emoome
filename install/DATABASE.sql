@@ -6,7 +6,7 @@ CREATE TABLE `emoome_words_link` (
   `user_id` int(11) DEFAULT NULL,
   `word_id` int(11) DEFAULT NULL,
   `use` int(11) DEFAULT NULL,
-  `time` int(),
+  `time` int(16),
   PRIMARY KEY (`link_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
@@ -24,6 +24,7 @@ CREATE TABLE `emoome_log` (
   `log_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `type` char(16) DEFAULT NULL,
+  `time` int(16),  
   `geo_lat` varchar(16) DEFAULT NULL,
   `geo_lon` varchar(16) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,

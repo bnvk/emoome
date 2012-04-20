@@ -14,11 +14,9 @@ var emoome_icons	= {
 
 /* Data Objects */
 var log_feeling_time = {
-	time_feel : '',
+	time_feeling : '',
 	time_action : '',
-	time_desc_1 : '',
-	time_desc_2 : '',
-	time_desc_3 : ''
+	time_describe : ''
 }
 
 /* General Functions */
@@ -32,13 +30,17 @@ function requestComplete(message)
 	//console.log(message)
 }
 
+function printUserMessage(message)
+{
+	$('#content_message').notify({status:'success',message:message});
+}
+
 
 /* Log - Feeling */
 function logFeelingStart()
 {
-	log_feeling_time.time_feel = new Date().getTime();
-
-	console.log(log_feeling_time.time_feel);
+	// Get Start Time
+	log_feeling_time.time_feeling = new Date().getTime();
 
 	$('#log_feeling').delay(250).fadeIn('slow');
 }
@@ -68,19 +70,18 @@ function logFeeling()
 
 function logFeelingComplete()
 {
-	log_feeling_time.time_feel = getTimeSpent(log_feeling_time.time_feel);
-
-	console.log(log_feeling_time);
-	console.log($.relativetime(log_feeling_time.time_feel));
+	// Stamp Times
+	log_feeling_time.time_feeling	= getTimeSpent(log_feeling_time.time_feeling);
+	log_feeling_time.time_action	= new Date().getTime();
 
 	//jQT.goTo('#log_action', 'slideleft');
 	$('#log_feeling').fadeOut();
 	$('#log_action').delay(500).fadeIn();
-
 }
 
 function logAction()
 {
+	// Set Action
 	$('#log_describe_this').html('"' + $('#log_val_action').val() + '"');
 
 	$.validator(
@@ -105,6 +106,10 @@ function logAction()
 
 function logActionComplete()
 {
+	// Get Start Time
+	log_feeling_time.time_action	= getTimeSpent(log_feeling_time.time_action);
+	log_feeling_time.time_describe	= new Date().getTime();
+
 	//jQT.goTo('#log_action', 'slideleft');
 	$('#log_action').fadeOut();
 	$('#log_describe').delay(500).fadeIn();
@@ -113,7 +118,6 @@ function logActionComplete()
 
 function logDescribe()
 {
-	console.log('logDescribe');
 	$.validator(
 	{
 		elements :
@@ -133,7 +137,10 @@ function logDescribe()
 		message : 'Enter a ',
 		success	: function()
 		{
+			log_feeling_time.time_describe = getTimeSpent(log_feeling_time.time_describe);
+		
 			var log_data = $('#log_data').serializeArray();
+			var log_time = 0;
 
 			log_data.push({'name' : 'feeling', 'value' : $('#log_val_feeling').val() });
 			log_data.push({'name' : 'action', 'value' : $('#log_val_action').val() });
@@ -141,9 +148,16 @@ function logDescribe()
 			log_data.push({'name' : 'describe_2', 'value' : $('#log_val_describe_2').val() });
 			log_data.push({'name' : 'describe_3', 'value' : $('#log_val_describe_3').val() });
 			
-			log_data.push({'name' : 'time_feeling', 'value' : ''});
-
-
+			for (time in log_feeling_time)
+			{
+				log_time += log_feeling_time[time];
+				log_data.push({'name' : time, 'value' : log_feeling_time[time]});
+			}
+			
+			log_data.push({'name' : 'time_total', 'value' : log_time});
+			
+			console.log(log_data);
+			
 			// Save Data To API
 			$.oauthAjax(
 			{
@@ -156,7 +170,6 @@ function logDescribe()
 			  	success		: function(result)
 			  	{
 					// Close Loading
-		  			
 		  			requestComplete(result.message);
 		  			
 					
@@ -173,7 +186,8 @@ function logDescribe()
 						$('#log_thanks').delay(500).fadeIn();
 					}
 			  	}			  			
-			});		
+			});
+				
 		},
 		failed : function()
 		{
@@ -206,7 +220,7 @@ function countElementsArray(item, array)
 
 function getTimeSpent(start_time)
 {
-	now_time = new Date().getTime();
+	now_time = new Date().getTime();	
 	return now_time - start_time;
 }
 
