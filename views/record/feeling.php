@@ -1,7 +1,7 @@
 <!-- Log Type: Feeling -->
 <div id="log_feeling" class="content_center text_center hide">
-	<h1>How do you feel right now?</h1>	
-	<p><input type="text" name="log_feeling" id="log_val_feeling" value=""></p>
+	<h1>How do you feel right now?</h1>
+	<p><input type="text" name="log_feeling" id="log_val_feeling" placeholder="Good" value=""></p>
 	<p><a id="log_feel_next" class="button" href="javascript:logFeeling()">Next</a></p>
 </div>
 
@@ -14,9 +14,9 @@
 <div id="log_describe" class="content_center text_center hide">
 	<h1>Describe in three words</h1>
 	<p id="log_describe_this"></p>
-	<p><input type="text" name="log_describe_1" id="log_val_describe_1" value=""></p>
-	<p><input type="text" name="log_describe_2" id="log_val_describe_2" value=""></p>
-	<p><input type="text" name="log_describe_3" id="log_val_describe_3" value=""></p>
+	<p><input type="text" name="log_describe_1" id="log_val_describe_1" placeholder="Three" value=""></p>
+	<p><input type="text" name="log_describe_2" id="log_val_describe_2" placeholder="Separate" value=""></p>
+	<p><input type="text" name="log_describe_3" id="log_val_describe_3" placeholder="Words" value=""></p>
 	<p><a id="log_describe_next" class="button" href="javascript:logDescribe();">Finish</a></p>
 </div>
 
@@ -29,18 +29,23 @@
 <!-- Log Complete Screen -->
 <div id="log_thanks" class="content_center text_center hide">
 	<h1>Thanks :)</h1>
+	<h3></h3>
 	<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function()
 {
-	logFeelingStart();	
+	logFeelingStart();
 
-
-	var patt = new RegExp(pattern, modifiers);
-
+	var patt = '';//new RegExp('a-zA-Z', 'some 5 shit');
 	console.log(patt);
+	
+	
+	var new_array = _.shuffle(messages.log_feeling_complete);
+	
+	console.log(new_array[0]);
+
 
 	// Do Geo Location
 	if (navigator.geolocation)
@@ -49,10 +54,13 @@ $(document).ready(function()
 	}
 
 	// Hijack Spacebar in a few places...
-	$('#log_val_feeling').jkey('space', function()
+	$('#log_val_feeling').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
 	{
+		console.log(key)
+		
 		printUserMessage('Enter only a single word');
 	});
+
 
 	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space', function()
 	{

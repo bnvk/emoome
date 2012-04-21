@@ -12,6 +12,15 @@ var emoome_icons	= {
 	"profile" : "<svg version=\"1.0\" x=\"0px\" y=\"0px\" width=\"300px\" height=\"300px\" xml:space=\"preserve\"><path d=\"M34.17,62.932l1.099,0.273c4.332-5.283,7.815-12.215,2.554-19.435c-5.44-7.471-7.457-17.142-5.071-26.328C36.532,2.886,42.756,0.366,57.405,0.43c5.008,0.022,15.456,1.76,18.607,6.126c0.792,1.095-0.53,2.522,0.014,3.17c1.979,2.35,3.346,6.891,3.852,11.311c0.104,0.923,2.023,3.147,1.537,4.047c-0.989,1.821-1.444,2.771,0.302,5.242   c1.136,1.61,4.413,6.442,5.144,7.774c1.021,1.857-4.852,1.917-4.337,3.33c0.234,0.644,1.025,2.271,1.28,2.902c0.308,0.762-1.519,1.247-1.528,1.777c0.003,0.202,1.126,0.309,0.949,1.637c-0.108,0.817-1.757,0.177-1.851,3.282   c-0.05,1.686,1.967,4.035-1.403,6.168c-3.623,2.297-16.219-4.463-17.27,8.309c-0.147,1.795-0.103,3.277,0.08,4.547l1.9,0.473   c0,0,0.624,3.211,1.39,6.51c0.45,0.602,0.896,1.207,1.307,1.869c2.723,4.393,7.992,9.795,8.916,15.326   c0.419,2.518,0.566,4.053,0.603,4.979H17.021c0.052-3.385-1.78-14.852,11.745-29.113l0.37-0.385L34.17,62.932L34.17,62.932z\"/></svg>"
 }
 
+/* User Messages */
+var messages = {
+	"log_feeling_complete" : [
+		"Entry by entry we are building your emotional map",
+		"We suggest logging 1-3 entries per day",
+		"The best are entries are moments that feel important"
+	]
+}
+
 /* Data Objects */
 var log_feeling_time = {
 	time_feeling : '',
@@ -20,14 +29,21 @@ var log_feeling_time = {
 }
 
 /* General Functions */
-function requestMade(element, message)
+function requestMade(message)
 {
-	//console.log(message);
+	$('#lightbox_message').html(message);
+	$('#request_lightbox').delay(250).fadeIn();
+	$('#lightbox_message').delay(500).html(message + '.');
+	$('#lightbox_message').delay(700).html(message + '..');
+	$('#lightbox_message').delay(900).html(message + '...');
+	return false;
 }
 
 function requestComplete(message)
 {
-	//console.log(message)
+	$('#lightbox_message').html(message);
+	$("#request_lightbox").delay(1000).fadeOut();
+	return false;
 }
 
 function printUserMessage(message)
@@ -142,12 +158,14 @@ function logDescribe()
 			var log_data = $('#log_data').serializeArray();
 			var log_time = 0;
 
+			log_data.push({'name' : 'source', 'value' : user_data.source });
 			log_data.push({'name' : 'feeling', 'value' : $('#log_val_feeling').val() });
 			log_data.push({'name' : 'action', 'value' : $('#log_val_action').val() });
 			log_data.push({'name' : 'describe_1', 'value' : $('#log_val_describe_1').val() });
 			log_data.push({'name' : 'describe_2', 'value' : $('#log_val_describe_2').val() });
 			log_data.push({'name' : 'describe_3', 'value' : $('#log_val_describe_3').val() });
 			
+			// Time Data
 			for (time in log_feeling_time)
 			{
 				log_time += log_feeling_time[time];
@@ -155,9 +173,7 @@ function logDescribe()
 			}
 			
 			log_data.push({'name' : 'time_total', 'value' : log_time});
-			
-			console.log(log_data);
-			
+
 			// Save Data To API
 			$.oauthAjax(
 			{
@@ -166,12 +182,11 @@ function logDescribe()
 				type		: 'POST',
 				dataType	: 'json',
 				data		: log_data,
-				beforeSend	: requestMade('#log_describe', 'Saving your entry'),
+				beforeSend	: requestMade('Saving your entry'),
 			  	success		: function(result)
 			  	{
 					// Close Loading
 		  			requestComplete(result.message);
-		  			
 					
 					if (result.status == 'success')
 					{
@@ -187,7 +202,6 @@ function logDescribe()
 					}
 			  	}			  			
 			});
-				
 		},
 		failed : function()
 		{
@@ -254,5 +268,3 @@ function geoErrorHandler(error)
 		break;	
 	}
 }
-
-
