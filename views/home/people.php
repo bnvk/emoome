@@ -15,7 +15,7 @@
 	<?php foreach ($devices as $device): $device_json = json_decode($device); ?>
 		<h4><?= $device_json->name ?></h4>
 	<?php endforeach; endif; ?>
-	<script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
+	<script type="text/javascript" src="<?= $this_module_assets ?>js/raphael.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function()
 	{
