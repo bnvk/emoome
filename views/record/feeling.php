@@ -21,15 +21,13 @@
 </div>
 
 <form name="log_data" id="log_data">
-	<input type="hidden" name="geo_lat" id="geo_lat" value="">
-	<input type="hidden" name="geo_lon" id="geo_lon" value="">
 	<input type="hidden" name="log_type" value="feeling">
 </form>
 
 <!-- Log Complete Screen -->
 <div id="log_thanks" class="content_center text_center hide">
 	<h1>Thanks :)</h1>
-	<h3></h3>
+	<h3 id="log_completion_message"></h3>
 	<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
 </div>
 
@@ -38,33 +36,20 @@ $(document).ready(function()
 {
 	logFeelingStart();
 
-	var patt = '';//new RegExp('a-zA-Z', 'some 5 shit');
+	var patt = 'do regex on value';//new RegExp('a-zA-Z', 'some 5 shit');
 	console.log(patt);
-	
-	
-	var new_array = _.shuffle(messages.log_feeling_complete);
-	
-	console.log(new_array[0]);
 
-
-	// Do Geo Location
-	if (navigator.geolocation)
-	{
-		navigator.geolocation.getCurrentPosition(showPosition, geoErrorHandler);
-	}
 
 	// Hijack Spacebar in a few places...
 	$('#log_val_feeling').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
-	{
-		console.log(key)
-		
-		printUserMessage('Enter only a single word');
+	{		
+		printUserMessage('Enter only a single word (no spaces or numbers)');
 	});
 
 
-	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space', function()
+	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function()
 	{
-		printUserMessage('Enter only a single word');
+		printUserMessage('Enter only a single word (no spaces or numbers)');
 	});
 
 });

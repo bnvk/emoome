@@ -15,9 +15,13 @@ var emoome_icons	= {
 /* User Messages */
 var messages = {
 	"log_feeling_complete" : [
-		"Entry by entry we are building your emotional map",
+		"Every entry helps us build your emotional map",
 		"We suggest logging 1-3 entries per day",
-		"The best are entries are moments that feel important"
+		"Try logging entries at different times of the day",
+		"The best entries are when you feel something intensely",
+		"If something is hard to describe it's probably a good entry",
+		"The best entries are moments that seem important",
+		"Confused about a life experience? Log an entry for later"
 	]
 }
 
@@ -30,19 +34,30 @@ var log_feeling_time = {
 
 /* General Functions */
 function requestMade(message)
-{
-	$('#lightbox_message').html(message);
+{	
+	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
 	$('#request_lightbox').delay(250).fadeIn();
-	$('#lightbox_message').delay(500).html(message + '.');
-	$('#lightbox_message').delay(700).html(message + '..');
-	$('#lightbox_message').delay(900).html(message + '...');
+	$('#lightbox_message').delay(350).html(message + '.');
+	$('#lightbox_message').delay(600).html(message + '..');
+	$('#lightbox_message').delay(800).html(message + '...');
 	return false;
 }
 
-function requestComplete(message)
+function requestComplete(message, status)
 {
 	$('#lightbox_message').html(message);
-	$("#request_lightbox").delay(1000).fadeOut();
+	
+	if (status == 'success')
+	{
+		$('#lightbox_message').addClass('lightbox_message_success');
+		$("#request_lightbox").delay(1000).fadeOut();
+	}
+	else
+	{
+		$('#lightbox_message').addClass('lightbox_message_error');
+		$("#request_lightbox").delay(2000).fadeOut();		
+	}
+	
 	return false;
 }
 
@@ -55,6 +70,12 @@ function printUserMessage(message)
 /* Log - Feeling */
 function logFeelingStart()
 {
+	/// Get Geo
+	if (navigator.geolocation)
+	{
+		navigator.geolocation.getCurrentPosition(showPosition, geoErrorHandler);	
+	}
+
 	// Get Start Time
 	log_feeling_time.time_feeling = new Date().getTime();
 
@@ -164,6 +185,9 @@ function logDescribe()
 			log_data.push({'name' : 'describe_1', 'value' : $('#log_val_describe_1').val() });
 			log_data.push({'name' : 'describe_2', 'value' : $('#log_val_describe_2').val() });
 			log_data.push({'name' : 'describe_3', 'value' : $('#log_val_describe_3').val() });
+			log_data.push({'name' : 'geo_lat', 'value' : user_data.geo_lat });
+			log_data.push({'name' : 'geo_lon', 'value' : user_data.geo_lon });
+
 			
 			// Time Data
 			for (time in log_feeling_time)
@@ -186,8 +210,9 @@ function logDescribe()
 			  	success		: function(result)
 			  	{
 					// Close Loading
-		  			requestComplete(result.message);
+		  			requestComplete(result.message, result.status);
 					
+					// Clean Data & Completion
 					if (result.status == 'success')
 					{
 				  		$('#log_val_feeling').val('');
@@ -198,6 +223,10 @@ function logDescribe()
 				  		$('#log_describe_this').html('');
 
 						$('#log_describe').fadeOut();
+						
+						// Show Completion View
+						var new_array = _.shuffle(messages.log_feeling_complete);
+						$('#log_completion_message').html(new_array[0]);
 						$('#log_thanks').delay(500).fadeIn();
 					}
 			  	}			  			
@@ -215,7 +244,6 @@ function logThanks()
 	//jQT.goTo('#log_action', 'slideleft');
 	$('#log_thanks').fadeOut();
 	$('#log_feeling').delay(500).fadeIn();
-
 }
 
 
@@ -241,12 +269,9 @@ function getTimeSpent(start_time)
 	
 /* Geo Location */
 function showPosition(position)
-{
-	var lat = position.coords.latitude;
-	var lon = position.coords.longitude;
-	
-	$('#geo_lat').val(lat);
-	$('#geo_lon').val(lon);
+{	
+	user_data.geo_lat = position.coords.latitude;
+	user_data.geo_lon = position.coords.longitude;
 }
 
 // report errors to user

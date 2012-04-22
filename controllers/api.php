@@ -11,6 +11,8 @@ class Api extends Oauth_Controller
 
 		$this->load->config('emoome');
         $this->load->model('emoome_model');
+        
+    	$this->form_validation->set_error_delimiters('', '');        
 	}
 	
 	function get_logs_user_authd_get()
@@ -41,11 +43,11 @@ class Api extends Oauth_Controller
 	function log_feeling_authd_post()
 	{
 		// Validation Rules
-	   	$this->form_validation->set_rules('feeling', 'Feeling with only words (no numbers or punctuation)', 'alpha_dash');
+	   	$this->form_validation->set_rules('feeling', 'Feeling', 'alpha_dash');
 	   	$this->form_validation->set_rules('action', 'Something you did today', 'required');
-	   	$this->form_validation->set_rules('describe_1', 'Describe with only words (no numbers or punctuation)', 'alpha_dash');
-	   	$this->form_validation->set_rules('describe_2', 'Describe with only words (no numbers or punctuation)', 'alpha_dash');
-	   	$this->form_validation->set_rules('describe_3', 'Describe with only words (no numbers or punctuation)', 'alpha_dash');
+	   	$this->form_validation->set_rules('describe_1', '1st Describe', 'alpha_dash');
+	   	$this->form_validation->set_rules('describe_2', '2nd Describe', 'alpha_dash');
+	   	$this->form_validation->set_rules('describe_3', '3rd Describe', 'alpha_dash');
 
 		// Passes Validation
 	    if ($this->form_validation->run() == true)
@@ -75,8 +77,11 @@ class Api extends Oauth_Controller
 				// Update Word Map
 				$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
 	
+				// Log Count
+				$log_count = $this->emoome_model->count_logs_user($this->uri->segment(4));
+				
 				// Message
-	            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map);
+	            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map, 'log_count' => $log_count);
 			}
 			else
 			{
