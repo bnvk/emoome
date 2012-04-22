@@ -30,15 +30,9 @@ class Emoome_model extends CI_Model
  		return $result->result();	
 	}
 	
-	function add_log($user_id, $type, $lat=FALSE, $lon=FALSE)
+	function add_log($log_data)
 	{
-		$log_data = array(
-			'user_id'		=> $user_id,
-			'type'			=> $type,
-			'geo_lat'		=> $lat,
-			'geo_lon'		=> $lon,
-			'created_at'	=> unix_to_mysql(now())
-		);
+		$log_data['created_at'] = unix_to_mysql(now());
 
 		$this->db->insert('emoome_log', $log_data);
 

@@ -34,6 +34,12 @@ class Emoome extends Site_Controller
 		$this->render();		
 	}	
 
+	function stem()
+	{
+		$this->load->library('natural_language');
+		echo $this->natural_language->stem($this->uri->segment(3));
+	}
+
 	// little helper function to print the results
 	function tag_test()
 	{

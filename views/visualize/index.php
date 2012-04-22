@@ -89,28 +89,31 @@ $(document).ready(function()
 		//console.log('total: ' + total + ' largest: ' + largest + ' largest percent: ' + largest_percent);
 		$.each(word_map, function(key, value)
 		{
-			var percentage = Math.round(value / total * 100);
-		
-			// Render Circles
-			if (percentage > 0)
-			{
-				var type 	= key.charAt(0);
-				var color 	= type_colors[type];
+	  		// Dont Show Undecided
+			if (key.charAt(0) != 'U')
+			{		
+				var percentage = Math.round(value / total * 100);
 			
-				if (percentage == largest_percent) size = circle_radius;
-				else size = percentage + largest_diff;
+				// Render Circles
+				if (percentage > 0)
+				{
+					var type 	= key.charAt(0);
+					var color 	= type_colors[type];
 				
-				var diameter = size * 2;	
-				
-				var circle_x = size;					
-				var circle_y = size;
-				
-				$person_circles.prepend('<div class="person_circles_circle" id="person_circle_' + type + '" style="width:' + diameter + 'px;"><p>' + percentage + '% ' + key + '</p></div>');
-	
-				var paper = new Raphael(document.getElementById('person_circle_' + type), diameter, diameter);
-	
-				paper.circle(circle_x, circle_y, size).attr({fill: color, 'stroke-width': 1, 'stroke': '#c3c3c3'});
-				//paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#333333'});				
+					if (percentage == largest_percent) size = circle_radius;
+					else size = percentage + largest_diff;
+					
+					var diameter = size * 2;	
+					
+					var circle_x = size;					
+					var circle_y = size;
+					
+					$person_circles.prepend('<div class="person_circles_circle" id="person_circle_' + type + '" style="width:' + diameter + 'px;"><p>' + percentage + '% ' + key + '</p></div>');
+		
+					var paper = new Raphael(document.getElementById('person_circle_' + type), diameter, diameter);
+		
+					paper.circle(circle_x, circle_y, size).attr({fill: color, 'stroke-width': 1, 'stroke': '#c3c3c3'});
+				}
 			}
 		});
 		
@@ -136,18 +139,22 @@ $(document).ready(function()
 			if (log_id !== undefined)
 			{		
 				for (var type in word_types)
-				{				
-					var type_count 	= countElementsArray(type, words[log_id]);
-	
-					if (type_count > 2)
+				{		
+					// Dont Show Undecided
+					if (type != 'U')
 					{
-						var color	= type_colors[type];
-						var size	= type_count * 10;
-	
-						$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_action">"' + logs_raw[log].action + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_at).date('short') + '</span></div>' + '<div class="clear"></div></div>');
-	
-					    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), 80, 80);
-						paper.circle(40, 40, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+						var type_count 	= countElementsArray(type, words[log_id]);
+		
+						if (type_count > 2)
+						{
+							var color	= type_colors[type];
+							var size	= type_count * 10;
+		
+							$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_action">"' + logs_raw[log].action + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_at).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+		
+						    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), 80, 80);
+							paper.circle(40, 40, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+						}
 					}
 				}
 			}

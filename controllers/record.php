@@ -30,7 +30,14 @@ class Record extends Site_Controller
 
 	function memory()
 	{
-		$this->data['page_title']	= 'Record A Mapper';
+		$this->data['page_title']	= 'Memory Builder';
+		
+		$this->render();
+	}
+	
+	function goal()
+	{
+		$this->data['page_title']	= 'Goal Mapper';
 		
 		$this->render();
 	}

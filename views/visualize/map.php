@@ -48,8 +48,12 @@ $(document).ready(function()
 			// Do Color Key
 	  		for (color in type_colors)
 	  		{
-	  			var color_swatch = '<div class="type_swatch"><div class="color_swatch" style="background:' + type_colors[color] + '"></div>' + word_types[color] + '</div>';
-	  			$('#user_word_colors').append(color_swatch);
+	  			// Dont Show Undecided
+	  			if (color != 'U')
+	  			{
+	  				var color_swatch = '<div class="type_swatch"><div class="color_swatch" style="background:' + type_colors[color] + '"></div>' + word_types[color] + '</div>';
+	  				$('#user_word_colors').append(color_swatch);
+	  			}
 	  		}	  		
 	  		
 	  		// Do Color Height
@@ -72,22 +76,28 @@ $(document).ready(function()
 					// Make Container
 					set_width = set_width + 80;
 					
-					$word_map_container.append('<div class="word_map_column" data-action="' + logs[log_id].action + '" data-created_at="' + logs[log_id].created_at + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
-	
-					// Make Paper
-				    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
-					
-		  			// Do 4 Types
-					for (type in word_types)
-					{					
-						var color 		= type_colors[type];
-						var circle_y	= color_height[type];
-						var size 		= circle_size * countElementsArray(type, value);
+					if (jQuery.inArray('U', value) < 0)
+					{
+						$word_map_container.append('<div class="word_map_column" data-action="' + logs[log_id].action + '" data-created_at="' + logs[log_id].created_at + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
+		
+						// Make Paper
+					    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
 						
-						if (size > 0)
-						{
-							//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);						
-							paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);				        
+			  			// Do 4 Types
+						for (type in word_types)
+						{	
+							if (type != 'U')
+							{	
+								var color 		= type_colors[type];
+								var circle_y	= color_height[type];
+								var size 		= circle_size * countElementsArray(type, value);
+								
+								if (size > 0)
+								{
+									//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);						
+									paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);				        
+								}
+							}
 						}
 					}
 				}
@@ -96,7 +106,7 @@ $(document).ready(function()
 	  		// Size Containers
 	  		var new_width = $('#user_word_map').width() + 180;
 	  		$('#user_word_map').width(new_width);
-			//console.log($('#user_word_map').width());	  		
+
 
 			// Do ToolTips
 			$('.word_map_column').qtip({

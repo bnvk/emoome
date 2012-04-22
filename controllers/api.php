@@ -11,6 +11,8 @@ class Api extends Oauth_Controller
 
 		$this->load->config('emoome');
         $this->load->model('emoome_model');
+        
+    	$this->form_validation->set_error_delimiters('', '');        
 	}
 	
 	function get_logs_user_authd_get()
@@ -40,25 +42,55 @@ class Api extends Oauth_Controller
 	// Log Feeling
 	function log_feeling_authd_post()
 	{
-		// Add Log
-		if ($log_id = $this->emoome_model->add_log($this->oauth_user_id, 'feeling', $this->input->post('geo_lat'), $this->input->post('geo_lon')))
-		{
-			// Add Word / Action / Descriptors
-			$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
-			$action_id	= $this->emoome_model->add_action($log_id, $this->input->post('action'));
-			$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
-			$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
-			$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
+		// Validation Rules
+	   	$this->form_validation->set_rules('feeling', 'Feeling', 'alpha_dash');
+	   	$this->form_validation->set_rules('action', 'Something you did today', 'required');
+	   	$this->form_validation->set_rules('describe_1', '1st Describe', 'alpha_dash');
+	   	$this->form_validation->set_rules('describe_2', '2nd Describe', 'alpha_dash');
+	   	$this->form_validation->set_rules('describe_3', '3rd Describe', 'alpha_dash');
 
-			// Update Word Map
-			$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
-
-			// Message
-            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map);
+		// Passes Validation
+	    if ($this->form_validation->run() == true)
+	    {	
+			$log_data = array(
+				'user_id'	=> $this->oauth_user_id,
+				'type'		=> 'feeling',
+				'geo_lat'	=> $this->input->post('geo_lat'),
+				'geo_lon'	=> $this->input->post('geo_lon'),
+				'time_1'	=> $this->input->post('time_feeling'),
+				'time_2'	=> $this->input->post('time_action'),
+				'time_3'	=> $this->input->post('time_describe'),
+				'time_total'=> $this->input->post('time_total'),
+				'source'	=> $this->input->post('source')
+			);
+		
+			// Add Log
+			if ($log_id = $this->emoome_model->add_log($log_data))
+			{
+				// Add Word / Action / Descriptors
+				$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
+				$action_id	= $this->emoome_model->add_action($log_id, $this->input->post('action'));
+				$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
+				$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
+				$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
+	
+				// Update Word Map
+				$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
+	
+				// Log Count
+				$log_count = $this->emoome_model->count_logs_user($this->uri->segment(4));
+				
+				// Message
+	            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map, 'log_count' => $log_count);
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'Could not save log');
+			}
 		}
 		else
 		{
-            $message = array('status' => 'error', 'message' => 'Could not save log');
+	    	$message = array('status' => 'error', 'message' => validation_errors());		
 		}
 
         $this->response($message, 200);
