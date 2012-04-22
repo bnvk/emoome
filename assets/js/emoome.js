@@ -21,7 +21,7 @@ var messages = {
 		"The best entries are when you feel something intensely",
 		"If something is hard to describe it's probably a good entry",
 		"The best entries are moments that seem important",
-		"Confused about a life experience? Log an entry for later"
+		"Experienced an intense life event? Log an entry for later analysis"
 	]
 }
 
