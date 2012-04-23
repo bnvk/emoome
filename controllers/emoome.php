@@ -32,8 +32,17 @@ class Emoome extends Site_Controller
 		$this->data['content']		= $this->load->view('../modules/emoome/views/emoome/about', $this->data, true);
 		
 		$this->render();		
-	}	
-
+	}
+	
+	function nearby()
+	{
+		$this->data['page_title']	= 'Nearby Feelings';
+		
+		$this->render();
+	}
+	
+	
+	/* Tools */
 	function stem()
 	{
 		$this->load->library('natural_language');

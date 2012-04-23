@@ -37,7 +37,28 @@ class Api extends Oauth_Controller
 		}
 
         $this->response($message, 200);	
-	}	
+	}
+	
+	function get_nearby_feelings_get()
+	{
+		// Distance
+		if ($this->get('distance')) $distance = $this->get('distance');
+		else $distance = 10;
+
+		// Get Feelings
+		if ($nearby_feelings = $this->emoome_model->get_nearby_feelings($this->get('geo_lat'), $this->get('geo_lon'), $distance))
+		{				
+            $message = array('status' => 'success', 'message' => 'Success found some feelings', 'feelings' => $nearby_feelings);
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'You have not recorded any logs');
+		}
+
+        $this->response($message, 200);	
+		
+	}
+	
 
 	// Log Feeling
 	function log_feeling_authd_post()

@@ -29,6 +29,32 @@ class Emoome_model extends CI_Model
  		$result = $this->db->get();
  		return $result->result();	
 	}
+
+
+    function get_nearby_feelings($geo_lat, $geo_lon, $distance)
+    {
+		$sql = "SELECT emoome_log.log_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.created_at, emoome_words.word,    
+				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
+				FROM emoome_log
+				JOIN emoome_words_link ON emoome_words_link.log_id = emoome_log.log_id
+				JOIN emoome_words ON emoome_words.word_id = emoome_words_link.word_id
+				WHERE emoome_words_link.use = 'F' AND emoome_log.geo_lat IS NOT NULL AND emoome_log.geo_lon IS NOT NULL
+				ORDER BY distance ASC
+				LIMIT 0,".$distance;
+
+		$query = $this->db->query($sql);	
+				
+		if($query->num_rows() > 0)
+		{
+			foreach ($query->result() as $row)
+			{					
+				$result[] = $row;
+			}
+			
+			return $result;
+		}
+    }	
+	
 	
 	function add_log($log_data)
 	{
@@ -43,7 +69,6 @@ class Emoome_model extends CI_Model
 
 	    return FALSE;
 	}
-
 
 
 	// Actions
