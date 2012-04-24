@@ -39,7 +39,7 @@ class Api extends Oauth_Controller
         $this->response($message, 200);	
 	}
 	
-	function get_nearby_feelings_get()
+	function get_nearby_feelings_authd_get()
 	{
 		// Distance
 		if ($this->get('distance')) $distance = $this->get('distance');
@@ -56,7 +56,6 @@ class Api extends Oauth_Controller
 		}
 
         $this->response($message, 200);	
-		
 	}
 	
 

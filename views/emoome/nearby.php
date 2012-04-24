@@ -1,5 +1,5 @@
 <style type="text/css">
-#nearby_feelings_map { width: 100%; height: 600px; border: 1px solid red; }
+#nearby_feelings_map { width: 100%; height: 600px; }
 </style>
 <h1>Nearby Feelings</h1>
 
@@ -13,7 +13,13 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-	var distance = 10;
+	var distance = 50;
+
+	/* GMaps Docs
+	https://code.google.com/p/jquery-ui-map/wiki/jquery_ui_map_v_3_api
+	https://code.google.com/p/jquery-ui-map/wiki/jquery_ui_map_v_3_sample_code
+	https://code.google.com/p/jquery-ui-map/wiki/jquery_ui_map_v_3_tutorial
+	*/
 
 	/// Get Geo
 	if (navigator.geolocation)
@@ -24,7 +30,7 @@ $(document).ready(function()
 	/* Geo Location */
 	function showNearbyMap(position)
 	{
-		$('#nearby_feelings_map').gmap().bind('init', function()
+		$('#nearby_feelings_map').gmap({'center': position.coords.latitude + ', ' + position.coords.longitude}).bind('init', function()
 		{ 		
 			$.oauthAjax(
 			{
@@ -44,8 +50,9 @@ $(document).ready(function()
 							$('#nearby_feelings_map').gmap('addMarker',
 							{ 
 								'position': new google.maps.LatLng(feeling.geo_lat, feeling.geo_lon), 
-								'bounds': true 
-							}).click(function() {
+								'bounds': true
+							}).click(function()
+							{
 								$('#nearby_feelings_map').gmap('openInfoWindow', { 'content': feeling.word }, this);
 							});
 					

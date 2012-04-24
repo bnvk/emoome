@@ -31,14 +31,23 @@ class Emoome_model extends CI_Model
 	}
 
 
-    function get_nearby_feelings($geo_lat, $geo_lon, $distance)
+    function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
     {
-		$sql = "SELECT emoome_log.log_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.created_at, emoome_words.word,    
+    	if ($user_id)
+    	{
+    		$user_where = 'AND emoome_log.user_id = '.$user_id;
+    	}
+    	else
+    	{
+    		$user_where = '';
+    	}
+    
+		$sql = "SELECT emoome_log.log_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.created_at, emoome_words.word,  emoome_words.type,   
 				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
 				FROM emoome_log
 				JOIN emoome_words_link ON emoome_words_link.log_id = emoome_log.log_id
 				JOIN emoome_words ON emoome_words.word_id = emoome_words_link.word_id
-				WHERE emoome_words_link.use = 'F' AND emoome_log.geo_lat IS NOT NULL AND emoome_log.geo_lon IS NOT NULL
+				WHERE emoome_words_link.use = 'F' AND emoome_log.geo_lat IS NOT NULL AND emoome_log.geo_lon IS NOT NULL ".$user_where."
 				ORDER BY distance ASC
 				LIMIT 0,".$distance;
 
