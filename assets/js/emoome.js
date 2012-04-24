@@ -79,8 +79,6 @@ function logFeelingStart()
 	// Get Start Time
 	log_feeling_time.time_feeling = new Date().getTime();
 
-	console.log(log_feeling_time);
-
 	$('#log_feeling').delay(250).fadeIn('slow');
 }
 

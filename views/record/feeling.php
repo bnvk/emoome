@@ -37,7 +37,7 @@ $(document).ready(function()
 	logFeelingStart();
 
 	var patt = 'do regex on value';//new RegExp('a-zA-Z', 'some 5 shit');
-	console.log(patt);
+	//console.log(patt);
 
 
 	// Hijack Spacebar in a few places...
