@@ -79,6 +79,8 @@ function logFeelingStart()
 	// Get Start Time
 	log_feeling_time.time_feeling = new Date().getTime();
 
+	console.log(log_feeling_time);
+
 	$('#log_feeling').delay(250).fadeIn('slow');
 }
 
@@ -212,9 +214,9 @@ function logDescribe()
 					// Close Loading
 		  			requestComplete(result.message, result.status);
 					
-					// Clean Data & Completion
 					if (result.status == 'success')
 					{
+						// Clean Data & Completion
 				  		$('#log_val_feeling').val('');
 				  		$('#log_val_action').val('');
 				  		$('#log_val_describe_1').val('');
@@ -243,7 +245,7 @@ function logThanks()
 {
 	//jQT.goTo('#log_action', 'slideleft');
 	$('#log_thanks').fadeOut();
-	$('#log_feeling').delay(500).fadeIn();
+	logFeelingStart();
 }
 
 

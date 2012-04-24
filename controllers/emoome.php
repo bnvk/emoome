@@ -40,17 +40,7 @@ class Emoome extends Site_Controller
 		
 		$this->render();
 	}
-	
-	function test()
-	{
-		$this->load->model('emoome_model');
-	
-		$test = $this->emoome_model->get_word_user_count(1, 60, 'D');
-	
-		echo '<pre>';
-		print_r($test);
-	}
-	
+
 	
 	/* Tools */
 	function stem()
