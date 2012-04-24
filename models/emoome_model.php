@@ -241,7 +241,7 @@ class Emoome_model extends CI_Model
     function increment_word_taxonomy($user_id, $word_id, $use)
     {
 		$word_total		= $this->get_word_user_count($user_id, $word_id, $use);			
-		$word_taxonomy	= $this->get_word_taxonomy($word_id);
+		$word_taxonomy	= $this->get_word_taxonomy($word_id, $use);
 			
 		if ($word_taxonomy)
 		{
@@ -253,11 +253,11 @@ class Emoome_model extends CI_Model
 		}    
     }
     
-    function get_word_taxonomy($word_id)
+    function get_word_taxonomy($word_id, $use)
     {
  		$this->db->select('*');
  		$this->db->from('emoome_words_taxonomy');    
- 		$this->db->where('word_id', $word_id); 				
+ 		$this->db->where(array('word_id' => $word_id, 'use' => $use)); 				
  		$result = $this->db->get()->row();	
  		return $result;    	
     }

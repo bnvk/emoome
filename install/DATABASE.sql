@@ -43,5 +43,6 @@ CREATE TABLE `emoome_words_taxonomy` (
   `word_taxonomy_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `word_id` int(11) NOT NULL,
   `count` int(5) NOT NULL,
+  `use` char(1) DEFAULT NULL,
   PRIMARY KEY (`word_taxonomy_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

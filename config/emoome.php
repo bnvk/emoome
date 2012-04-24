@@ -36,6 +36,12 @@ $config['emoome_word_types_sub'] = array(
 	'U' => 'Undecided'
 );
 
+$config['emoome_word_use'] = array(
+	'F' => 'Feeling',
+	'D' => 'Descriptor',
+	'A' => 'Actions'
+);
+
 $config['emoome_speech_types'] = array(
 	'V' => 'verb', 
 	'N' => 'noun', 
