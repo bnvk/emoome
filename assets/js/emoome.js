@@ -18,10 +18,10 @@ var messages = {
 		"Every entry helps us build your emotional map",
 		"We suggest logging 1-3 entries per day",
 		"Try logging entries at different times of the day",
-		"The best entries are when you feel something intensely",
-		"If something is hard to describe it's probably a good entry",
+		"The best entries are when you feel something strongly",
+		"If something is hard to describe it is a good entry",
 		"The best entries are moments that seem important",
-		"Experienced an intense life event? Log an entry for later analysis"
+		"Had an intense experience? Log an entry for later analysis"
 	]
 }
 

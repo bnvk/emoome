@@ -56,10 +56,10 @@ class Emoome_model extends CI_Model
 		if($query->num_rows() > 0)
 		{
 			foreach ($query->result() as $row)
-			{					
+			{				
 				$result[] = $row;
 			}
-			
+
 			return $result;
 		}
     }	
@@ -113,7 +113,7 @@ class Emoome_model extends CI_Model
 
 
 
-	// Words
+	// Words	
 	function check_word($word)
 	{
 		$this->db->select('*');
@@ -154,6 +154,16 @@ class Emoome_model extends CI_Model
 
 
 	// Words Link
+	function get_words_links_log($log_id)
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_words_link');
+		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
+ 		$this->db->where('emoome_words_link.log_id', $log_id);
+ 		$result = $this->db->get();
+ 		return $result->result();
+	}
+
 	function get_words_links($log_array)
 	{
 		$this->db->select('*');
@@ -173,6 +183,14 @@ class Emoome_model extends CI_Model
  		$result = $this->db->get();
  		return $result->result();
 	}
+	
+	function get_word_user_count($user_id, $word_id, $use)
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_words_link');
+ 		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'use' => $use));
+ 		return $this->db->count_all_results();
+	}	
 
 	function add_word_link($log_id, $user_id, $word, $use)
 	{
@@ -201,34 +219,58 @@ class Emoome_model extends CI_Model
 
 		if ($word_link_id = $this->db->insert_id())
 		{
+			$this->increment_word_taxonomy($user_id, $word_id, $use);
+		
 			return array('word_link_id' => $word_link_id, 'type' => $word_type);
 		}
 
 		return FALSE;
 	}
 	
+	function update_word_link($link_id, $link_data)
+	{
+		$this->db->where('link_id', $link_id);
+		$this->db->update('emoome_words_link', $link_data);
+		
+		return TRUE;
+	}
+	
 	
 	
     // Word Taxonomy
-    function get_word_taxonomy($word_id, $taxonomy)
+    function increment_word_taxonomy($user_id, $word_id, $use)
+    {
+		$word_total		= $this->get_word_user_count($user_id, $word_id, $use);			
+		$word_taxonomy	= $this->get_word_taxonomy($word_id);
+			
+		if ($word_taxonomy)
+		{
+			$this->update_word_taxonomy($word_taxonomy->word_taxonomy_id, $word_total);
+		}				
+		else
+		{
+			$this->add_word_taxonomy($word_id, 'word', $word_total, $use);
+		}    
+    }
+    
+    function get_word_taxonomy($word_id)
     {
  		$this->db->select('*');
  		$this->db->from('emoome_words_taxonomy');    
  		$this->db->where('word_id', $word_id); 				
- 		$this->db->where('taxonomy', $taxonomy); 
  		$result = $this->db->get()->row();	
  		return $result;    	
     }
-    
-    function add_word_taxonomy($word_id, $taxonomy, $count)
+
+    function add_word_taxonomy($word_id, $taxonomy, $count, $use)
     {
  		$data = array(
-			'word_id'		=> $word_id,
-			'taxonomy'  	=> $taxonomy,
-			'count' 		=> $count
-		);	
-		$insert = $this->db->insert('emoome_words_taxonomy', $data);
-		return $insert;    
+			'word_id'	=> $word_id,
+			'count' 	=> $count,
+			'use'		=> $use
+		);
+
+		return $this->db->insert('emoome_words_taxonomy', $data);
     }
     
     function update_word_taxonomy($word_taxonomy_id, $count)
