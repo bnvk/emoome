@@ -41,6 +41,31 @@ class Emoome extends Site_Controller
 		$this->render();
 	}
 	
+	function test()
+	{
+		$this->load->model('emoome_model');
+			
+		$word_links = $this->emoome_model->get_words_links_log($this->uri->segment(3));
+		
+		$i=0;
+
+		foreach ($word_links as $link)
+		{
+			$i++;
+		
+			if ($i == 1) $use = 'F';
+			else $use = 'D';
+			
+			$this->emoome_model->update_word_link($link->link_id, array('use' => $use));
+		}
+		
+		echo '<pre>';
+		print_r($word_links);
+		echo '</pre>';	
+
+		
+	}
+	
 	
 	/* Tools */
 	function stem()
