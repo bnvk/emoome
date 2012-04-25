@@ -40,6 +40,12 @@ function requestMade(message)
 	$('#lightbox_message').delay(350).html(message + '.');
 	$('#lightbox_message').delay(600).html(message + '..');
 	$('#lightbox_message').delay(800).html(message + '...');
+
+/*
+	var new_lightbox_height = $('body').height();
+	console.log('window: ' + $(window).height() + ' body: ' + $('body').height() + ' new ' + new_lightbox_height);
+	$('#request_lightbox').height(new_lightbox_height);
+*/	
 	return false;
 }
 
