@@ -37,10 +37,6 @@ function requestMade(message)
 {	
 	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
 	$('#request_lightbox').delay(250).fadeIn();
-	$('#lightbox_message').delay(350).html(message + '.');
-	$('#lightbox_message').delay(600).html(message + '..');
-	$('#lightbox_message').delay(800).html(message + '...');
-
 /*
 	var new_lightbox_height = $('body').height();
 	console.log('window: ' + $(window).height() + ' body: ' + $('body').height() + ' new ' + new_lightbox_height);
@@ -56,12 +52,12 @@ function requestComplete(message, status)
 	if (status == 'success')
 	{
 		$('#lightbox_message').addClass('lightbox_message_success');
-		$("#request_lightbox").delay(1000).fadeOut();
+		$("#request_lightbox").delay(1500).fadeOut();
 	}
 	else
 	{
 		$('#lightbox_message').addClass('lightbox_message_error');
-		$("#request_lightbox").delay(2000).fadeOut();		
+		$("#request_lightbox").delay(2500).fadeOut();		
 	}
 	
 	return false;
@@ -69,7 +65,11 @@ function requestComplete(message, status)
 
 function printUserMessage(message)
 {
-	$('#content_message').notify({status:'success',message:message});
+	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
+	$('#request_lightbox').delay(250).fadeIn();
+	$("#request_lightbox").delay(1500).fadeOut();		
+
+	//$('#content_message').notify({status:'success',message:message});
 }
 
 
@@ -106,7 +106,7 @@ function logFeeling()
 		},
 		failed : function()
 		{
-			alert('Please enter how you feel');
+			printUserMessage('Please enter how you feel right now');
 		}
 	});
 }
@@ -142,7 +142,7 @@ function logAction()
 		},
 		failed : function()
 		{
-			alert('Please enter something you did today');
+			printUserMessage('Please enter one thing you did today');
 		}
 	});
 }
@@ -240,7 +240,7 @@ function logDescribe()
 		},
 		failed : function()
 		{
-			alert('Please enter three words to describe what you did');
+			printUserMessage('Please enter three words to describe what you did today');
 		}
 	});
 }
