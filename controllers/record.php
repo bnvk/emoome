@@ -14,7 +14,7 @@ class Record extends Site_Controller
 	
 	function index()
 	{
-		redirect('record/feeling');
+		//redirect('record/feeling');
 	
 		$this->data['page_title'] 	= 'Record';
 		

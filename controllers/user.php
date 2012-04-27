@@ -12,8 +12,7 @@ class User extends Site_Controller
 	}
 
 	function index()
-	{
-	
+	{	
 		$this->render();
 	}
 

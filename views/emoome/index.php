@@ -101,44 +101,44 @@
 $(document).ready(function()
 {
 	// Already Logged In
-		var current_url	= document.location.hash.replace('#!/','');
-		var index_views = new Array('content_index', 'content_discover', 'content_visualize', 'content_about');
-		var pages_views	= new Array('content_login', 'content_signup');
-	
-		if (current_url.length != '') 
-		{
-			var this_view = 'content_' + current_url;
-			
-			$.each(index_views, function(key, view)
-			{	
-				$('#' + view).hide();
-			});		
+	var current_url	= document.location.hash.replace('#!/','');
+	var index_views = new Array('content_index', 'content_discover', 'content_visualize', 'content_about');
+	var pages_views	= new Array('content_login', 'content_signup');
 
-			$.each(pages_views, function(key, view)
-			{	
-				if (view == this_view)
-				{
-					$('#' + view).delay(250).fadeIn();			
-				}
-				else
-				{
-					$('#' + view).hide();
-				}
-			});
-		}
-		else
-		{			
-			$.each(pages_views, function(key, view)
-			{	
-				$('#' + view).hide();
-			});	
+	if (current_url.length != '') 
+	{
+		var this_view = 'content_' + current_url;
 		
-			$.each(index_views, function(key, view)
-			{	
-				$('#' + view).delay(250).fadeIn();
-			});		
-		}
+		$.each(index_views, function(key, view)
+		{	
+			$('#' + view).hide();
+		});		
+
+		$.each(pages_views, function(key, view)
+		{	
+			if (view == this_view)
+			{
+				$('#' + view).delay(250).fadeIn();			
+			}
+			else
+			{
+				$('#' + view).hide();
+			}
+		});
+	}
+	else
+	{			
+		$.each(pages_views, function(key, view)
+		{	
+			$('#' + view).hide();
+		});	
 	
+		$.each(index_views, function(key, view)
+		{	
+			$('#' + view).delay(250).fadeIn();
+		});		
+	}
+
 
 
 	// Show Index
