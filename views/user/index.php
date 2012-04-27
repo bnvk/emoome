@@ -1,6 +1,6 @@
 <div id="content_menu" class="content_center text_center">
 	<p>
-		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notfications">Notifications</a>
+		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">Notifications</a>
 	</p>
 	<p>
 		<a id="button_account" class="category_button" href="<?= base_url() ?>emoome/user/#!/account">Account Info</span></a>
@@ -14,8 +14,8 @@
 <div id="content_notifications" class="content_left text_left hide">
 	<h1>Notifications</h1>
 	<form name="settings_notifications" id="settings_notifications" method="post">	
-	<ul class="edit rounded">
-		<li>			
+	<p>	
+		<label>How Often</label><br>	
 		<select name="notification_frequency">
 			<option value="daily_3">3 x Day</option>
 			<option value="daily_1">1 x Day</option>
@@ -23,9 +23,13 @@
 			<option value="weekly">Weekly</option>
 			<option value="none">None</option>
 		</select>
-	</li>
-	<li><input type="text" name="phone" id="profile_phone" placeholder="503-100-1000" value=""></li>
-	<li>
+	</p>
+	<p>
+		<label>Phone</label><br>
+		<input type="text" name="phone" id="profile_phone" placeholder="503-100-1000" value=""></li>
+	</p>
+	<p>		
+		<label>Notification Method</label><br>
 		<select name="notification_method">
 			<option value="push">Mobile Notification</option>
 			<option value="sms">Text Message</option>
@@ -33,34 +37,26 @@
 			<option value="sms_and_email">Text Message & Email</option>
 			<option value="all">All</option>
 		</select>
-	</li>
-	</ul>
+	</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
 
 
 <div id="content_account" class="content_left text_left hide">
-	<h1>Account</h1>
+	<h1>Account Info</h1>
 	<form name="settings_account" id="settings_account" method="post">	
 	<p>	
 		<label>Name</label><br>
-		<input type="text" name="name" id="profile_name" placeholder="Your Name" value="">
+		<input type="text" name="name" id="profile_name" placeholder="Your Name" value="<?= $this->session->userdata('name') ?>">
 	</p>
 	<p>
 		<label>Email</label><br>
-		<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="">
+		<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<?= $this->session->userdata('email') ?>">
 	</p>
 	<p>
 		<label>Language</lable><br>
-		<select name="language" id="profile_language">
-			<option value="en">English</option>
-			<option value="fr">French</option>
-			<option value="de">German</option>
-			<option value="es">Spanish</option>
-			<option value="it">Italian</option>
-			<option value="ru">Russian</option>
-		</select>
+		<?= form_dropdown('language', config_item('languages'), $this->session->userdata('language')); ?>
 	</p>
 	<p>
 		<label>Timezone</lable><br>	
@@ -109,17 +105,11 @@
 
 <script type="text/javascript">
 $(document).ready(function()
-{
-	// Set Form Values
-	$('#profile_name').val(user_data.name);
-	$('#profile_email').val(user_data.email);
-
+{	
 
 	// Already Logged In
 	var current_url	= document.location.hash.replace('#!/','');
 	var settings_views = new Array('content_menu', 'content_notifications', 'content_account', 'content_password');
-
-	console.log(current_url);
 
 	if (current_url.length != '') 
 	{
@@ -182,8 +172,10 @@ $(document).ready(function()
 		$('#content_password').delay(250).fadeIn();	
 	});
 	
-	$('.cancel_button').bind('click', function()
+	// Cancel / Show Menu
+	$('.cancel_button').bind('click', function(e)
 	{
+		e.preventDefault();	
 		history.pushState("", document.title, window.location.pathname + window.location.search);	
 	
 		$.each(settings_views, function(key, view)
@@ -194,6 +186,59 @@ $(document).ready(function()
 		$('#content_menu').delay(250).fadeIn();					
 	});
 
+
+	// Settings Forms
+	$('#settings_notifications').bind('submit', function(e)
+	{
+		e.preventDefault();
+		requestMade('Saving notification settings');
+		requestComplete('error', 'Oops we are still working on this feature. It will be ready soon');
+	});
+
+
+	$("#settings_account").bind('submit', function(e)
+	{	
+		e.preventDefault();	
+		$.oauthAjax(
+		{
+			oauth 		: user_data,
+			url			: base_url + 'api/users/modify/id/' + user_data.user_id,
+			type		: 'POST',
+			dataType	: 'json',
+			data		: $('#settings_account').serializeArray(),
+			beforeSend	: requestMade('Saving account changes'),			
+	  		success		: function(result)
+	  		{
+				// Close Loading
+		  		requestComplete(result.message, result.status);
+		 	}
+		});		
+	});		
+	
+	
+	$("#settings_change_password").bind("submit", function(e)
+	{
+		e.preventDefault();
+		$.oauthAjax(
+		{
+			oauth 		: user_data,
+			url			: base_url + 'api/users/password',
+			type		: 'POST',
+			dataType	: 'json',
+			data		: $('#settings_change_password').serializeArray(),
+			beforeSend	: requestMade('Changing your password'),
+	  		success		: function(result)
+	  		{
+				// Close Loading
+		  		requestComplete(result.message, result.status);
+	  			-			
+			 	$('[name=old_password]').val('');
+			 	$('[name=new_password]').val('');
+			 	$('[name=new_password_confirm]').val('');
+	  				  					  			  			
+		 	}
+		});		
+	});		
 
 });
 </script>
