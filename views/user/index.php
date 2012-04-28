@@ -92,11 +92,18 @@
 <div id="content_password" class="content_left text_left hide">	
 	<h1>Change Password</h1>
 	<form name="settings_change_password" id="settings_change_password" method="post">
-		<ul class="edit rounded">			
-		<li><input type="password" name="old_password" value="">  </li>
-		<li><input type="password" name="new_password" value=""></li>
-		<li><input type="password" name="new_password_confirm" value=""></li>
-	</ul>
+	<p>
+		<label>Old Password</label><br>
+		<input type="password" name="old_password" value="">
+	</p>
+	<p>
+		<label>New Password</label><br>
+		<input type="password" name="new_password" value="">
+	</p>
+	<p>
+		<label>New Password Confirm</label><br>
+		<input type="password" name="new_password_confirm" value="">
+	</p>
 	<p><input type="submit" id="settings_password_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
