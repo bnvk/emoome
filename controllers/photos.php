@@ -20,8 +20,8 @@ class Photos extends Site_Controller
 	{
 		$this->load->model('photos_model');
 
-		$photos = $this->photos_model->get_photos_user(1);
-		$photos_analysis = $this->photos_model->get_photos_analysis_user(1);
+		$photos = $this->photos_model->get_photos_user($this->session->userdata('user_id'));
+		$photos_analysis = $this->photos_model->get_photos_analysis_user($this->session->userdata('user_id'));
 	
 		if ($photos)
 		{
