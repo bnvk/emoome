@@ -13,7 +13,7 @@ class Emoome extends Site_Controller
 	function index()
 	{	
 		$this->data['page_title']	= 'Welcome to ';
-		//$this->data['content']		= $this->load->view('../modules/emoome/views/emoome/index', $this->data, true);
+		//$this->data['content']	= $this->load->view('../modules/emoome/views/emoome/index', $this->data, true);
 
 		$this->render();
 	}
@@ -63,5 +63,6 @@ class Emoome extends Site_Controller
         	echo '<B>'.$t['token'] . "</B> - " . $part_of_speech[$pos].  "<br>";
         }
 	}
+
 	
 }
