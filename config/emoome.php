@@ -137,3 +137,4 @@ $config['emoome_brown_corpus_speech'] = array(
 	'WQL' 	=> 'wh- qualifier (how)',
 	'WRB' 	=> 'wh- adverb (how, where, when)'
 );
+

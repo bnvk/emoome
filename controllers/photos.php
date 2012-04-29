@@ -66,13 +66,13 @@ class Photos extends Site_Controller
 			// Loop Images		
 			foreach ($images->data as $image)
 			{
-				$image = $image->images->thumbnail->url;
+				$image_url = $image->images->thumbnail->url;
 	
 				// Is Added
-				if (!$check_photo = $this->photos_model->check_photo_exists($image))
+				if (!$check_photo = $this->photos_model->check_photo_exists($image_url))
 				{
 					// Do Image Analysis
-					$finalpalette = $this->spectrum->processImage($image);
+					$finalpalette = $this->spectrum->processImage($image_url);
 
 					// User
 					$user_id = $this->session->userdata('user_id');
@@ -98,18 +98,35 @@ class Photos extends Site_Controller
 		
 					if (isset($image->location->longitude)) $geo_lon = $image->location->longitude;
 					else $geo_lon = 0;
+					
+
+					// Check For Faces
+					$do_faces	= FALSE;
+					$has_faces	= 'no';
+					
+					if ($do_faces)
+					{
+						$this->load->library('face_api');
+					
+						$auth = $this->face_api->__call('account_authenticate');
+						$face = $this->face_api->__call('faces_detect', $image_url);					
+					
+						if (count($face->photos[0]->tags)) $has_face = 'yes';
+					}		
+					
 		
 					// Add Photo
 					$photo_data = array(
 						'user_id'		=> $user_id,
 						'source'		=> 'instagram',
 						'context'		=> 'emoome',
-						'original'		=> $image,
+						'original'		=> $image_url,
 						'text'			=> $text,
 						'word_count'	=> $word_count,
 						'color_count'	=> $color_count,
 						'geo_lat'		=> $geo_lat,
 						'geo_lon'		=> $geo_lon,
+						'has_faces'		=> $has_faces,
 						'originated_at'	=> '2012-04-23 01:23:55'
 					);
 			
@@ -135,7 +152,7 @@ class Photos extends Site_Controller
 						$this->photos_model->add_photo_analysis($photo_analysis);
 					}
 					
-					$output .= '<img src="'.$image.'" style="display: block; margin:10px; float:left;">';
+					$output .= '<img src="'.$image_url.'" style="display: block; margin:10px; float:left;">';
 				}
 				else
 				{
@@ -152,5 +169,31 @@ class Photos extends Site_Controller
 		}
 		
 	}
+	
+
+
+	public function faces() 
+	{
+		
+		$this->load->library('upload');
+		$this->load->helper('url');
+		$this->load->library('face_api');
+
+
+		//$data = array('upload_data' => $this->upload->data());
+		$path = $_GET['image'];//base_url() . "uploads/" . $data['upload_data']['file_name'];
+		
+
+		$auth = $this->face_api->__call('account_authenticate');
+		$face = $this->face_api->__call('faces_detect', $path);
+
+		echo $face->photos[0]->pid;
+		if (count($face->photos[0]->tags)) echo '<h1>has face</h1>';
+
+		echo '<pre>';
+		print_r($face);
+		
+	}	
+	
 	
 }
