@@ -83,6 +83,10 @@
 			<span id="signup_email_error"></span>
 		</p>
 		<p>
+			<label>Phone (optional for reminders)</label><br>
+			<input type="text" name="phone" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
+		</p>		
+		<p>
 			<label>Password</label><br>
 			<input type="password" name="password" id="signup_password" placeholder="********" autocorrect="off" value=""><br>
 			<span id="signup_password_error"></span>

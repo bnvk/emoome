@@ -47,7 +47,7 @@ class Photos_model extends CI_Model
 	
 	function add_photo($photo_data)
 	{
-		$photo_data['originated_at'] = unix_to_mysql(now());
+		$photo_data['added_at'] = unix_to_mysql(now());
 
 		$this->db->insert('emoome_photos', $photo_data);
 
@@ -59,6 +59,13 @@ class Photos_model extends CI_Model
 	    return FALSE;
 	}
 	
+	function update_photo($photo_id, $photo_data)
+	{
+		$this->db->where('photo_id', $photo_id);
+		$this->db->update('emoome_photos', $photo_data);
+		
+		return TRUE;
+	}
 
 	function add_photo_analysis($photo_analysis)
 	{

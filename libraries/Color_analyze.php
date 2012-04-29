@@ -4,7 +4,7 @@
  * @author Giv Parvaneh giv@givp.org
  **/
 
-class Spectrum
+class Color_analyze
 {
 	private $src;
 	private $img;

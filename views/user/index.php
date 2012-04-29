@@ -1,12 +1,24 @@
 <div id="content_menu" class="content_center text_center">
 	<p>
-		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">Notifications</a>
+		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">
+			<span class="cat_link_icon_small icon_small_notifications"></span>
+			<span class="cat_link_text_small">Notifications</span>
+		    <br class="clear">
+		</a>
 	</p>
 	<p>
-		<a id="button_account" class="category_button" href="<?= base_url() ?>emoome/user/#!/account">Account Info</span></a>
+		<a id="button_account" class="category_button" href="<?= base_url() ?>emoome/user/#!/account">
+			<span class="cat_link_icon_small icon_small_account"></span>		
+			<span class="cat_link_text_small">Account Info</span>
+	 	    <br class="clear">
+		</a>
 	</p>
 	<p>
-		<a id="button_password" class="category_button" href="<?= base_url() ?>emoome/user/#!/password">Password</a>
+		<a id="button_password" class="category_button" href="<?= base_url() ?>emoome/user/#!/password">
+			<span class="cat_link_icon_small icon_small_password"></span>		
+			<span class="cat_link_text_small">Password</span>
+	  		<br class="clear">
+		</a>
 	</p>
 </div>
 
@@ -24,20 +36,9 @@
 			<option value="none">None</option>
 		</select>
 	</p>
-	<p>
-		<label>Phone</label><br>
-		<input type="text" name="phone" id="profile_phone" placeholder="503-100-1000" value=""></li>
-	</p>
-	<p>		
-		<label>Notification Method</label><br>
-		<select name="notification_method">
-			<option value="push">Mobile Notification</option>
-			<option value="sms">Text Message</option>
-			<option value="email">Email</option>
-			<option value="sms_and_email">Text Message & Email</option>
-			<option value="all">All</option>
-		</select>
-	</p>
+	<p><input type="checkbox" name="notification_method" value="mobile"> Mobile Notifications</p>
+	<p><input type="checkbox" name="notification_method" value="sms"> Text Messages</p>
+	<p><input type="checkbox" name="notification_method" value="email"> Email</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
@@ -53,6 +54,10 @@
 	<p>
 		<label>Email</label><br>
 		<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<?= $this->session->userdata('email') ?>">
+	</p>
+	<p>
+		<label>Phone</label><br>
+		<input type="text" name="phone" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
 	</p>
 	<p>
 		<label>Language</lable><br>
@@ -79,9 +84,7 @@
 			<option value='UP10'>Australian Eastern</option>
 		</select>				
 	</p>
-		<label>Add Location</lable><br>		
-		<input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"></p>
-	</p>
+	<p><input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"> &nbsp;Add Location</p>
 	<p>
 		<input type="submit" id="settings_account_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel">
 	</p>		

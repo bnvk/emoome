@@ -12,7 +12,7 @@ class Photos extends Site_Controller
         $this->layout = 'normal';
 
 		// Load Things
-		$this->load->library('spectrum');
+		$this->load->library('color_analyze');
 		$this->load->model('photos_model');
 	}
 	
@@ -25,12 +25,11 @@ class Photos extends Site_Controller
 	
 		if ($photos)
 		{
-		
 			$color_html = '';
 		
 			foreach ($photos_analysis as $analysis)
 			{
-				$color_html .= '<div style="width:50px; height: 50px; margin: 10px; float: left; background: #'.$analysis->hex.';"></div>';
+				$color_html .= '<div style="width:75px; height: 75px; font-size: 11px; margin: 10px; float: left; background: #'.$analysis->hex.';"></div>';
 			}
 	
 			echo '<h1>Your Instagram Colors</h1>';
@@ -41,7 +40,6 @@ class Photos extends Site_Controller
 		{
 			redirect('emoome/photos/get_photos');
 		}
-
 	}	
 	
 	function get_photos()
@@ -54,7 +52,6 @@ class Photos extends Site_Controller
 		if (!$check_connection) redirect('connections/instagram/add');	
 	
 		$this->load->library('instagram/instagram_api', $check_connection->auth_one);
-	
 
 		// Get Images
 		$images = $this->instagram_api->getUserRecent($check_connection->connection_user_id);
@@ -72,7 +69,7 @@ class Photos extends Site_Controller
 				if (!$check_photo = $this->photos_model->check_photo_exists($image_url))
 				{
 					// Do Image Analysis
-					$finalpalette = $this->spectrum->processImage($image_url);
+					$finalpalette = $this->color_analyze->processImage($image_url);
 
 					// User
 					$user_id = $this->session->userdata('user_id');
@@ -99,21 +96,26 @@ class Photos extends Site_Controller
 					if (isset($image->location->longitude)) $geo_lon = $image->location->longitude;
 					else $geo_lon = 0;
 					
-
+					
 					// Check For Faces
-					$do_faces	= FALSE;
+					$do_faces	= TRUE;
 					$has_faces	= 'no';
 					
 					if ($do_faces)
 					{
 						$this->load->library('face_api');
 					
-						$auth = $this->face_api->__call('account_authenticate');
-						$face = $this->face_api->__call('faces_detect', $image_url);					
+						$auth	= $this->face_api->__call('account_authenticate');
+						$faces	= $this->face_api->__call('faces_detect', $image->images->standard_resolution->url);					
 					
-						if (count($face->photos[0]->tags)) $has_face = 'yes';
-					}		
-					
+						foreach ($faces->photos as $photo)
+						{
+							if (count($photo->tags) > 0)
+							{
+								$has_faces = 'yes';
+							}
+						}
+					}
 		
 					// Add Photo
 					$photo_data = array(
@@ -127,7 +129,7 @@ class Photos extends Site_Controller
 						'geo_lat'		=> $geo_lat,
 						'geo_lon'		=> $geo_lon,
 						'has_faces'		=> $has_faces,
-						'originated_at'	=> '2012-04-23 01:23:55'
+						'originated_at'	=> unix_to_mysql($image->created_time)
 					);
 			
 					$photo_id = $this->photos_model->add_photo($photo_data);
@@ -135,7 +137,7 @@ class Photos extends Site_Controller
 					// Add Color Values				
 					foreach($finalpalette as $colour)
 					{	
-						$hsv = $this->spectrum->rgb_to_hsv($colour['red'], $colour['green'], $colour['blue']);
+						$hsv = $this->color_analyze->rgb_to_hsv($colour['red'], $colour['green'], $colour['blue']);
 					
 						$photo_analysis = array(
 							'photo_id'	=> $photo_id,
@@ -166,34 +168,7 @@ class Photos extends Site_Controller
 		else
 		{
 			echo 'You do not have any Instagram pictures :(';
-		}
-		
+		}		
 	}
-	
-
-
-	public function faces() 
-	{
-		
-		$this->load->library('upload');
-		$this->load->helper('url');
-		$this->load->library('face_api');
-
-
-		//$data = array('upload_data' => $this->upload->data());
-		$path = $_GET['image'];//base_url() . "uploads/" . $data['upload_data']['file_name'];
-		
-
-		$auth = $this->face_api->__call('account_authenticate');
-		$face = $this->face_api->__call('faces_detect', $path);
-
-		echo $face->photos[0]->pid;
-		if (count($face->photos[0]->tags)) echo '<h1>has face</h1>';
-
-		echo '<pre>';
-		print_r($face);
-		
-	}	
-	
 	
 }
