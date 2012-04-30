@@ -36,9 +36,9 @@
 			<option value="none">None</option>
 		</select>
 	</p>
-	<p><input type="checkbox" name="notifications_mobile" value="mobile"> &nbsp;Mobile Notifications</p>
-	<p><input type="checkbox" name="notifications_sms" value=""> &nbsp;Text Messages</p>
-	<p><input type="checkbox" name="notifications_email" value=""> &nbsp;Email</p>
+	<p><input type="checkbox" class="nullify" name="notifications_mobile" value="yes"> &nbsp;Mobile Notifications</p>
+	<p><input type="checkbox" class="nullify" name="notifications_sms" value="yes"> &nbsp;Text Messages</p>
+	<p><input type="checkbox" class="nullify" name="notifications_email" value="yes"> &nbsp;Email</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
@@ -205,7 +205,7 @@ $(document).ready(function()
 		$.oauthAjax(
 		{
 			oauth 		: user_data,
-			url			: base_url + 'api/users/modify/id/' + user_data.user_id,
+			url			: base_url + 'api/users/details/id/' + user_data.user_id,
 			type		: 'POST',
 			dataType	: 'json',
 			data		: notifications_data,
