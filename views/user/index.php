@@ -1,12 +1,24 @@
 <div id="content_menu" class="content_center text_center">
 	<p>
-		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">Notifications</a>
+		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">
+			<span class="cat_link_icon_small icon_small_notifications"></span>
+			<span class="cat_link_text_small">Notifications</span>
+		    <br class="clear">
+		</a>
 	</p>
 	<p>
-		<a id="button_account" class="category_button" href="<?= base_url() ?>emoome/user/#!/account">Account Info</span></a>
+		<a id="button_account" class="category_button" href="<?= base_url() ?>emoome/user/#!/account">
+			<span class="cat_link_icon_small icon_small_account"></span>		
+			<span class="cat_link_text_small">Account Info</span>
+	 	    <br class="clear">
+		</a>
 	</p>
 	<p>
-		<a id="button_password" class="category_button" href="<?= base_url() ?>emoome/user/#!/password">Password</a>
+		<a id="button_password" class="category_button" href="<?= base_url() ?>emoome/user/#!/password">
+			<span class="cat_link_icon_small icon_small_password"></span>		
+			<span class="cat_link_text_small">Password</span>
+	  		<br class="clear">
+		</a>
 	</p>
 </div>
 
@@ -15,29 +27,12 @@
 	<h1>Notifications</h1>
 	<form name="settings_notifications" id="settings_notifications" method="post">	
 	<p>	
-		<label>How Often</label><br>	
-		<select name="notification_frequency">
-			<option value="daily_3">3 x Day</option>
-			<option value="daily_1">1 x Day</option>
-			<option value="daily_alternate">Every Other Day</option>
-			<option value="weekly">Weekly</option>
-			<option value="none">None</option>
-		</select>
+		<label>How Often</label><br>
+		<?= form_dropdown('notifications_frequency', config_item('notifications_frequency'), $notifications_frequency, 'id="notifications_frequency"') ?>
 	</p>
-	<p>
-		<label>Phone</label><br>
-		<input type="text" name="phone" id="profile_phone" placeholder="503-100-1000" value=""></li>
-	</p>
-	<p>		
-		<label>Notification Method</label><br>
-		<select name="notification_method">
-			<option value="push">Mobile Notification</option>
-			<option value="sms">Text Message</option>
-			<option value="email">Email</option>
-			<option value="sms_and_email">Text Message & Email</option>
-			<option value="all">All</option>
-		</select>
-	</p>
+	<p><input type="checkbox" class="nullify" name="notifications_mobile" value="<?= $notifications_mobile ?>"> &nbsp;Mobile Notifications</p>
+	<p><input type="checkbox" class="nullify" name="notifications_sms" value="<?= $notifications_sms ?>"> &nbsp;Text Messages</p>
+	<p><input type="checkbox" class="nullify" name="notifications_email" value="<?= $notifications_email ?>"> &nbsp;Email</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
@@ -53,6 +48,10 @@
 	<p>
 		<label>Email</label><br>
 		<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<?= $this->session->userdata('email') ?>">
+	</p>
+	<p>
+		<label>Phone (for reminders)</label><br>
+		<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone_number') ?>">
 	</p>
 	<p>
 		<label>Language</lable><br>
@@ -79,9 +78,7 @@
 			<option value='UP10'>Australian Eastern</option>
 		</select>				
 	</p>
-		<label>Add Location</lable><br>		
-		<input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"></p>
-	</p>
+	<p><input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"> &nbsp;Add Location</p>
 	<p>
 		<input type="submit" id="settings_account_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel">
 	</p>		
@@ -198,25 +195,41 @@ $(document).ready(function()
 	$('#settings_notifications').bind('submit', function(e)
 	{
 		e.preventDefault();
-		requestMade('Saving notification settings');
-		requestComplete('error', 'Oops we are still working on this feature. It will be ready soon');
+		var notifications_data = $('#settings_notifications').serializeArray();
+		notifications_data.push({'name':'module','value':'notifications'});		
+
+		$.oauthAjax(
+		{
+			oauth 		: user_data,
+			url			: base_url + 'api/users/details/id/' + user_data.user_id,
+			type		: 'POST',
+			dataType	: 'json',
+			data		: notifications_data,
+			beforeSend	: requestMade('Saving notification settings'),			
+	  		success		: function(result)
+	  		{
+		  		requestComplete(result.message, result.status);
+		 	}
+		});		
 	});
 
 
 	$("#settings_account").bind('submit', function(e)
 	{	
 		e.preventDefault();	
+		var account_data = $('#settings_account').serializeArray();
+		account_data.push({'name':'session','value':1});		
+		
 		$.oauthAjax(
 		{
 			oauth 		: user_data,
 			url			: base_url + 'api/users/modify/id/' + user_data.user_id,
 			type		: 'POST',
 			dataType	: 'json',
-			data		: $('#settings_account').serializeArray(),
+			data		: account_data,
 			beforeSend	: requestMade('Saving account changes'),			
 	  		success		: function(result)
 	  		{
-				// Close Loading
 		  		requestComplete(result.message, result.status);
 		 	}
 		});		
@@ -238,11 +251,10 @@ $(document).ready(function()
 	  		{
 				// Close Loading
 		  		requestComplete(result.message, result.status);
-	  			-			
+			
 			 	$('[name=old_password]').val('');
 			 	$('[name=new_password]').val('');
 			 	$('[name=new_password_confirm]').val('');
-	  				  					  			  			
 		 	}
 		});		
 	});		

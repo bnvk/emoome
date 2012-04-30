@@ -12,7 +12,7 @@ class Photos extends Site_Controller
         $this->layout = 'normal';
 
 		// Load Things
-		$this->load->library('spectrum');
+		$this->load->library('color_analyze');
 		$this->load->model('photos_model');
 	}
 	
@@ -25,12 +25,11 @@ class Photos extends Site_Controller
 	
 		if ($photos)
 		{
-		
 			$color_html = '';
 		
 			foreach ($photos_analysis as $analysis)
 			{
-				$color_html .= '<div style="width:50px; height: 50px; margin: 10px; float: left; background: #'.$analysis->hex.';"></div>';
+				$color_html .= '<div style="width:75px; height: 75px; font-size: 11px; margin: 10px; float: left; background: #'.$analysis->hex.';"></div>';
 			}
 	
 			echo '<h1>Your Instagram Colors</h1>';
@@ -41,7 +40,6 @@ class Photos extends Site_Controller
 		{
 			redirect('emoome/photos/get_photos');
 		}
-
 	}	
 	
 	function get_photos()
@@ -54,7 +52,6 @@ class Photos extends Site_Controller
 		if (!$check_connection) redirect('connections/instagram/add');	
 	
 		$this->load->library('instagram/instagram_api', $check_connection->auth_one);
-	
 
 		// Get Images
 		$images = $this->instagram_api->getUserRecent($check_connection->connection_user_id);
@@ -66,13 +63,13 @@ class Photos extends Site_Controller
 			// Loop Images		
 			foreach ($images->data as $image)
 			{
-				$image = $image->images->thumbnail->url;
+				$image_url = $image->images->thumbnail->url;
 	
 				// Is Added
-				if (!$check_photo = $this->photos_model->check_photo_exists($image))
+				if (!$check_photo = $this->photos_model->check_photo_exists($image_url))
 				{
 					// Do Image Analysis
-					$finalpalette = $this->spectrum->processImage($image);
+					$finalpalette = $this->color_analyze->processImage($image_url);
 
 					// User
 					$user_id = $this->session->userdata('user_id');
@@ -98,19 +95,41 @@ class Photos extends Site_Controller
 		
 					if (isset($image->location->longitude)) $geo_lon = $image->location->longitude;
 					else $geo_lon = 0;
+					
+					
+					// Check For Faces
+					$do_faces	= TRUE;
+					$has_faces	= 'no';
+					
+					if ($do_faces)
+					{
+						$this->load->library('face_api');
+					
+						$auth	= $this->face_api->__call('account_authenticate');
+						$faces	= $this->face_api->__call('faces_detect', $image->images->standard_resolution->url);					
+					
+						foreach ($faces->photos as $photo)
+						{
+							if (count($photo->tags) > 0)
+							{
+								$has_faces = 'yes';
+							}
+						}
+					}
 		
 					// Add Photo
 					$photo_data = array(
 						'user_id'		=> $user_id,
 						'source'		=> 'instagram',
 						'context'		=> 'emoome',
-						'original'		=> $image,
+						'original'		=> $image_url,
 						'text'			=> $text,
 						'word_count'	=> $word_count,
 						'color_count'	=> $color_count,
 						'geo_lat'		=> $geo_lat,
 						'geo_lon'		=> $geo_lon,
-						'originated_at'	=> '2012-04-23 01:23:55'
+						'has_faces'		=> $has_faces,
+						'originated_at'	=> unix_to_mysql($image->created_time)
 					);
 			
 					$photo_id = $this->photos_model->add_photo($photo_data);
@@ -118,7 +137,7 @@ class Photos extends Site_Controller
 					// Add Color Values				
 					foreach($finalpalette as $colour)
 					{	
-						$hsv = $this->spectrum->rgb_to_hsv($colour['red'], $colour['green'], $colour['blue']);
+						$hsv = $this->color_analyze->rgb_to_hsv($colour['red'], $colour['green'], $colour['blue']);
 					
 						$photo_analysis = array(
 							'photo_id'	=> $photo_id,
@@ -135,7 +154,7 @@ class Photos extends Site_Controller
 						$this->photos_model->add_photo_analysis($photo_analysis);
 					}
 					
-					$output .= '<img src="'.$image.'" style="display: block; margin:10px; float:left;">';
+					$output .= '<img src="'.$image_url.'" style="display: block; margin:10px; float:left;">';
 				}
 				else
 				{
@@ -149,8 +168,7 @@ class Photos extends Site_Controller
 		else
 		{
 			echo 'You do not have any Instagram pictures :(';
-		}
-		
+		}		
 	}
 	
 }
