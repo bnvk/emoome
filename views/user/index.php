@@ -56,8 +56,8 @@
 		<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<?= $this->session->userdata('email') ?>">
 	</p>
 	<p>
-		<label>Phone</label><br>
-		<input type="text" name="phone" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
+		<label>Phone (for reminders)</label><br>
+		<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
 	</p>
 	<p>
 		<label>Language</lable><br>
@@ -209,13 +209,18 @@ $(document).ready(function()
 	$("#settings_account").bind('submit', function(e)
 	{	
 		e.preventDefault();	
+		
+		var account_data = $('#settings_account').serializeArray();
+		account_data.push({'name':'session','value':1});
+		
+		
 		$.oauthAjax(
 		{
 			oauth 		: user_data,
 			url			: base_url + 'api/users/modify/id/' + user_data.user_id,
 			type		: 'POST',
 			dataType	: 'json',
-			data		: $('#settings_account').serializeArray(),
+			data		: account_data,
 			beforeSend	: requestMade('Saving account changes'),			
 	  		success		: function(result)
 	  		{

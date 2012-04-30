@@ -16,5 +16,4 @@ class User extends Site_Controller
 		$this->render();
 	}
 
-
 }
