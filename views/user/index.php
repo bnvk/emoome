@@ -27,18 +27,12 @@
 	<h1>Notifications</h1>
 	<form name="settings_notifications" id="settings_notifications" method="post">	
 	<p>	
-		<label>How Often</label><br>	
-		<select name="notification_frequency" id="notification_frequency">
-			<option value="daily_3">3 x Day</option>
-			<option value="daily_1">1 x Day</option>
-			<option value="daily_alternate">Every Other Day</option>
-			<option value="weekly">Weekly</option>
-			<option value="none">None</option>
-		</select>
+		<label>How Often</label><br>
+		<?= form_dropdown('notifications_frequency', config_item('notifications_frequency'), $notifications_frequency, 'id="notifications_frequency"') ?>
 	</p>
-	<p><input type="checkbox" class="nullify" name="notifications_mobile" value="yes"> &nbsp;Mobile Notifications</p>
-	<p><input type="checkbox" class="nullify" name="notifications_sms" value="yes"> &nbsp;Text Messages</p>
-	<p><input type="checkbox" class="nullify" name="notifications_email" value="yes"> &nbsp;Email</p>
+	<p><input type="checkbox" class="nullify" name="notifications_mobile" value="<?= $notifications_mobile ?>"> &nbsp;Mobile Notifications</p>
+	<p><input type="checkbox" class="nullify" name="notifications_sms" value="<?= $notifications_sms ?>"> &nbsp;Text Messages</p>
+	<p><input type="checkbox" class="nullify" name="notifications_email" value="<?= $notifications_email ?>"> &nbsp;Email</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
@@ -202,6 +196,8 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		var notifications_data = $('#settings_notifications').serializeArray();
+		notifications_data.push({'name':'module','value':'notifications'});		
+
 		$.oauthAjax(
 		{
 			oauth 		: user_data,
