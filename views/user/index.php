@@ -28,7 +28,7 @@
 	<form name="settings_notifications" id="settings_notifications" method="post">	
 	<p>	
 		<label>How Often</label><br>	
-		<select name="notification_frequency">
+		<select name="notification_frequency" id="notification_frequency">
 			<option value="daily_3">3 x Day</option>
 			<option value="daily_1">1 x Day</option>
 			<option value="daily_alternate">Every Other Day</option>
@@ -36,9 +36,9 @@
 			<option value="none">None</option>
 		</select>
 	</p>
-	<p><input type="checkbox" name="notification_method" value="mobile"> Mobile Notifications</p>
-	<p><input type="checkbox" name="notification_method" value="sms"> Text Messages</p>
-	<p><input type="checkbox" name="notification_method" value="email"> Email</p>
+	<p><input type="checkbox" name="notifications_mobile" value="mobile"> &nbsp;Mobile Notifications</p>
+	<p><input type="checkbox" name="notifications_sms" value=""> &nbsp;Text Messages</p>
+	<p><input type="checkbox" name="notifications_email" value=""> &nbsp;Email</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
 	</form>
 </div>
@@ -57,7 +57,7 @@
 	</p>
 	<p>
 		<label>Phone (for reminders)</label><br>
-		<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
+		<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone_number') ?>">
 	</p>
 	<p>
 		<label>Language</lable><br>
@@ -201,18 +201,28 @@ $(document).ready(function()
 	$('#settings_notifications').bind('submit', function(e)
 	{
 		e.preventDefault();
-		requestMade('Saving notification settings');
-		requestComplete('error', 'Oops we are still working on this feature. It will be ready soon');
+		var notifications_data = $('#settings_notifications').serializeArray();
+		$.oauthAjax(
+		{
+			oauth 		: user_data,
+			url			: base_url + 'api/users/modify/id/' + user_data.user_id,
+			type		: 'POST',
+			dataType	: 'json',
+			data		: notifications_data,
+			beforeSend	: requestMade('Saving notification settings'),			
+	  		success		: function(result)
+	  		{
+		  		requestComplete(result.message, result.status);
+		 	}
+		});		
 	});
 
 
 	$("#settings_account").bind('submit', function(e)
 	{	
 		e.preventDefault();	
-		
 		var account_data = $('#settings_account').serializeArray();
-		account_data.push({'name':'session','value':1});
-		
+		account_data.push({'name':'session','value':1});		
 		
 		$.oauthAjax(
 		{
@@ -224,7 +234,6 @@ $(document).ready(function()
 			beforeSend	: requestMade('Saving account changes'),			
 	  		success		: function(result)
 	  		{
-				// Close Loading
 		  		requestComplete(result.message, result.status);
 		 	}
 		});		
@@ -246,11 +255,10 @@ $(document).ready(function()
 	  		{
 				// Close Loading
 		  		requestComplete(result.message, result.status);
-	  			-			
+			
 			 	$('[name=old_password]').val('');
 			 	$('[name=new_password]').val('');
 			 	$('[name=new_password_confirm]').val('');
-	  				  					  			  			
 		 	}
 		});		
 	});		

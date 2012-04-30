@@ -253,6 +253,7 @@ function logThanks()
 }
 
 
+
 /* Utility Functions */
 function countElementsArray(item, array)
 {
