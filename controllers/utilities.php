@@ -60,6 +60,35 @@ class Utilities extends MY_Controller
 		echo $output;
 	}
 	
+	function update_stems()
+	{
+		if (($this->uri->segment(4) != '') AND ($this->uri->segment(5) != ''))
+		{
+			$field	= $this->uri->segment(4);
+			$word	= $this->emoome_model->check_word($this->uri->segment(5));
+		
+			if ($word->$field != 'U')
+			{
+				$words_stem = $this->emoome_model->get_words_stem($word->stem);
+				
+				foreach ($words_stem as $stem)
+				{
+					$this->emoome_model->update_word($stem->word_id, array($field => $word->$field));
+
+					echo $stem->word.' ---> '.$stem->$field.' updated ---> '.$word->$field.'<br>';
+				}
+			}
+			else
+			{
+				echo 'The <b>'.$this->uri->segment(4).'</b> of <b>'.$this->uri->segment(5).'</b> has not been classified yet!';
+			}			
+		}
+		else
+		{
+			echo 'needed values are not set';
+		}	
+	}
+
 
 	function pos_tagger()
 	{
