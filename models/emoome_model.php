@@ -129,7 +129,7 @@ class Emoome_model extends CI_Model
 		return FALSE;
 	}
 
-    function add_word($word)
+    function add_word($word, $sentiment='0')
     {
     	$stem = $this->natural_language->stem($word);
     
@@ -138,7 +138,8 @@ class Emoome_model extends CI_Model
 			'stem'		=> $stem,
 			'type'		=> 'U',
 			'type_sub'	=> 'U',
-			'speech'	=> 'U'
+			'speech'	=> 'U',
+			'sentiment'	=> $sentiment
 		);	
 
 		$this->db->insert('emoome_words', $word_data);
@@ -151,6 +152,13 @@ class Emoome_model extends CI_Model
 	    return FALSE;
     }
 
+	function update_word($word_id, $word_data)
+	{
+		$this->db->where('word_id', $word_id);
+		$this->db->update('emoome_words', $word_data);
+
+		return TRUE;
+	}
 
 
 	// Words Link
