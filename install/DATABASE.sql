@@ -17,6 +17,7 @@ CREATE TABLE `emoome_words` (
   `type` char(1) DEFAULT 'U',
   `type_sub` char(1) DEFAULT 'U',
   `speech` varchar(4) DEFAULT 'U',
+  `sentiment` tinyint(4) DEFAULT 0,
   PRIMARY KEY (`word_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=799 DEFAULT CHARSET=utf8;
 
