@@ -128,6 +128,15 @@ class Emoome_model extends CI_Model
 
 		return FALSE;
 	}
+	
+	function get_words_stem($stem)
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_words');
+		$this->db->where('stem', $stem);
+ 		$result = $this->db->get();
+ 		return $result->result();	      
+	}	
 
     function add_word($word, $sentiment='0')
     {
