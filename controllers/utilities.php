@@ -15,7 +15,7 @@ class Utilities extends MY_Controller
 	function stem()
 	{
 		$this->load->library('natural_language');
-		echo $this->natural_language->stem($this->uri->segment(3));
+		echo $this->natural_language->stem($this->uri->segment(4));
 	}
 
 	function add_sentiment()
@@ -75,7 +75,7 @@ class Utilities extends MY_Controller
 				{
 					$this->emoome_model->update_word($stem->word_id, array($field => $word->$field));
 
-					echo $stem->word.' ---> '.$stem->$field.' updated ---> '.$word->$field.'<br>';
+					echo $stem->word.' ---> '.$stem->$field.' ---> '.$word->$field.'<br>';
 				}
 			}
 			else
