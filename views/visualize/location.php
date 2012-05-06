@@ -2,7 +2,7 @@
 #nearby_feelings_map { width: 100%; height: 600px; }
 </style>
 
-<h1>Nearby Feelings</h1>
+<h1>Location Map : <?= $this->session->userdata('name') ?></h1>
 <div id="nearby_feelings_map"></div>
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
@@ -26,13 +26,10 @@ $(document).ready(function()
 
 	/* Geo Location */
 	function showNearbyMap(position)
-	{
-		console.log(position);
-	
+	{	
 		$('#nearby_feelings_map').gmap({
 			'center': position.coords.latitude + ', ' + position.coords.longitude
 		}).bind('init', function(){});		
-		
 	
 		$.oauthAjax(
 		{
@@ -47,9 +44,7 @@ $(document).ready(function()
 					$.each(result.feelings, function(i, feeling)
 					{
 						if (feeling.geo_lat != '' && feeling.geo_lon != '')
-						{
-							console.log(feeling);
-						
+						{						
 							$('#nearby_feelings_map').gmap('addMarker',
 							{ 
 								'position': new google.maps.LatLng(feeling.geo_lat, feeling.geo_lon), 
@@ -60,7 +55,6 @@ $(document).ready(function()
 							
 								$('#nearby_feelings_map').gmap('openInfoWindow', { 'content': this_content }, this);
 							});
-						
 						}
 					});	
 				}
@@ -70,7 +64,6 @@ $(document).ready(function()
 				}		
 		  	}		
 		});
-		
 	}	
 	
 	function nearbyMapError()
@@ -79,6 +72,5 @@ $(document).ready(function()
 	}
 
 });
-
 
 </script>

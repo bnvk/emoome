@@ -16,12 +16,5 @@ class Emoome extends Site_Controller
 
 		$this->render();
 	}
-	
-	function nearby()
-	{
-		$this->data['page_title']	= 'Nearby Feelings';
-		
-		$this->render();
-	}
-	
+
 }

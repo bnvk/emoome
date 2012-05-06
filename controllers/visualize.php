@@ -108,5 +108,11 @@ class Visualize extends Site_Controller
 		$this->render();
 	}
 
+	function location()
+	{
+		$this->data['page_title'] 	= 'Location';
+		
+		$this->render();
+	}
 
 }
