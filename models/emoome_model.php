@@ -35,6 +35,7 @@ class Emoome_model extends CI_Model
     {
     	if ($user_id)
     	{
+    		$actions	= 'JOIN';
     		$user_where = 'AND emoome_log.user_id = '.$user_id;
     	}
     	else
@@ -42,12 +43,13 @@ class Emoome_model extends CI_Model
     		$user_where = '';
     	}
     
-		$sql = "SELECT emoome_log.log_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.created_at, emoome_words.word,  emoome_words.type,   
+		$sql = "SELECT emoome_log.log_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.created_at, emoome_words.word,  emoome_words.type, emoome_actions.action,     
 				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
 				FROM emoome_log
+				JOIN emoome_actions ON emoome_actions.log_id = emoome_log.log_id
 				JOIN emoome_words_link ON emoome_words_link.log_id = emoome_log.log_id
 				JOIN emoome_words ON emoome_words.word_id = emoome_words_link.word_id
-				WHERE emoome_words_link.use = 'F' AND emoome_log.geo_lat IS NOT NULL AND emoome_log.geo_lon IS NOT NULL ".$user_where."
+				WHERE emoome_log.geo_lat IS NOT NULL AND emoome_log.geo_lon IS NOT NULL ".$user_where." AND emoome_words_link.used = 'F' 
 				ORDER BY distance ASC
 				LIMIT 0,".$distance;
 
@@ -201,15 +203,15 @@ class Emoome_model extends CI_Model
  		return $result->result();
 	}
 	
-	function get_word_user_count($user_id, $word_id, $use)
+	function get_word_user_count($user_id, $word_id, $used)
 	{
 		$this->db->select('*');
 		$this->db->from('emoome_words_link');
- 		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'use' => $use));
+ 		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used));
  		return $this->db->count_all_results();
 	}	
 
-	function add_word_link($log_id, $user_id, $word, $use)
+	function add_word_link($log_id, $user_id, $word, $used)
 	{
 		$check_word = $this->check_word(strtolower($word));
 		$word_type	= '';
@@ -229,14 +231,14 @@ class Emoome_model extends CI_Model
 			'log_id'	=> $log_id,
 			'user_id'	=> $user_id,
 			'word_id'	=> $word_id,
-			'use'		=> $use
+			'used'		=> $used
 		);
 
 		$this->db->insert('emoome_words_link', $link_data);
 
 		if ($word_link_id = $this->db->insert_id())
 		{
-			$this->increment_word_taxonomy($user_id, $word_id, $use);
+			$this->increment_word_taxonomy($user_id, $word_id, $used);
 		
 			return array('word_link_id' => $word_link_id, 'type' => $word_type);
 		}
@@ -270,22 +272,22 @@ class Emoome_model extends CI_Model
 		}    
     }
     
-    function get_word_taxonomy($user_id, $word_id, $use)
+    function get_word_taxonomy($user_id, $word_id, $used)
     {
  		$this->db->select('*');
  		$this->db->from('emoome_words_taxonomy');    
- 		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'use' => $use)); 				
+ 		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used)); 				
  		$result = $this->db->get()->row();	
  		return $result;    	
     }
 
-    function add_word_taxonomy($user_id, $word_id, $count, $use)
+    function add_word_taxonomy($user_id, $word_id, $count, $used)
     {
  		$data = array(
  			'user_id'	=> $user_id,
 			'word_id'	=> $word_id,
 			'count' 	=> $count,
-			'use'		=> $use
+			'used'		=> $used
 		);
 
 		return $this->db->insert('emoome_words_taxonomy', $data);

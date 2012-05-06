@@ -46,7 +46,9 @@ class Api extends Oauth_Controller
 		else $distance = 10;
 
 		// Get Feelings
-		if ($nearby_feelings = $this->emoome_model->get_nearby_feelings($this->get('geo_lat'), $this->get('geo_lon'), $distance))
+		$nearby_feelings = $this->emoome_model->get_nearby_feelings($this->get('geo_lat'), $this->get('geo_lon'), $distance, $this->oauth_user_id);		
+		
+		if ($nearby_feelings)
 		{				
             $message = array('status' => 'success', 'message' => 'Success found some feelings', 'feelings' => $nearby_feelings);
 		}

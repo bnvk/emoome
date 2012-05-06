@@ -1,49 +1,71 @@
-<div id="content_index" class="content_left text_left hide">
+<div id="content_index" class="hide">
 
+	<div id="index_content_1" class="index_content">
+		<h2>record your experiences & feelings</h2>
+		<h2>visualize moments from your life</h2>
+	</div>
+	
 	<div id="index_define">
-		<h1 id="index_name"><span>emoome</span></h1>		
-		<p class="index_define"><strong>emo</strong> - <em>a complex psychophysiological experience of an individual's state of mind as interacting with biochemical (internal) and environmental (external) influences</em></p> 
-		<p class="index_define"><strong>ome</strong> - <em>as used in biology, refers to a totality of some sort</em></p>
+		<p><strong>emo</strong> - <em>a complex psychophysiological experience of an individual's state of mind; interacting w/ biochemical & environmental influences</em></p> 
+		<p><strong>ome</strong> - <em>as used in biology, refers to a totality of some sort</em></p>
+		<br class="clear">
 	</div>
 
-	<h3>~ Quantify Yourself</h3>
-	<h3>~ Emotional Journaling</h3>
-	<h3>~ Memory Mapping</h3>
-	<h3>~ Life Visualization</h3>
-	<h3>~ <a href="mailto:info@emoo.me">Contact Us</a></h3>
+	<div id="index_content_2" class="index_content">
+		<h2>discover patterns in your thinking</h2>	
+	</div>
 
-</div>
+	<div id="index_signup">
+		<h2>Ready to begin?</h2>
+		<h3>Get Started Now</h3>
+		<form method="post" name="user_signup_short" id="user_signup_short">
+			<p>
+				<label>Name</label><br>
+				<input type="text" name="name" id="signup_name" placeholder="Joe Smith" autocorrect="off" value=""><br>
+				<span id="signup_name_error"></span>
+			</p>
+			<p>
+				<label>Email</label><br>
+				<input type="text" name="email" id="signup_email" placeholder="your@email.com" autocorrect="off" value=""><br>
+				<span id="signup_email_error"></span>
+			</p>		
+			<p>
+				<label>Password</label><br>
+				<input type="password" name="password" id="signup_password" placeholder="********" autocorrect="off" value=""><br>
+				<span id="signup_password_error"></span>
+			</p>
+			<p>
+				<label>Language</lable><br>
+				<?= form_dropdown('language', config_item('languages'), 'en') ?>
+			</p>
+			<p>
+				<input type="submit" name="submit" value="Signup">
+			</p>
+		</form>
+	</div>
+	<div class="clear"></div>
 
-<?php if (!$this->agent->is_mobile()): ?>
-<div id="content_discover" class="content_left text_center index_content hide">
-
-	<h1>discover</h1>
-	<h2>patterns in your thinking</h2>
-	<img src="<?= $site_assets ?>images/dataviz_type_colors_small_1.png" border="0" alt="">
-	<img src="<?= $site_assets ?>images/dataviz_type_colors_small_2.png" border="0" alt="">
-	<h3>emotional &nbsp; physical &nbsp; sensory</h3>
-	<h3>descriptive &nbsp; action &nbsp; intellectual</h3>
-
-</div>
-
-<div id="content_visualize" class="content_left text_center index_content hide">
-
-	<h1>visualize</h1>
-	<h2>experiences & feelings</h2>
-	<img src="<?= $site_assets ?>images/dataviz_behavior_type_1.png" border="0" alt="">
-
-</div>
-
-<div id="content_about" class="content_left text_center index_content hide">
-
-	<h1>about</h1>
-	<p>Curious what this project is about? Browse this slideshow that was presented at the most recent <a href="http://quantifiedself.com" target="_blank">Quantified Self</a> Show & Tell held in Portland <a href="http://www.meetup.com/PDX-Quantified-Self/events/53688892/" target="_blank">April 10th, 2012</a></p>
-	<div style="width:425px; margin: 25px auto" id="__ss_12504072"> 
-		<iframe src="http://www.slideshare.net/slideshow/embed_code/12504072" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+	<div id="index_quotes">
+		<h1>Learn more about emo<span class="name_ome">ome...</span></h1>
+		<div class="quote_container">
+			<a href="http://www.readwriteweb.com/archives/how-well-get-beyond-the-emoticon.php" target="_blank">
+				<span class="quote_title">How We'll Get Beyond the Emoticon</span>
+				<span class="quote_quote">"[Emoome] reveals shifts around major life events, which is powerful to look back on after the fact"</span>
+				<span class="quote_image quote_image_rww"></span>
+			</a>
+		</div>
+		<div class="quote_container">
+			<a href="http://siliconflorist.com/2012/05/01/emoome-emotional/" target="_blank">
+				<span class="quote_title">Are you trying to get all emotional on me?</span>
+				<span class="quote_quote">"The site is addictive. And the visualizations are beautiful, even in this early iteration."</span>
+				<span class="quote_image quote_image_silicon"></span>
+			</a>
+		</div>
 	</div>
 
 </div>
-<?php endif; ?>
+
+
 
 
 <div id="content_login" class="content_left text_left hide">
