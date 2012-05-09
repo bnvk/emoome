@@ -20,6 +20,13 @@
 	  		<br class="clear">
 		</a>
 	</p>
+	<p>
+		<a class="category_button" href="<?= base_url() ?>logout">
+			<span class="cat_link_icon_small icon_small_login"></span>		
+			<span class="cat_link_text_small">Logout</span>
+	  		<br class="clear">
+		</a>
+	</p>
 </div>
 
 
