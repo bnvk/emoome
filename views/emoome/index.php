@@ -16,6 +16,7 @@
 	</div>
 
 	<div id="index_signup">
+		<?php if ($this->social_auth->logged_in()): ?>
 		<h2>Ready to begin?</h2>
 		<h3>Get Started Now</h3>
 		<form method="post" name="user_signup_short" id="user_signup_short">
@@ -42,6 +43,9 @@
 				<input type="submit" name="submit" value="Signup">
 			</p>
 		</form>
+		<?php else: ?>
+		
+		<?php endif; ?>
 	</div>
 	<div class="clear"></div>
 

@@ -10,6 +10,7 @@ class Api extends Oauth_Controller
         parent::__construct();
 
 		$this->load->config('emoome');
+		$this->load->helper('math');
         $this->load->model('emoome_model');
         
     	$this->form_validation->set_error_delimiters('', '');        
@@ -122,7 +123,7 @@ class Api extends Oauth_Controller
 	{		
 		// TEST DATA
 		$msg_action = array(
-			'one' => 'fun classy sexy depressing',
+			'one' => 'I had fun classy sexy depressing time',
 			'two' => 'hurt worrying frightening glad', 
 			'three' => 'crying happy sad glad fucking water'
 		);
@@ -131,14 +132,15 @@ class Api extends Oauth_Controller
 	
 	
 		// Values
-		$feeling		= $this->emoome_model->check_word('confusing');
-		$describe_1		= $this->emoome_model->check_word('glad');
-		$describe_2		= $this->emoome_model->check_word('uneasy');
-		$describe_3		= $this->emoome_model->check_word('lonely');
-		$words_action	= explode(' ', $msg_show);
-		$words_desribe	= array($describe_1, $describe_2, $describe_3);
-		$words_count	= 4 + count($words_action);
-		$words_types	= config_item('emoome_word_types');
+		$feeling			= $this->emoome_model->check_word('confusing');
+		$describe_1			= $this->emoome_model->check_word('glad');
+		$describe_2			= $this->emoome_model->check_word('uneasy');
+		$describe_3			= $this->emoome_model->check_word('lonely');
+		$words_action		= explode(' ', $msg_show);
+		$words_desribe		= array($describe_1, $describe_2, $describe_3);
+		$words_count_action = count($words_action);
+		$words_count_total	= 4 + $words_count_action;
+		$words_types		= config_item('emoome_word_types');
 		
 		// Type
 		$type_count		= array('E' => 0, 'I' => 0, 'D' => 0, 'S' => 0, 'A' => 0, 'P' => 0, 'U' => 0);
@@ -158,7 +160,7 @@ class Api extends Oauth_Controller
 			$sentiment_action = $check_word->sentiment + $sentiment_action;
 
 			// Increment Type
-			$type_count[$check_word->type] = $type_count[$check_word->type] + 1;
+			$type_count[$check_word->type] = ($type_count[$check_word->type] + 1);
 		}
 
 
@@ -166,22 +168,22 @@ class Api extends Oauth_Controller
 		foreach ($words_desribe as $describe)
 		{
 			$sentiment_describe = $describe->sentiment + $sentiment_describe;
-			$type_count[$describe->type] = $type_count[$describe->type] + 1;
+			$type_count[$describe->type] = ($type_count[$describe->type] + 1);
 		}
 
 		// Totals
 		$sentiment_total = $sentiment_feeling + $sentiment_action + $sentiment_describe;
 		
 		echo '<h1>Source</h1>';
-		echo $msg_show;
-
-		echo '<h1>Type '.$words_count.'</h1>';
+		echo $msg_show.' ('.$words_count_action.' words)';
+		echo '<h1>Type</h1>';
 
 		foreach ($type_count as $type => $count)
 		{
-			if ($count > 0)
+			if ($count > 0 AND $type != 'U')
 			{
-				$percent = $count / $words_count;
+				$percent = percent($count, $words_count_total);
+
 				echo $words_types[$type].': '.$percent.'<br>';
 			}
 		}
