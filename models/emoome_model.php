@@ -129,7 +129,7 @@ class Emoome_model extends CI_Model
 
 		return FALSE;
 	}
-	
+
 	function get_words_stem($stem)
 	{
 		$this->db->select('*');
@@ -137,22 +137,22 @@ class Emoome_model extends CI_Model
 		$this->db->where('stem', $stem);
  		$result = $this->db->get();
  		return $result->result();	      
-	}	
+	}
 
-    function add_word($word, $check_stem=FALSE)
+    function add_word($word, $check_stem=FALSE, $type='U', $type_sub='U', $speech='U', $sentiment=0)
     {
     	$word		= strtolower($word);
 		$check_word = $this->check_word($word);
     
     	// Word Does Not Exist
-    	if (!$check_word)
+    	if ($check_word)
     	{
-	    	$stem		= $this->natural_language->stem($word);
-	    	$type		= 'U';
-	    	$type_sub	= 'U';
-	    	$speech		= 'U';
-			$sentiment	= '0';
-	
+    		return $check_word->word_id;
+		}
+		else
+		{
+	    	$stem = $this->natural_language->stem($word);
+
 	    	// Lookup Similar Word
 	    	if ($check_stem)
 	    	{
@@ -166,16 +166,16 @@ class Emoome_model extends CI_Model
 		    		$sentiment	= $stem_words[0]->sentiment;
 	    		}
 	    	}
-	
+			
 			// Add Word To Dictionary
 	 		$word_data = array(
-				'word' 	 	=> $word,
-				'stem'		=> $stem,
+	 			'word'		=> $word,
+	 			'stem'		=> $stem,
 				'type'		=> $type,
 				'type_sub'	=> $type_sub,
 				'speech'	=> $speech,
 				'sentiment'	=> $sentiment
-			);
+			);			
 
 			$this->db->insert('emoome_words', $word_data);
 
@@ -188,10 +188,6 @@ class Emoome_model extends CI_Model
 	    		return FALSE;
 	    	}
 	    }
-	    else
-    	{
-    		return $check_word->word_id;
-    	}
 
 	    return FALSE;    
     }
