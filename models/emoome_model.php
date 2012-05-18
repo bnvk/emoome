@@ -1,5 +1,4 @@
 <?php
-//Contribute deals with making data contributions
 class Emoome_model extends CI_Model 
 {
     function __construct()
@@ -8,7 +7,6 @@ class Emoome_model extends CI_Model
 
         $this->load->library('natural_language');        
     }
-
 
 	// Logs
 	function count_logs_user($user_id)
@@ -29,7 +27,6 @@ class Emoome_model extends CI_Model
  		$result = $this->db->get();
  		return $result->result();	
 	}
-
 
     function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
     {
@@ -64,9 +61,8 @@ class Emoome_model extends CI_Model
 
 			return $result;
 		}
-    }	
-	
-	
+    }
+
 	function add_log($log_data)
 	{
 		$log_data['created_at'] = unix_to_mysql(now());
@@ -80,6 +76,8 @@ class Emoome_model extends CI_Model
 
 	    return FALSE;
 	}
+
+
 
 
 	// Actions
@@ -115,6 +113,7 @@ class Emoome_model extends CI_Model
 
 
 
+
 	// Words	
 	function check_word($word)
 	{
@@ -140,27 +139,61 @@ class Emoome_model extends CI_Model
  		return $result->result();	      
 	}	
 
-    function add_word($word, $sentiment='0')
+    function add_word($word, $check_stem=FALSE)
     {
-    	$stem = $this->natural_language->stem($word);
+    	$word		= strtolower($word);
+		$check_word = $this->check_word($word);
     
- 		$word_data = array(
-			'word' 	 	=> $word,
-			'stem'		=> $stem,
-			'type'		=> 'U',
-			'type_sub'	=> 'U',
-			'speech'	=> 'U',
-			'sentiment'	=> $sentiment
-		);	
+    	// Word Does Not Exist
+    	if (!$check_word)
+    	{
+	    	$stem		= $this->natural_language->stem($word);
+	    	$type		= 'U';
+	    	$type_sub	= 'U';
+	    	$speech		= 'U';
+			$sentiment	= '0';
+	
+	    	// Lookup Similar Word
+	    	if ($check_stem)
+	    	{
+	    		$stem_words = $this->get_words_stem($stem);
+	
+	    		if ($stem_words)
+	    		{
+		    		$type		= $stem_words[0]->type;
+		    		$type_sub	= $stem_words[0]->type_sub;
+		    		$speech		= $stem_words[0]->speech;
+		    		$sentiment	= $stem_words[0]->sentiment;
+	    		}
+	    	}
+	
+			// Add Word To Dictionary
+	 		$word_data = array(
+				'word' 	 	=> $word,
+				'stem'		=> $stem,
+				'type'		=> $type,
+				'type_sub'	=> $type_sub,
+				'speech'	=> $speech,
+				'sentiment'	=> $sentiment
+			);
 
-		$this->db->insert('emoome_words', $word_data);
+			$this->db->insert('emoome_words', $word_data);
 
-		if ($word_id = $this->db->insert_id())
-		{	
-			return $word_id;
+			if ($word_id = $this->db->insert_id())
+			{
+				return $word_id;
+	    	}
+	    	else
+	    	{
+	    		return FALSE;
+	    	}
+	    }
+	    else
+    	{
+    		return $check_word->word_id;
     	}
-    
-	    return FALSE;
+
+	    return FALSE;    
     }
 
 	function update_word($word_id, $word_data)
@@ -170,6 +203,7 @@ class Emoome_model extends CI_Model
 
 		return TRUE;
 	}
+
 
 
 	// Words Link
@@ -213,39 +247,31 @@ class Emoome_model extends CI_Model
 
 	function add_word_link($log_id, $user_id, $word, $used)
 	{
-		$check_word = $this->check_word(strtolower($word));
-		$word_type	= '';
+		// Check / Add Word
+		$word_id = $this->add_word($word, TRUE);
 
-		// Word Exists
-		if ($check_word)
+		if ($word_id)
 		{
-			$word_id	= $check_word->word_id;
-			$word_type	= $check_word->type;
-		}
-		else
-		{
-			$word_id = $this->add_word(strtolower($word));
-		}
+			$link_data = array(
+				'log_id'	=> $log_id,
+				'user_id'	=> $user_id,
+				'word_id'	=> $word_id,
+				'used'		=> $used
+			);
+	
+			$this->db->insert('emoome_words_link', $link_data);
 
-		$link_data = array(
-			'log_id'	=> $log_id,
-			'user_id'	=> $user_id,
-			'word_id'	=> $word_id,
-			'used'		=> $used
-		);
+			if ($word_link_id = $this->db->insert_id())
+			{
+				$this->increment_word_taxonomy($user_id, $word_id, $used);
 
-		$this->db->insert('emoome_words_link', $link_data);
-
-		if ($word_link_id = $this->db->insert_id())
-		{
-			$this->increment_word_taxonomy($user_id, $word_id, $used);
-		
-			return array('word_link_id' => $word_link_id, 'type' => $word_type);
+				return $word_link_id;
+			}
 		}
 
 		return FALSE;
 	}
-	
+
 	function update_word_link($link_id, $link_data)
 	{
 		$this->db->where('link_id', $link_id);

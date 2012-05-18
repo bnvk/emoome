@@ -11,7 +11,7 @@ class Utilities extends MY_Controller
 
 		if ($this->session->userdata('user_level_id') != 1) redirect();
 	}
-	
+
 	function stem()
 	{
 		$this->load->library('natural_language');
@@ -26,6 +26,7 @@ class Utilities extends MY_Controller
 		
 		if ($the_file)
 		{
+			// Opens TXT File of Words
 			$file_handle	= fopen($the_file, 'r');
 			$dictionary		= fread($file_handle, 5000000);
 			$output			= '';
@@ -51,7 +52,7 @@ class Utilities extends MY_Controller
 				}
 				else
 				{
-					$this->emoome_model->add_word($word, $sentiment);
+					$this->emoome_model->add_word($word, TRUE);
 					$output .= 'added: '.$word.'<br>';
 				}
 			}
@@ -89,7 +90,6 @@ class Utilities extends MY_Controller
 		}	
 	}
 
-
 	function pos_tagger()
 	{
 		$this->load->library('post_tagger');
@@ -103,5 +103,38 @@ class Utilities extends MY_Controller
         	echo '<B>'.$t['token'] . "</B> - " . $part_of_speech[$pos].  "<br>";
         }
 	}
-	
+
+	function add_words()
+	{
+		$words_array = config_item('emoome_common_words');
+
+		$add_word = $this->emoome_model->add_word($this->uri->segment(4), TRUE);
+
+		echo '<pre>';
+		print_r($add_word);
+	}
+
+	function analyze_text()
+	{
+		$text_raw	= "I would love to go sky diving over the weekend, if you want to. Aren't you ready to do such things with me? I am getting a little bit frustrated that stuff is not going to work out between you and me. If I'm off base let me know we can chat.";
+		$text_clean = preg_replace('/[^a-z0-9 ]/i', '', $text_raw);
+		$words_raw	= explode(' ', $text_clean);
+		
+		echo '<h1>Words</h1>';
+
+		foreach ($words_raw as $word)
+		{
+			echo $word.'<br>';
+		}
+			
+		
+		// Output
+		$word_count = count($words_raw);
+
+				
+		echo '<h1>Stats</h1>';
+		echo 'Word Count Total: '.$word_count;
+		
+	}
+
 }

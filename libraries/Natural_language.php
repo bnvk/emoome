@@ -37,6 +37,7 @@ class Natural_language {
 		return $thisword;	
 	}
 	
+	// Checks If Word Is In List
     function check_word($checkword, $stoplist)
     {
     	$stopwords = $this->ci->lang->line($stoplist);
