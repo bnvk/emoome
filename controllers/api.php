@@ -245,6 +245,98 @@ class Api extends Oauth_Controller
 	}
 
 
+	// Tools
+	function analyze_text_post()
+	{
+	   	$this->form_validation->set_rules('analyze_text', 'Text', 'required');
+
+		// Passes Validation
+	    if ($this->form_validation->run() == true)
+	    {		
+			$words_array 	= $this->lang->line('common');	
+			$text_raw		= $this->input->post('analyze_text');
+			$text_clean 	= preg_replace('/[^a-z0-9 ]/i', '', $text_raw);
+			$words_raw		= explode(' ', $text_clean);
+			$words_types	= array();
+			$words_common	= array();
+			$words_type		= array();
+			$words_type_count= array('E' => 0, 'I' => 0, 'D' => 0, 'S' => 0, 'A' => 0, 'P' => 0, 'U' => 0);
+			$words_type_total= 0;
+			$sentiment		= 0;
+	
+			foreach ($words_raw as $word)
+			{
+				$word = strtolower($word);
+			
+				// Is Not Common
+				if (!in_array($word, $words_array))
+				{
+					$get_word = $this->emoome_model->check_word($word);
+				
+					// Word Exists
+					if ($get_word)
+					{
+						// Output
+						$sentiment = $sentiment + $get_word->sentiment;	
+						$words_type[$get_word->word]	 = $get_word->type;
+						$words_type_count[$get_word->type] = 1 + $words_type_count[$get_word->type];				
+					}
+					// Add Word
+					else
+					{
+						$word_id = $this->emoome_model->add_word($word, TRUE, 'U', 'U', 'U', 0);						
+						$get_word =	$this->emoome_model->get_word($word_id);
+	
+						// Output
+						$sentiment = $sentiment + $get_word->sentiment;						
+						$words_type[$get_word->word] = $get_word->type;				
+						$words_type_count[$get_word->type] = 1 + $words_type_count[$get_word->type];
+					}
+					
+					$words_type_total++;
+				}
+				else
+				{
+					if (array_key_exists($word, $words_common))
+					{
+						$words_common[$word] = 1 + $words_common[$word];
+					}
+					else
+					{
+						$words_common[$word] = 1;
+					}					
+				}
+			}
+			
+			// Prep Output
+			arsort($words_common);
+			
+			// Output Data
+			$analysis = array(
+				'words'				=> $words_type,
+				'words_count'		=> count($words_raw),
+				'words_type_count'	=> $words_type_count,
+				'words_type_total'	=> $words_type_total,
+				'sentiment'			=> $sentiment,
+				'common_count'		=> count($words_common),
+				'common_words'		=> $words_common
+			);
+		
+            $message = array('status' => 'success', 'message' => 'Success word analysis performed', 'analysis' => $analysis);		
+		}
+		else
+		{
+	    	$message = array('status' => 'error', 'message' => validation_errors());		
+		}
+
+        $this->response($message, 200);
+
+
+		// Output
+		$word_count = count($words_raw);
+	}
+
+
 	// Utilities & Stats
 	function get_user_word_maps_get()
 	{

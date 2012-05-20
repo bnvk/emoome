@@ -7,6 +7,7 @@ class Utilities extends MY_Controller
 
 		// Load Things
 		$this->load->config('emoome');
+		$this->lang->load('words');		
 		$this->load->model('emoome_model');
 
 		if ($this->session->userdata('user_level_id') != 1) redirect();
@@ -106,35 +107,18 @@ class Utilities extends MY_Controller
 
 	function add_words()
 	{
-		$words_array = config_item('emoome_common_words');
+		$words_array = $this->lang->line('common');
+		$output = '';
 
-		$add_word = $this->emoome_model->add_word($this->uri->segment(4), TRUE);
-
-		echo '<pre>';
-		print_r($add_word);
-	}
-
-	function analyze_text()
-	{
-		$text_raw	= "I would love to go sky diving over the weekend, if you want to. Aren't you ready to do such things with me? I am getting a little bit frustrated that stuff is not going to work out between you and me. If I'm off base let me know we can chat.";
-		$text_clean = preg_replace('/[^a-z0-9 ]/i', '', $text_raw);
-		$words_raw	= explode(' ', $text_clean);
-		
-		echo '<h1>Words</h1>';
-
-		foreach ($words_raw as $word)
+		foreach ($words_array as $word)
 		{
-			echo $word.'<br>';
+			$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
+			$add_word = $this->emoome_model->add_word($word, TRUE, 'D', 'C');
+			$output .= $add_word.' '.$word.'<br>';
 		}
-			
-		
-		// Output
-		$word_count = count($words_raw);
 
-				
-		echo '<h1>Stats</h1>';
-		echo 'Word Count Total: '.$word_count;
-		
+		echo $output;
 	}
+
 
 }

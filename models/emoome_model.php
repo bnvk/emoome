@@ -115,6 +115,21 @@ class Emoome_model extends CI_Model
 
 
 	// Words	
+	function get_word($word_id)
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_words');
+		$this->db->where('word_id', $word_id);
+		$this->db->limit(1);
+ 		
+ 		if ($result = $this->db->get()->row())	
+ 		{
+ 			return $result;
+ 		}
+
+		return FALSE;
+	}
+
 	function check_word($word)
 	{
 		$this->db->select('*');
