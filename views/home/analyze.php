@@ -14,7 +14,7 @@
 
 	<p id="analysis_text"></p>
 	
-	
+	<p id="analysis_percents"></p>
 	
 </div>
 <style type="text/css">
@@ -46,6 +46,7 @@ $(document).ready(function()
 				var analyze_data = $('#analyze_text_form').serializeArray();
 				
 				$('#analysis_text').html($('#analyze_text').val());
+				$('#analysis_percents').html('');
 
 				$.ajax(
 				{
@@ -61,6 +62,7 @@ $(document).ready(function()
 
 				  		var text_output	 = $('#analyze_text').val();
 				  		var common_words = '';
+				  		var words_type_count = parseInt(result.analysis.words_type_total_count);
 
 
 				  		// Show Color Types
@@ -74,7 +76,14 @@ $(document).ready(function()
 
 						$('#analysis_text').html(text_output);
 
-						// Type Color Circles
+						// Type Percents
+						$.each(result.analysis.words_type_count, function(key, value)
+		  				{		  				
+		  					var percent = Math.round(value / result.analysis.words_type_total_count * 100);
+		  						
+							$('#analysis_percents').append('<strong>' + percent + '%</strong> ' + word_types[key] + ' <br>');
+		  				});							
+	
 	
 
 				  		// Add Common Words

@@ -316,7 +316,7 @@ class Api extends Oauth_Controller
 				'words'				=> $words_type,
 				'words_count'		=> count($words_raw),
 				'words_type_count'	=> $words_type_count,
-				'words_type_total'	=> $words_type_total,
+				'words_type_total_count' => $words_type_total,
 				'sentiment'			=> $sentiment,
 				'common_count'		=> count($words_common),
 				'common_words'		=> $words_common

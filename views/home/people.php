@@ -15,7 +15,7 @@
 	<?php foreach ($devices as $device): $device_json = json_decode($device); ?>
 		<h4><?= $device_json->name ?></h4>
 	<?php endforeach; endif; ?>
-	<script type="text/javascript" src="<?= $site_assets ?>js/raphael.js"></script>
+	<script type="text/javascript" src="<?= $modules_assets ?>js/raphael.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function()
 	{
@@ -99,9 +99,10 @@
 				}
 
 				//console.log(key + ' percentage: ' + percentage + '% circle_x: ' + circle_x + ' circle_y: ' + circle_y + ' circle_size: ' + circle_size + ' circle_diameter: ' + circle_diameter);
-
-				paper.circle(circle_x, circle_y, circle_size).attr({fill: '#d6d6d6', 'stroke-width': 1, 'stroke': '#c6c6c6'});
-				paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#888888'});
+				var circle_color = type_colors[key[0]];
+				
+				paper.circle(circle_x, circle_y, circle_size).attr({fill: circle_color, 'stroke-width': 1, 'stroke': '#c6c6c6'});
+				paper.text(circle_x, circle_y, percentage + '% ' + key).attr({fill: '#333333'});
 
 				circle_x = circle_x + circle_size;
 
