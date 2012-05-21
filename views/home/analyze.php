@@ -58,10 +58,9 @@ $(document).ready(function()
 				  	{
 						$('#content_message').notify({scroll:true,status:result.status,message:result.message});
 
-				  		console.log(result);
 
-				  		var text_output	 = $('#analyze_text').val();
-				  		var common_words = '';
+				  		var text_output		 = $('#analyze_text').val();
+				  		var common_words	 = '';
 				  		var words_type_count = parseInt(result.analysis.words_type_total_count);
 
 
@@ -76,15 +75,14 @@ $(document).ready(function()
 
 						$('#analysis_text').html(text_output);
 
+
 						// Type Percents
 						$.each(result.analysis.words_type_count, function(key, value)
-		  				{		  				
+		  				{
 		  					var percent = Math.round(value / result.analysis.words_type_total_count * 100);
-		  						
 							$('#analysis_percents').append('<strong>' + percent + '%</strong> ' + word_types[key] + ' <br>');
-		  				});							
-	
-	
+		  				});
+
 
 				  		// Add Common Words
 						$.each(result.analysis.common_words, function(key, value)

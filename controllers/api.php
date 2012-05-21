@@ -278,7 +278,7 @@ class Api extends Oauth_Controller
 					{
 						// Output
 						$sentiment = $sentiment + $get_word->sentiment;	
-						$words_type[$get_word->word]	 = $get_word->type;
+						$words_type[$get_word->word] = $get_word->type;
 						$words_type_count[$get_word->type] = 1 + $words_type_count[$get_word->type];				
 					}
 					// Add Word
@@ -330,10 +330,6 @@ class Api extends Oauth_Controller
 		}
 
         $this->response($message, 200);
-
-
-		// Output
-		$word_count = count($words_raw);
 	}
 
 

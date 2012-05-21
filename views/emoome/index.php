@@ -16,7 +16,6 @@
 	</div>
 
 	<div id="index_signup">
-		<?php if ($this->social_auth->logged_in()): ?>
 		<h2>Ready to begin?</h2>
 		<h3>Get Started Now</h3>
 		<form method="post" name="user_signup_short" id="user_signup_short">
@@ -43,9 +42,6 @@
 				<input type="submit" name="submit" value="Signup">
 			</p>
 		</form>
-		<?php else: ?>
-		
-		<?php endif; ?>
 	</div>
 	<div class="clear"></div>
 
@@ -71,7 +67,7 @@
 
 
 
-
+<!-- Auth Pages -->
 <div id="content_login" class="content_left text_left hide">
 	<h1>Login</h1>
 	<form method="post" name="user_login" id="user_login">
@@ -127,47 +123,52 @@
 	</form>
 </div>
 
+
+
+
+<!-- Log Type: Feeling -->
+<div id="content_log_feeling" class="hide">
+
+	<div id="log_feeling" class="content_center text_center">
+		<h1>How do you feel right now?</h1>
+		<p><input type="text" name="log_feeling" id="log_val_feeling" placeholder="Good" value=""></p>
+		<p><a id="log_feel_next" class="button" href="javascript:logFeeling()">Next</a></p>
+	</div>
+	
+	<div id="log_action" class="content_center text_center hide">
+		<h1>What is one thing you did today?</h1>
+		<p><textarea name="log_action" id="log_val_action" placeholder="Walked my pet dog"></textarea></p>
+		<p><a id="log_action_next" href="javascript:logAction()" class="button">Next</a></p>
+	</div>
+	
+	<div id="log_describe" class="content_center text_center hide">
+		<h1>Describe in three words</h1>
+		<p id="log_describe_this"></p>
+		<p><input type="text" name="log_describe_1" id="log_val_describe_1" placeholder="Three" value=""></p>
+		<p><input type="text" name="log_describe_2" id="log_val_describe_2" placeholder="Separate" value=""></p>
+		<p><input type="text" name="log_describe_3" id="log_val_describe_3" placeholder="Words" value=""></p>
+		<p><a id="log_describe_next" class="button" href="javascript:logDescribe();">Finish</a></p>
+	</div>
+	
+	<form name="log_data" id="log_data">
+		<input type="hidden" name="log_type" value="feeling">
+	</form>
+	
+	<!-- Log Complete Screen -->
+	<div id="log_thanks" class="content_center text_center hide">
+		<h1>Thanks :)</h1>
+		<h3 id="log_completion_message"></h3>
+		<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
+	</div>
+
+</div>
+
+
 <script type="text/javascript">
 $(document).ready(function()
 {
-	// Already Logged In
-	var current_url	= document.location.hash.replace('#!/','');
-	var index_views = new Array('content_index', 'content_discover', 'content_visualize', 'content_about');
-	var pages_views	= new Array('content_login', 'content_signup');
-
-	if (current_url.length != '') 
-	{
-		var this_view = 'content_' + current_url;
-		
-		$.each(index_views, function(key, view)
-		{	
-			$('#' + view).hide();
-		});		
-
-		$.each(pages_views, function(key, view)
-		{	
-			if (view == this_view)
-			{
-				$('#' + view).delay(250).fadeIn();			
-			}
-			else
-			{
-				$('#' + view).hide();
-			}
-		});
-	}
-	else
-	{			
-		$.each(pages_views, function(key, view)
-		{	
-			$('#' + view).hide();
-		});	
-	
-		$.each(index_views, function(key, view)
-		{	
-			$('#' + view).delay(250).fadeIn();
-		});		
-	}
+	// Determine View
+	determineView();
 
 
 
@@ -176,136 +177,43 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		history.pushState("", document.title, window.location.pathname + window.location.search);
-		$('#content_login, #content_signup').hide();
 
-		$.each(index_views, function(key, view)
+		$.each(pages_views, function(key, view)
 		{	
-			$('#' + view).delay(250).fadeIn();
+			$('#' + view).hide();
 		});	
+
+		$('#content_index').delay(250).fadeIn();
 	});
 
-	// Show Login
-	$('#button_login').bind('click', function(e)
+
+	$('.navigation_button').bind('click', function(e)
 	{
-		$.each(index_views, function(key, view)
-		{	
-			$('#' + view).hide();
-		});		
+		var view = $(this).attr('href').split('#!/');
+		console.log('show view ' + view[1]);
 	
-		$('#content_signup').hide();
-		$('#content_login').delay(250).fadeIn();	
-	});
-
-	// Show Signup
-	$('#button_signup').bind('click', function(e)
-	{
-		$.each(index_views, function(key, view)
+		$.each(pages_views, function(key, view)
 		{	
 			$('#' + view).hide();
 		});
 
-		$('#content_login').hide();
-		$('#content_signup').delay(250).fadeIn();	
+		$('#content_' + view[1]).delay(250).fadeIn();	
 	});
-
-	$('#user_login').bind('submit', function(e)
-	{	
-		e.preventDefault();
-		$.validator(
-		{
-			elements :
-				[{
-					'selector' 	: '#login_email', 
-					'rule'		: 'email', 
-					'field'		: 'Please enter a valid Email',
-					'action'	: 'label'	
-				},{
-					'selector' 	: '#login_password', 
-					'rule'		: 'require', 
-					'field'		: 'Please enter your Password',
-					'action'	: 'label'
-				}],
-			message : '',
-			success	: function()
-			{
-				var login_data = $('#user_login').serializeArray();
-				login_data.push({'name':'session','value':'1'});
-			
-				$.ajax(
-				{
-					url			: base_url + 'api/users/login',
-					type		: 'POST',
-					dataType	: 'json',
-					data		: login_data,
-					beforeSend	: requestMade('Logging You In'),					
-			  		success		: function(result)
-			  		{
-						// Close Loading
-			  			requestComplete(result.message, result.status);
-	  			  		
-						if (result.status == 'success')
-						{
-							setTimeout(function() { window.location.href = base_url + 'record/feeling' });					
-						}
-				 	}
-				});
-			}
-		});
-	});
-
-
-	$("#user_signup").bind('submit', function(e)
-	{	
-		e.preventDefault();	
-		$.validator(
-		{
-			elements :		
-				[{
-					'selector' 	: '#signup_name', 
-					'rule'		: 'require', 
-					'field'		: 'Enter your name',
-					'action'	: 'label'					
-				},{
-					'selector' 	: '#signup_email', 
-					'rule'		: 'email', 
-					'field'		: 'Please enter a valid email',
-					'action'	: 'label'							
-				},{
-					'selector' 	: '#signup_password', 
-					'rule'		: 'require', 
-					'field'		: 'Please enter a password',
-					'action'	: 'label'					
-				}],
-			message : '',
-			success	: function()
-			{					
-				var signup_data = $('#user_signup').serializeArray();
-				signup_data.push({'name':'session','value':'1'},{'name':'password_confirm','value':$('#signup_password').val()});
-				$.ajax(
-				{
-					url			: base_url + 'api/users/signup',
-					type		: 'POST',
-					dataType	: 'json',
-					data		: signup_data,
-					beforeSend	: requestMade('Creating Account'),
-			  		success		: function(result)
-			  		{
-						// Close Loading
-			  			requestComplete(result.message, result.status);	
 	
-						if (result.status == 'success')
-						{							
-							$('[name=name]').val('');
-							$('[name=email]').val('');
-							$('[name=password]').val('');
 
-							setTimeout(function() { window.location.href = base_url + 'record/feeling' });
-						}
-				 	}
-				});
-			}
-		});
+
+	// Hijack Spacebar For Log...
+	$('#log_val_feeling').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
+	{		
+		printUserMessage('Enter only a single word (no spaces or numbers)');
+	});
+
+
+	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function()
+	{
+		printUserMessage('Enter only a single word (no spaces or numbers)');
 	});	
+	
 
 });
 </script>

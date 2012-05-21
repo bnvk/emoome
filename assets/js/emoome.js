@@ -37,7 +37,8 @@ function requestMade(message)
 {	
 	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
 	$('#request_lightbox').delay(250).fadeIn();
-/*
+
+/*	BORKED MOBILE DEVICE HIEGHT DETECTION
 	var new_lightbox_height = $('body').height();
 	console.log('window: ' + $(window).height() + ' body: ' + $('body').height() + ' new ' + new_lightbox_height);
 	$('#request_lightbox').height(new_lightbox_height);
@@ -67,7 +68,7 @@ function printUserMessage(message)
 {
 	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
 	$('#request_lightbox').delay(250).fadeIn();
-	$("#request_lightbox").delay(1500).fadeOut();		
+	$("#request_lightbox").delay(1500).fadeOut();
 
 	//$('#content_message').notify({status:'success',message:message});
 }
@@ -258,7 +259,6 @@ function logThanks()
 function countElementsArray(item, array)
 {
     var count = 0;
-
 	if (array !== undefined)
 	{
     	$.each(array, function(i,v) { if (v === item) count++; });
@@ -300,3 +300,164 @@ function geoErrorHandler(error)
 		break;	
 	}
 }
+
+
+function determineView()
+{
+	var current_url	= document.location.hash.replace('#!/','');
+
+	if (current_url.length != '') 
+	{		
+		var this_view = 'content_' + current_url;	
+
+		$.each(pages_views, function(key, view)
+		{	
+			if (view == this_view)
+			{
+				$('#' + view).delay(250).fadeIn();			
+			}
+			else
+			{
+				$('#' + view).hide();
+			}
+		});
+	}
+	else
+	{					
+		$.each(pages_views, function(key, view)
+		{	
+			$('#' + view).hide();
+		});
+		
+		$('#content_index').fadeIn('');
+	}
+}
+
+
+function showHeaderLogged()
+{
+	// Set User Data
+	$('#header_logged_avatar').css('background-image', 'url(' + user_data.image + ')');
+	$('#header_logged_name').html(user_data.name);
+	
+	var entry_count = 175;
+	
+	$('#header_logged_count').html("You've recorded " + entry_count + " entries");
+
+	// Show Header
+	$('#header_not_logged').hide();
+	$('#header_logged').fadeIn('normal');
+
+}
+
+// Live Actions
+$(document).ready(function()
+{
+
+	// Login
+	$('#user_login').bind('submit', function(e)
+	{	
+		e.preventDefault();
+		$.validator(
+		{
+			elements :
+				[{
+					'selector' 	: '#login_email', 
+					'rule'		: 'email', 
+					'field'		: 'Please enter a valid Email',
+					'action'	: 'label'	
+				},{
+					'selector' 	: '#login_password', 
+					'rule'		: 'require', 
+					'field'		: 'Please enter your Password',
+					'action'	: 'label'
+				}],
+			message : '',
+			success	: function()
+			{
+				var login_data = $('#user_login').serializeArray();
+				login_data.push({'name':'session','value':'1'});
+			
+				$.ajax(
+				{
+					url			: base_url + 'api/users/login',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: login_data,
+					beforeSend	: requestMade('Logging You In'),					
+			  		success		: function(result)
+			  		{
+						// Close Loading
+			  			requestComplete(result.message, result.status);
+	  			  		
+						if (result.status == 'success')
+						{
+							window.location.hash = '#!/log_feeling';
+							showHeaderLogged();
+							determineView();
+							logFeelingStart();
+						}
+				 	}
+				});
+			}
+		});
+	});
+
+	// Signup
+	$("#user_signup").bind('submit', function(e)
+	{	
+		e.preventDefault();	
+		$.validator(
+		{
+			elements :		
+				[{
+					'selector' 	: '#signup_name', 
+					'rule'		: 'require', 
+					'field'		: 'Enter your name',
+					'action'	: 'label'					
+				},{
+					'selector' 	: '#signup_email', 
+					'rule'		: 'email', 
+					'field'		: 'Please enter a valid email',
+					'action'	: 'label'							
+				},{
+					'selector' 	: '#signup_password', 
+					'rule'		: 'require', 
+					'field'		: 'Please enter a password',
+					'action'	: 'label'					
+				}],
+			message : '',
+			success	: function()
+			{					
+				var signup_data = $('#user_signup').serializeArray();
+				signup_data.push({'name':'session','value':'1'},{'name':'password_confirm','value':$('#signup_password').val()});
+				$.ajax(
+				{
+					url			: base_url + 'api/users/signup',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: signup_data,
+					beforeSend	: requestMade('Creating Account'),
+			  		success		: function(result)
+			  		{
+						// Close Loading
+			  			requestComplete(result.message, result.status);	
+	
+						if (result.status == 'success')
+						{							
+							$('[name=name]').val('');
+							$('[name=email]').val('');
+							$('[name=password]').val('');
+
+							window.location.hash = '#!/log_feeling';
+							showHeaderLogged();
+							determineView();
+							logFeelingStart();
+						}
+				 	}
+				});
+			}
+		});
+	});	
+	
+});
