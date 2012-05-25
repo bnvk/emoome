@@ -21,18 +21,18 @@
 		<form method="post" name="user_signup_short" id="user_signup_short">
 			<p>
 				<label>Name</label><br>
-				<input type="text" name="name" id="signup_name" placeholder="Joe Smith" autocorrect="off" value=""><br>
-				<span id="signup_name_error"></span>
+				<input type="text" name="name" id="signup_name_short" placeholder="Joe Smith" autocorrect="off" value=""><br>
+				<span id="signup_name_short_error"></span>
 			</p>
 			<p>
 				<label>Email</label><br>
-				<input type="text" name="email" id="signup_email" placeholder="your@email.com" autocorrect="off" value=""><br>
-				<span id="signup_email_error"></span>
+				<input type="text" name="email" id="signup_email_short" placeholder="your@email.com" autocorrect="off" value=""><br>
+				<span id="signup_email_short_error"></span>
 			</p>		
 			<p>
 				<label>Password</label><br>
-				<input type="password" name="password" id="signup_password" placeholder="********" autocorrect="off" value=""><br>
-				<span id="signup_password_error"></span>
+				<input type="password" name="password" id="signup_password_short" placeholder="********" autocorrect="off" value=""><br>
+				<span id="signup_password_short_error"></span>
 			</p>
 			<p>
 				<label>Language</lable><br>
@@ -46,7 +46,7 @@
 	<div class="clear"></div>
 
 	<div id="index_quotes">
-		<h1>Learn more about emo<span class="name_ome">ome...</span></h1>
+		<h1>Read about emo<span class="name_ome">ome...</span></h1>
 		<div class="quote_container">
 			<a href="http://www.readwriteweb.com/archives/how-well-get-beyond-the-emoticon.php" target="_blank">
 				<span class="quote_title">How We'll Get Beyond the Emoticon</span>
@@ -124,96 +124,11 @@
 </div>
 
 
-
-
-<!-- Log Type: Feeling -->
-<div id="content_log_feeling" class="hide">
-
-	<div id="log_feeling" class="content_center text_center">
-		<h1>How do you feel right now?</h1>
-		<p><input type="text" name="log_feeling" id="log_val_feeling" placeholder="Good" value=""></p>
-		<p><a id="log_feel_next" class="button" href="javascript:logFeeling()">Next</a></p>
-	</div>
-	
-	<div id="log_action" class="content_center text_center hide">
-		<h1>What is one thing you did today?</h1>
-		<p><textarea name="log_action" id="log_val_action" placeholder="Walked my pet dog"></textarea></p>
-		<p><a id="log_action_next" href="javascript:logAction()" class="button">Next</a></p>
-	</div>
-	
-	<div id="log_describe" class="content_center text_center hide">
-		<h1>Describe in three words</h1>
-		<p id="log_describe_this"></p>
-		<p><input type="text" name="log_describe_1" id="log_val_describe_1" placeholder="Three" value=""></p>
-		<p><input type="text" name="log_describe_2" id="log_val_describe_2" placeholder="Separate" value=""></p>
-		<p><input type="text" name="log_describe_3" id="log_val_describe_3" placeholder="Words" value=""></p>
-		<p><a id="log_describe_next" class="button" href="javascript:logDescribe();">Finish</a></p>
-	</div>
-	
-	<form name="log_data" id="log_data">
-		<input type="hidden" name="log_type" value="feeling">
-	</form>
-	
-	<!-- Log Complete Screen -->
-	<div id="log_thanks" class="content_center text_center hide">
-		<h1>Thanks :)</h1>
-		<h3 id="log_completion_message"></h3>
-		<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
-	</div>
-
-</div>
-
-
 <script type="text/javascript">
 $(document).ready(function()
 {
 	// Determine View
 	determineView();
-
-
-
-	// Show Index
-	$('#header_home').bind('click', function(e)
-	{
-		e.preventDefault();
-		history.pushState("", document.title, window.location.pathname + window.location.search);
-
-		$.each(pages_views, function(key, view)
-		{	
-			$('#' + view).hide();
-		});	
-
-		$('#content_index').delay(250).fadeIn();
-	});
-
-
-	$('.navigation_button').bind('click', function(e)
-	{
-		var view = $(this).attr('href').split('#!/');
-		console.log('show view ' + view[1]);
-	
-		$.each(pages_views, function(key, view)
-		{	
-			$('#' + view).hide();
-		});
-
-		$('#content_' + view[1]).delay(250).fadeIn();	
-	});
-	
-
-
-	// Hijack Spacebar For Log...
-	$('#log_val_feeling').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
-	{		
-		printUserMessage('Enter only a single word (no spaces or numbers)');
-	});
-
-
-	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function()
-	{
-		printUserMessage('Enter only a single word (no spaces or numbers)');
-	});	
-	
 
 });
 </script>
