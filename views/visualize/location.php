@@ -2,7 +2,7 @@
 #nearby_feelings_map { width: 100%; height: 600px; }
 </style>
 
-<h1>Location Map : <?= $this->session->userdata('name') ?></h1>
+<h1>Visualize : Location Map</h1>
 <div id="nearby_feelings_map"></div>
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>

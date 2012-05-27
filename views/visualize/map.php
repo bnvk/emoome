@@ -1,4 +1,4 @@
-<h1>Language Map : <?= $this->session->userdata('name') ?></h1>
+<h1>Visualize : Language Map</h1>
 
 <div id="user_word_container">
 	<div id="user_word_map"><div id="user_word_colors"></div></div>

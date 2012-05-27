@@ -1,4 +1,5 @@
 <div id="content_menu" class="content_center text_center">
+	<h1>Settings</h1>
 	<p>
 		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">
 			<span class="cat_link_icon_small icon_small_notifications"></span>
