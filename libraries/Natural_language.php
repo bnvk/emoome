@@ -15,7 +15,7 @@ class Natural_language {
 	function __construct() 
 	{
 		$this->ci =& get_instance();
-		$this->ci->lang->load('stop_words');
+		$this->ci->lang->load('words');
 	}
      
 	function remove_words($words, $stoplist)
@@ -37,6 +37,7 @@ class Natural_language {
 		return $thisword;	
 	}
 	
+	// Checks If Word Is In List
     function check_word($checkword, $stoplist)
     {
     	$stopwords = $this->ci->lang->line($stoplist);

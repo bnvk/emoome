@@ -1,4 +1,5 @@
 <div id="content_menu" class="content_center text_center">
+	<h1>Settings</h1>
 	<p>
 		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">
 			<span class="cat_link_icon_small icon_small_notifications"></span>
@@ -17,6 +18,13 @@
 		<a id="button_password" class="category_button" href="<?= base_url() ?>emoome/user/#!/password">
 			<span class="cat_link_icon_small icon_small_password"></span>		
 			<span class="cat_link_text_small">Password</span>
+	  		<br class="clear">
+		</a>
+	</p>
+	<p>
+		<a class="category_button" href="<?= base_url() ?>logout">
+			<span class="cat_link_icon_small icon_small_login"></span>		
+			<span class="cat_link_text_small">Logout</span>
 	  		<br class="clear">
 		</a>
 	</p>

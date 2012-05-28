@@ -53,6 +53,13 @@ class Home extends Dashboard_Controller
 		
 		
 		$this->render('dashboard_wide');
-	}		
+	}	
+	
+	function analyze()
+	{
+		$this->data['sub_title']	= 'Analyze';	
+	
+		$this->render('dashboard_wide');		
+	}	
 	
 }

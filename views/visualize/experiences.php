@@ -1,4 +1,4 @@
-<h1>Experiences : <?= $this->session->userdata('name') ?></h1>
+<h1>Visualize : Experiences</h1>
 
 <div id="user_experiences">
 

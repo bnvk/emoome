@@ -12,16 +12,7 @@ class Emoome extends Site_Controller
 
 	function index()
 	{	
-		$this->data['page_title']	= 'Welcome to ';
+		redirect();
+	}
 
-		$this->render();
-	}
-	
-	function nearby()
-	{
-		$this->data['page_title']	= 'Nearby Feelings';
-		
-		$this->render();
-	}
-	
 }

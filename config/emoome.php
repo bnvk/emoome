@@ -19,7 +19,7 @@ $config['emoome_word_types'] = array(
 	'E' => 'Emotional',
 	'I' => 'Intellectual',
 	'S' => 'Sensory',
-	'D' => 'Descriptor',
+	'D' => 'Descriptive',
 	'A' => 'Action',
 	'P' => 'Physical',
 	'U' => 'Undecided'
@@ -137,4 +137,3 @@ $config['emoome_brown_corpus_speech'] = array(
 	'WQL' 	=> 'wh- qualifier (how)',
 	'WRB' 	=> 'wh- adverb (how, where, when)'
 );
-

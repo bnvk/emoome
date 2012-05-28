@@ -7,11 +7,12 @@ class Utilities extends MY_Controller
 
 		// Load Things
 		$this->load->config('emoome');
+		$this->lang->load('words');		
 		$this->load->model('emoome_model');
 
 		if ($this->session->userdata('user_level_id') != 1) redirect();
 	}
-	
+
 	function stem()
 	{
 		$this->load->library('natural_language');
@@ -26,6 +27,7 @@ class Utilities extends MY_Controller
 		
 		if ($the_file)
 		{
+			// Opens TXT File of Words
 			$file_handle	= fopen($the_file, 'r');
 			$dictionary		= fread($file_handle, 5000000);
 			$output			= '';
@@ -51,7 +53,7 @@ class Utilities extends MY_Controller
 				}
 				else
 				{
-					$this->emoome_model->add_word($word, $sentiment);
+					$this->emoome_model->add_word($word, TRUE);
 					$output .= 'added: '.$word.'<br>';
 				}
 			}
@@ -89,7 +91,6 @@ class Utilities extends MY_Controller
 		}	
 	}
 
-
 	function pos_tagger()
 	{
 		$this->load->library('post_tagger');
@@ -103,5 +104,21 @@ class Utilities extends MY_Controller
         	echo '<B>'.$t['token'] . "</B> - " . $part_of_speech[$pos].  "<br>";
         }
 	}
-	
+
+	function add_words()
+	{
+		$words_array = $this->lang->line('common');
+		$output = '';
+
+		foreach ($words_array as $word)
+		{
+			$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
+			$add_word = $this->emoome_model->add_word($word, TRUE, 'D', 'C');
+			$output .= $add_word.' '.$word.'<br>';
+		}
+
+		echo $output;
+	}
+
+
 }
