@@ -107,15 +107,18 @@ class Utilities extends MY_Controller
 
 	function add_words()
 	{
-		$this->lang->load('nature');
-		$words_array = $this->lang->line('nature_positive');
+		$this->lang->load('objects');
+		$words_array = $this->lang->line('objects_negative');
 		$output = '';
 
-		foreach ($words_array as $word)
+		if ($words_array)
 		{
-			$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
-			$add_word = $this->emoome_model->add_word($word, TRUE, 'S', 'N', 'U', 1);
-			$output .= $add_word.' '.$word.'<br>';
+			foreach ($words_array as $word)
+			{
+				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
+				$add_word = $this->emoome_model->add_word($word, TRUE, 'D', 'J', 'U', -1);
+				$output .= $add_word.' '.$word.'<br>';
+			}
 		}
 
 		echo $output;
