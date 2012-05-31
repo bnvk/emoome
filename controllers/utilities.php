@@ -107,18 +107,43 @@ class Utilities extends MY_Controller
 
 	function add_words()
 	{
-		$words_array = $this->lang->line('common');
+		$this->lang->load('nature');
+		$words_array = $this->lang->line('nature_positive');
 		$output = '';
 
 		foreach ($words_array as $word)
 		{
 			$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
-			$add_word = $this->emoome_model->add_word($word, TRUE, 'D', 'C');
+			$add_word = $this->emoome_model->add_word($word, TRUE, 'S', 'N', 'U', 1);
 			$output .= $add_word.' '.$word.'<br>';
 		}
 
 		echo $output;
 	}
+	
+	// Simple tool for cleaning text to copy into an array()
+	function clean_text()
+	{
+		$text = "";
 
+		// Prepare Text
+		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
+		$text	= preg_replace('/\s+/', ' ', $text);		// Strip Whitespace & Breaks
+		$text	= strtolower($text);						// Lowercase
+		$words	= explode(" ", $text);						// Make into array
+		$words	= array_unique($words);						// Remove Duplicates 	
+		$output = '';
+
+		sort($words);
+
+		// Loop through words
+		foreach ($words as $word)
+		{
+			// Clean
+			$output .= '"'.$word.'",';
+		}
+
+		echo $output;
+	}
 
 }
