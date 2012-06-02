@@ -442,7 +442,6 @@ class Emoome_model extends CI_Model
 
 		return FALSE;	
 	}
-	
 
 
 	/* Thoughts */
