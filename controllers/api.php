@@ -332,21 +332,13 @@ class Api extends Oauth_Controller
 	}
 	
 	
-	function get_thought_words_get()
+	function get_thoughts_words_get()
 	{
-		if ($logs = $this->emoome_model->get_logs_user(1))
-		{
-			$log_array	= array();
-			$output		= array();
+		$category_id = 1;
 
-			foreach ($logs as $log)
-			{
-				$log_array[] = $log->log_id;
-			}
-			
-			$words = $this->emoome_model->get_words_links($log_array);
-			
-            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'logs' => $logs, 'words' => $words);
+		if ($words = $this->emoome_model->get_thoughts_category($category_id))
+		{			
+            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'words' => $words);
 		}
 		else
 		{
