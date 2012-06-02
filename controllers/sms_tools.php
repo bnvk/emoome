@@ -1,5 +1,5 @@
 <?php
-class Sms extends MY_Controller
+class Sms_tools extends MY_Controller
 {
     function __construct()
     {
@@ -94,8 +94,36 @@ class Sms extends MY_Controller
 			// Insert
 			$result = $this->social_igniter->add_content($sms_data);
 		}
+		
+		// Ask For Email
+		if ($ask_for_email)
+		{
+			$this->load->config('twilio/twilio');
+			$this->load->library('twilio/twilio');
+			
+			$sms_from 	= config_item('twilio_phone_number');
+			$sms_to		= $from;
+			$message 	= 'Please send us your email before you start';
+	
+			$send_sms = $this->twilio->sms($sms_from, $sms_to, $message);
+		}
+	}
+	
+	function send_sms()
+	{
+	
+		$this->load->config('twilio/twilio');
+		$this->load->library('twilio/twilio');
 
+		$from		= substr('+15036622442', -10);
 
+		
+		$sms_from 	= config_item('twilio_phone_number');
+		$sms_to		= $from;
+		$message 	= 'Please send us your email before you start';
+
+		$send_sms = $this->twilio->sms($sms_from, $sms_to, $message);		
+		
 	}
 	
 	function test()
