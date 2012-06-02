@@ -195,32 +195,9 @@ class Api extends Oauth_Controller
 		echo 'Total: '.$sentiment_total;
 	}
 
-	// Log Thought
-	function log_thought_authd_post()
-	{
-	   	$this->form_validation->set_rules('log_thought', 'Thought', 'required');
 
-		// Passes Validation
-	    if ($this->form_validation->run() == true)
-	    {	
-	    	$log_thought = $this->emoome_model->add_thought($this->oauth_user_id, $this->input->post('category_id'), $this->input->post('source'), $this->input->post('log_thought'));
 
-			if ($log_thought)
-			{
-	            $message = array('status' => 'success', 'message' => 'Success we logged your thought', 'data' => $log_thought);		
-			}
-			else
-			{
-	            $message = array('status' => 'error', 'message' => 'Oops could not log your thought');
-			}			
-		}
-		else
-		{
-	    	$message = array('status' => 'error', 'message' => validation_errors());		
-		}			
 
-        $this->response($message, 200);	
-	}
 
 	// Tools
 	function analyze_text_post()
@@ -309,6 +286,10 @@ class Api extends Oauth_Controller
         $this->response($message, 200);
 	}
 	
+	
+	
+	
+	
 	/* Thoughts Stuff */
 	function get_thoughts_words_get()
 	{
@@ -331,7 +312,31 @@ class Api extends Oauth_Controller
         $this->response($message, 200);			
 	}
 
+	function log_thought_authd_post()
+	{
+	   	$this->form_validation->set_rules('log_thought', 'Thought', 'required');
 
+		// Passes Validation
+	    if ($this->form_validation->run() == true)
+	    {	
+	    	$log_thought = $this->emoome_model->add_thought($this->oauth_user_id, $this->input->post('category_id'), $this->input->post('source'), $this->input->post('log_thought'));
+
+			if ($log_thought)
+			{
+	            $message = array('status' => 'success', 'message' => 'Success we logged your thought', 'data' => $log_thought);		
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'Oops could not log your thought');
+			}			
+		}
+		else
+		{
+	    	$message = array('status' => 'error', 'message' => validation_errors());		
+		}			
+
+        $this->response($message, 200);	
+	}
 	
 
 

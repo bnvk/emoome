@@ -35,8 +35,8 @@ class Sms_tools extends MY_Controller
 		
 		if ($user)
 		{
-			$user_id = $user->user_id;
-			$process_sms = TRUE;
+			$user_id		= $user->user_id;
+			$process_sms	= TRUE;
 		}
 		else
 		{
@@ -55,8 +55,8 @@ class Sms_tools extends MY_Controller
 		    	// Create User
 		    	if ($new_user = $this->social_auth->register($username, $password, $has_email[0], $additional_data, config_item('default_group')))
 		    	{
-			    	$user_id	= $new_user_id->user_id;
-			    	$process_sms= TRUE;
+			    	$user_id		= $new_user_id->user_id;
+			    	$process_sms	= TRUE;
 				}
 			}
 			else
@@ -68,31 +68,7 @@ class Sms_tools extends MY_Controller
 		// Process SMS
 		if ($process_sms)
 		{
-	    	$sms_data = array(
-	    		'site_id'			=> config_item('site_id'),
-				'parent_id'			=> 0,
-				'category_id'		=> $category_id,
-				'module'			=> 'emoome',
-				'type'				=> 'sms_log',
-				'source'			=> $this->input->post('From'),
-				'order'				=> 0,
-	    		'user_id'			=> $user_id,
-				'title'				=> 'Text Message '.$this->input->post('Sid'),
-				'title_url'			=> 'text_message_'.$this->input->post('Sid'),
-				'content'			=> $this->input->post('Body'),
-				'details'			=> $this->input->post('DateCreated'),
-				'canonical'			=> $this->input->post('Uri'),
-				'access'			=> 'E',
-				'comments_allow'	=> 'Y',
-				'geo_lat'			=> 0,
-				'geo_long'			=> 0,
-				'viewed'			=> 'N',
-				'approval'			=> 'Y',
-				'status'			=> 'P'
-	    	);
-	
-			// Insert
-			$result = $this->social_igniter->add_content($sms_data);
+	    	$log_thought = $this->emoome_model->add_thought($user_id, 9, 'sms', $this->input->post('Body'));
 		}
 		
 		// Ask For Email
