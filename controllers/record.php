@@ -14,7 +14,7 @@ class Record extends Site_Controller
 	
 	function index()
 	{
-		//redirect('record/feeling');
+		if ($this->session->userdata('user_level_id') == 4) redirect('record/feeling');
 	
 		$this->data['page_title'] 	= 'Record';
 		
@@ -38,6 +38,13 @@ class Record extends Site_Controller
 	function goal()
 	{
 		$this->data['page_title']	= 'Goal Mapper';
+		
+		$this->render();
+	}
+
+	function thought()
+	{
+		$this->data['page_title']	= 'Group Thought';
 		
 		$this->render();
 	}

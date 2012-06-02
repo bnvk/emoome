@@ -194,52 +194,30 @@ class Api extends Oauth_Controller
 		echo 'Describe: '.$sentiment_describe.'<br>';
 		echo 'Total: '.$sentiment_total;
 	}
-	
 
-	// Log Music
-	function log_music_authd_post()
+	// Log Thought
+	function log_thought_authd_post()
 	{
+	   	$this->form_validation->set_rules('log_thought', 'Thought', 'required');
 
-		if ($_POST)
-		{
-            $message = array('status' => 'success', 'message' => 'Success item added to cart', 'data' => $_POST);		
+		// Passes Validation
+	    if ($this->form_validation->run() == true)
+	    {	
+	    	$log_thought = $this->emoome_model->add_thought($this->oauth_user_id, $this->input->post('category_id'), $this->input->post('source'), $this->input->post('log_thought'));
+
+			if ($log_thought)
+			{
+	            $message = array('status' => 'success', 'message' => 'Success we logged your thought', 'data' => $log_thought);		
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'Oops could not log your thought');
+			}			
 		}
 		else
 		{
-            $message = array('status' => 'error', 'message' => 'Could not find any classes');
-		}
-
-        $this->response($message, 200);	
-	}	
-
-	// Log Photo
-	function log_image_authd_post()
-	{
-
-		if ($_POST)
-		{
-            $message = array('status' => 'success', 'message' => 'Success item added to cart', 'data' => $_POST);		
-		}
-		else
-		{
-            $message = array('status' => 'error', 'message' => 'Could not find any classes');
-		}
-
-        $this->response($message, 200);	
-	}		
-
-	// Log Place
-	function log_place_authd_post()
-	{
-
-		if ($_POST)
-		{
-            $message = array('status' => 'success', 'message' => 'Success item added to cart', 'data' => $_POST);		
-		}
-		else
-		{
-            $message = array('status' => 'error', 'message' => 'Could not find any classes');
-		}
+	    	$message = array('status' => 'error', 'message' => validation_errors());		
+		}			
 
         $this->response($message, 200);	
 	}
@@ -334,15 +312,20 @@ class Api extends Oauth_Controller
 	/* Thoughts Stuff */
 	function get_thoughts_words_get()
 	{
-		$category_id = $this->get('id');
-
-		if ($words = $this->emoome_model->get_thoughts_category($category_id))
-		{			
-            $message = array('status' => 'success', 'message' => 'Success some thoughts found', 'words' => $words);
+		if ($this->get('id'))
+		{
+			if ($words = $this->emoome_model->get_thoughts_category($this->get('id')))
+			{			
+	            $message = array('status' => 'success', 'message' => 'Success some thoughts found', 'words' => $words);
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'There are no thoughts for this');
+			}
 		}
 		else
 		{
-            $message = array('status' => 'error', 'message' => 'There are no thoughts for this');
+	    	$message = array('status' => 'error', 'message' => 'Specify a category of thoughts');			
 		}
 
         $this->response($message, 200);			

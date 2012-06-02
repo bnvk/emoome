@@ -2,24 +2,16 @@
 
 	<p>
 	<a id="button_cat_feeling" class="category_button" href="<?= base_url() ?>record/feeling">
-	  <span class="cat_link_icon icon_profile"></span>
+	  <span class="cat_link_icon_small icon_small_profile"></span>
 	  <span class="cat_link_text">How You Feel</span>
 	  <br class="clear">
 	</a>
 	</p>
 
 	<p>
-	<a id="button_cat_memory" class="category_button" href="<?= base_url() ?>record/memory">
-	  <span class="cat_link_icon icon_brain"></span>
-	  <span class="cat_link_text">Memory Builder</span>
-	  <br class="clear">
-	</a>
-	</p>
-
-	<p>
-	<a id="button_cat_memory" class="category_button" href="<?= base_url() ?>record/goal">
-	  <span class="cat_link_icon icon_lightbulb"></span>
-	  <span class="cat_link_text">Goal Mapper</span>
+	<a id="button_cat_memory" class="category_button" href="<?= base_url() ?>record/thought">
+	  <span class="cat_link_icon_small icon_small_brain"></span>
+	  <span class="cat_link_text">Group Thought</span>
 	  <br class="clear">
 	</a>
 	</p>
