@@ -16,7 +16,7 @@
 
 <div id="visualize_common" class="hide">
 	<h2>Common Words & Feelings</h2>
-	<?php $common_count=0; foreach ($common_words as $count => $words): if ($common_count <= 6): $common_count++; ?>
+	<?php $common_count=0; foreach ($common_words as $count => $words): if ($common_count <= 7): $common_count++; ?>
 	<div class="common_words">
 		<div class="common_words_count"><?= $count ?></div>
 		<div class="common_words_words">

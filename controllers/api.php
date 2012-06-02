@@ -244,7 +244,6 @@ class Api extends Oauth_Controller
         $this->response($message, 200);	
 	}
 
-
 	// Tools
 	function analyze_text_post()
 	{
