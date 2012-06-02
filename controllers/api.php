@@ -331,25 +331,22 @@ class Api extends Oauth_Controller
         $this->response($message, 200);
 	}
 	
-	
+	/* Thoughts Stuff */
 	function get_thoughts_words_get()
 	{
-		$category_id = 1;
+		$category_id = $this->get('id');
 
 		if ($words = $this->emoome_model->get_thoughts_category($category_id))
 		{			
-            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'words' => $words);
+            $message = array('status' => 'success', 'message' => 'Success some thoughts found', 'words' => $words);
 		}
 		else
 		{
-            $message = array('status' => 'error', 'message' => 'You have not recorded any logs');
+            $message = array('status' => 'error', 'message' => 'There are no thoughts for this');
 		}
 
-        $this->response($message, 200);	
-		
-		
+        $this->response($message, 200);			
 	}
-
 
 
 	
