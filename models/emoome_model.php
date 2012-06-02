@@ -451,6 +451,7 @@ class Emoome_model extends CI_Model
 			'user_id'		=> $user_id,
 			'category_id'	=> $category_id,
 			'source'		=> $source,
+			'thought'		=> $thought,
 			'created_at'	=>  unix_to_mysql(now())
 		);
 
