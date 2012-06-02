@@ -40,7 +40,10 @@ class Sms_tools extends MY_Controller
 		}
 		else
 		{
+			$user_id		= 0;
+			$process_sms	= TRUE;
 			// Check For Email
+			/*
 			if (preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $this->input->post('Body'), $has_email))
 			{ 
 				$username			= url_username($from, 'none', true);
@@ -63,6 +66,7 @@ class Sms_tools extends MY_Controller
 			{
 				$ask_for_email = TRUE;
 			}
+			*/
 		}
 	
 		// Process SMS
@@ -72,6 +76,7 @@ class Sms_tools extends MY_Controller
 		}
 		
 		// Ask For Email
+		/*
 		if ($ask_for_email)
 		{
 			$this->load->config('twilio/twilio');
@@ -79,10 +84,11 @@ class Sms_tools extends MY_Controller
 			
 			$sms_from 	= config_item('twilio_phone_number');
 			$sms_to		= $from;
-			$message 	= 'Please send us your email before you start';
+			$message 	= 'Please send us your email address before you start';
 	
 			$send_sms = $this->twilio->sms($sms_from, $sms_to, $message);
 		}
+		*/
 	}
 	
 	function send_sms()
@@ -104,19 +110,12 @@ class Sms_tools extends MY_Controller
 	
 	function test()
 	{
-		$string = 'ni@brennannovak.cc';
+		$from			= substr('+15036622442', -10);
+		$user			= $this->social_auth->get_user('phone_number', 5036622442);	
 		
-		if (preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $string, $email))
-		{ 
-			echo 'has email';
-			
-			print_r($email[0]);
-		}
-		else
-		{
-			echo 'nope';
-			
-		}
+		echo  'Hiii';
+	
+		print_r($user);
 	}
 	
 }
