@@ -11,8 +11,8 @@ class Emoome extends Site_Controller
 	}
 
 	function index()
-	{	
-		redirect();
+	{			
+		$this->load->view('../views/emoome/index');
 	}
 
 }

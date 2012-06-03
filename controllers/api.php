@@ -288,8 +288,7 @@ class Api extends Oauth_Controller
 	
 	
 	
-	
-	
+		
 	/* Thoughts Stuff */
 	function get_thoughts_words_get()
 	{

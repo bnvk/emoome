@@ -49,6 +49,8 @@ var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sen
 var word_types_sub	= {"M":"Moral","S":"Slang","P":"Perception","Y":"Psychological","L":"Feeling","F":"Food","C":"Common","U":"Undecided"}
 var speech_types	= {"V":"Verb","N":"Noun","P":"Pro Noun","A":"Adjective","D":"Adverb","R":"Prepositon","C":"Conjunction","I":"Interjection"};
 
+
+
 /* User Messages */
 var messages = {
 	"log_feeling_complete" : [
@@ -499,7 +501,12 @@ function logThought()
 	});
 }
 
-
+function logThoughtThanks()
+{
+	//jQT.goTo('#log_action', 'slideleft');
+	$('#log_thanks').fadeOut();
+	logThoughtStart();
+}
 
 
 // Live Actions

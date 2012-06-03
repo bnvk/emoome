@@ -11,7 +11,7 @@
 <div id="log_thanks" class="content_center text_center hide">
 	<h1>Thanks :)</h1>
 	<h3 id="log_completion_message"></h3>
-	<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
+	<p><a class="button" href="javascript:logThoughtThanks();">Another</a></p>
 </div>
 
 <script type="text/javascript">
