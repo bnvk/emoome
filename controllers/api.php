@@ -300,12 +300,12 @@ class Api extends Oauth_Controller
 			}
 			else
 			{
-	            $message = array('status' => 'error', 'message' => 'There are no thoughts for this');
+	            $message = array('status' => 'error', 'message' => 'There are no thoughts for this', 'words' => 0);
 			}
 		}
 		else
 		{
-	    	$message = array('status' => 'error', 'message' => 'Specify a category of thoughts');			
+	    	$message = array('status' => 'error', 'message' => 'Specify a category of thoughts', 'words' => 0);			
 		}
 
         $this->response($message, 200);			

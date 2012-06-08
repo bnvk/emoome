@@ -72,7 +72,7 @@ class Sms_tools extends MY_Controller
 		// Process SMS
 		if ($process_sms)
 		{
-	    	$log_thought = $this->emoome_model->add_thought($user_id, 9, 'sms', $this->input->post('Body'));
+	    	$log_thought = $this->emoome_model->add_thought($user_id, 10, 'sms', $this->input->post('Body'));
 		}
 		
 		// Ask For Email

@@ -21,15 +21,15 @@ p			{ font-size: 14px; margin: 10px 0 25px 0; }
 /* Start App CSS */
 body	{  background: #e9e8e8; /* background: #e9e8e8; */ margin: 20px; font-size: 13px; line-height: 1.231; font-family: Helvetica, Arial, Sans-serif; font-size: 14px; }
 
-#header		{ height: 75px; }
-#header	h1	{ float: left; } 
+#header			{ height: 75px; }
+#header	h1		{ float: left; } 
  
-#nav	{ margin-bottom: 30px; float: right; margin-top: 15px; }
-#nav a	{ background: #c6c6c6; padding: 8px 15px; border-radius: 10px; font-size: 18px; margin: 15px; text-decoration: none; color: #333333; }
+#nav			{ margin-bottom: 30px; float: right; margin-top: 15px; }
+#nav a			{ background: #c6c6c6; padding: 8px 15px; border-radius: 10px; font-size: 18px; margin: 15px; text-decoration: none; color: #333333; }
 
 #slideshow		{ position: relative; top: 0px; left: 0px; margin-left: 15px; }
 #slideshow img	{ height: 375px; }
- 
+  
 #graphs { 
 	position: relative;
 	top: 400px;
@@ -75,7 +75,6 @@ span.word_count {
 #P_words { background-color: #cf00ee; }
 #A_words { background-color: #ee9700; }
 
-
 </style>
 
 </head>
@@ -110,7 +109,6 @@ span.word_count {
 	<ul id="A_words" class="word_column"></ul>
 </div>
 
-
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
 <script type="text/javascript" src="http://localhost/js/social.core.js"></script>
 
@@ -134,14 +132,12 @@ $(document).ready(function()
 	});
 	
 	jQuery.data(document.body, 'word_count', 0);
-	
-	console.log(jQuery.data(document.body, 'word_count'));
 
-	$('body').everyTime(5000, function()
+	$('body').everyTime(1000, function()
 	{	
 		$.ajax(
 		{
-			url			: 'http://localhost/api/emoome/get_thoughts_words/id/9',
+			url			: 'http://emoo.me/api/emoome/get_thoughts_words/id/10',
 			type		: 'GET',
 			dataType	: 'json',
 		  	success		: function(result)
@@ -157,32 +153,27 @@ $(document).ready(function()
 					for (raw_array in result.words)
 					{
 						var word = result.words[raw_array];	
-
 						if (word.word !== 'undefined')
 						{						
 							if ($('#word_' + word.word).length)
 							{
 								var current_count = $('#word_count_' + word.word).html();
 								var increment_count	= parseInt(current_count) + 1;
-								
-								console.log('current ' + current_count + ' inc: ' + current_count);
-													
+								//console.log('current ' + current_count + ' inc: ' + current_count);
 								$('#word_count_' + word.word).html(increment_count);
 							}
 							else
 							{
 								$('#' + word.type + '_words').append('<li id="word_' + word.word + '">' + word.word + '<span id="word_count_' + word.word + '" class="word_count">1</span></li>');	
 							}
-							
 							//console.log(word.word);
-				  			
 				  		}
 					}
 		  		}
 		  		else
 		  		{
 			  		console.log('no new words');	
-		  		}		  			  	
+		  		}		  			  			  	
 		  	}		
 		});			
 
