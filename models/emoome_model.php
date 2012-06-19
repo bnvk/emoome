@@ -509,6 +509,8 @@ class Emoome_model extends CI_Model
  		$result 	= $this->db->get();
  		$logs		= $result->result();
  		$log_ids 	= array();
+	 	$types		= config_item('emoome_word_types_count');
+ 	 	$sentiment	= 0;
  		
  		if ($logs)
  		{
@@ -525,8 +527,6 @@ class Emoome_model extends CI_Model
 	 		$this->db->or_where_in('emoome_words_link.log_id', $log_ids);
 	 		$result 	= $this->db->get();
 	 		$words 		= $result->result();
-	 		$types		= config_item('emoome_word_types_count');
-	 		$sentiment	= 0;
 
 	 		// Add Words To Logs
 	 		foreach ($logs as $log)
@@ -549,12 +549,14 @@ class Emoome_model extends CI_Model
 			 			else $this_words[] = $word->word;
 		 			}
 	 			}
-	 		
+
 	 			$log->feeling	= $this_feeling;
 		 		$log->words		= $this_words;
 	 		}
  		}
-		
+
+ 		arsort($types);
+
 		$output = array(
 			'types'			=> $types,
 			'sentiment'		=> $sentiment,

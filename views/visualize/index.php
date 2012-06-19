@@ -7,17 +7,26 @@
 	</div>
 </div>
 
-<h1 id="visualize_title" class="hide">Visualize</h1>
+<h1 id="visualize_title" class="hide">Visualize : Your Language</h1>
 <div id="visualize_language" class="hide">
-	<h2>Your Language</h2>
-	<div id="person_circles"><div class="clear"></div></div>
-	<p id="your_language_map" class="hide"><a class="button" href="<?= base_url() ?>visualize/map">Your Language Map</a></p>
+	<!-- <div id="person_circles"><div class="clear"></div></div> -->
+
+	<div id="visualize_last_five">
+		<h3>Last Five Entries</h3>
+		<!-- <h3>Feeling: <span id="last_five_feeling"></span></h3> -->
+		<div id="last_five"></div>
+	</div>
+	
+	<div id="visualize_all_time">
+		<h3>All Entries</h3>
+		<div id="all_time"></div>
+	</div>
+
+	<div class="clear"></div>
+	<p id="your_language_map" ><a class="button" href="<?= base_url() ?>visualize/map">Your Language Map</a></p>
+
 </div>
 
-<div id="visualize_last_five">
-	<h2>Last Five Entries</h2>
-	<div id="last_five"></div>
-</div>
 
 <div id="visualize_common" class="hide">
 	<h2>Common Words & Feelings</h2>
@@ -49,7 +58,6 @@
 <p>We don't know what these words mean, but you have mentioned them in your activities more than once.</p>
 <p>These words might be people, places, or things you do. You can help us better understand you by flagging these words.</p>
 -->
-
 <script type="text/javascript" src="<?= $this_module_assets ?>js/raphael.js"></script>
 <script type="text/javascript" src="<?= $this_module_assets ?>js/g.raphael.js"></script>
 <script type="text/javascript" src="<?= $this_module_assets ?>js/g.pie.js"></script>
@@ -68,7 +76,6 @@ $(document).ready(function()
 
 	function doWordTypes()
 	{
-		// Do Total (key = 'Emotional' and value = 36)
 		$.each(word_map, function(key, value)
 		{
 			total = value + total;
@@ -113,44 +120,64 @@ $(document).ready(function()
 			}
 		});
 		
-		$('#visualize_language').delay(500).fadeIn();	
-		
-		// Show Map Link (if not Mobile)
-		if (user_data.source != 'mobile')
-		{
-			$('#your_language_map').fadeIn();
-		}
+		$('#visualize_language').delay(500).fadeIn();
 	}
 	
 
 	function doLastFive()
 	{
-		var types 			= last_five.types;
-		
-		console.log(types);
-		
-		var types_sorted	= types.sort();
+		// Detect Mood
+		//var feeling = renderSentimentHuman(last_five.sentiment, 20);
+		//$('#last_five_feeling').html(feeling);
+	
+		// Create Pie Chart
+		var types 			= last_five.types;		
 		var types_colors	= new Array();
 		var word_values		= new Array();
 		var word_percents	= new Array();
 	
 		// Build Data Values
-		for (var type in types_sorted)
+		for (var type in types)
 		{			
 			if (type != 'U')
 			{
-				console.log(type + ' ' + type_colors[type]);
-			
-				types_colors.push(type_colors[type]);
-				word_values.push(types_sorted[type]);
+				word_values.push(types[type]);			
 				word_percents.push("%% " + word_types[type]);
+				types_colors.push(type_colors[type]);
 			}
-		}		
+		}
+		
+		renderPieChart("last_five", word_values, word_percents, types_colors);
+	}
+
+	function doAllTime()
+	{	
+		// Create Pie Chart
+		var types 			= word_map;		
+		var types_colors	= new Array();
+		var word_values		= new Array();
+		var word_percents	= new Array();
 	
-		console.log(types_colors);
+		// Build Data Values
+		for (var type in types)
+		{			
+			if (type[0] != 'U')
+			{
+				console.log(type[0]);
+			
+				word_values.push(types[type]);			
+				word_percents.push("%% " + type);
+				types_colors.push(type_colors[type[0]]);
+			}
+		}
 	
-	    var r = Raphael("last_five", 600, 400);
-	    pie = r.piechart(170, 170, 150, word_values,
+		renderPieChart("all_time", word_values, word_percents, types_colors);
+	}	
+	
+	function renderPieChart(element, word_values, word_percents, types_colors)
+	{
+	    var r = Raphael(element, 575, 375);
+	    pie = r.piechart(175, 175, 150, word_values,
 	    { 
 	    	colors 	 : types_colors,
 	    	legend	 : word_percents,
@@ -159,29 +186,25 @@ $(document).ready(function()
 	    }).attr({"font": "24px 'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-family": "'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-size": 24, "font-weight": 100, "letter-spacing": 2});
 
 	    pie.hover(function()
-	    {
-	    	console.log('here in hover');
-	    
+	    {	    
 	        this.sector.stop();
 	        this.sector.scale(1.1, 1.1, this.cx, this.cy);
 	
 	        if (this.label) {
 	            this.label[0].stop();
-	            this.label[0].attr({ scale: 2 });
-	            this.label[1].attr({ "font-weight": 100, "font-size": 30 });
+	            this.label[0].attr({ r : 15 });
 	        }
 	    }, function() 
-	    {
-	    	console.log('here in hover off');
-	    
+	    {	    
 	        this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 1000, "bounce");
 	
 	        if (this.label)
 	        {
-	            this.label[0].animate({ scale: 1 }, 750, "bounce");
-	            this.label[1].attr({ "font-weight": 100, "font-size": 24 });
+	            this.label[0].animate({ r : 10 }, 750, "bounce");
 	        }
-	    });
+	    });		
+	
+		return true;	
 	}
 
 		
@@ -244,8 +267,7 @@ $(document).ready(function()
 			$('#your_experiences').fadeIn();
 		}				
 	}
-	
-	
+		
 	// Display Title
 	if (logs_count > 5 && user_data.source != 'mobile')
 	{
@@ -260,20 +282,39 @@ $(document).ready(function()
 	}
 	else if (logs_count < 10)
 	{
-		doWordTypes();
+		$('#visualize_language').fadeIn();
+
+		//doWordTypes();
+		doLastFive();
 	}
 	else if (logs_count < 15)
-	{
-		doWordTypes();
+	{		
+		$('#visualize_language').fadeIn();
+
+		//doWordTypes();
 		doLastFive();
+		doAllTime();
 		doCommonLanguage();
+
+		if (user_data.source != 'mobile')
+		{
+			$('#your_language_map').fadeIn();
+		}
 	}
 	else
 	{
-		doWordTypes();
+		$('#visualize_language').fadeIn();
+
+		//doWordTypes();
 		doLastFive();
+		doAllTime();
 		doCommonLanguage();
 		doStrongExperiences();
+
+		if (user_data.source != 'mobile')
+		{
+			$('#your_language_map').fadeIn();
+		}
 	}
 });
 </script>

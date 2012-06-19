@@ -509,6 +509,39 @@ function logThoughtThanks()
 }
 
 
+function renderSentimentHuman(sentiment, count)
+{
+	var absolute_good	= 5 * count;
+	var absolute_bad 	= -5 * count;
+	var	range_good		= absolute_good / 4;
+	var	range_bad		= absolute_bad / 4;
+	var feeling			= '';
+	
+	if (sentiment > range_good)
+	{
+		feeling = 'Really Good';
+	}
+	else if (sentiment > 0)
+	{
+		feeling = 'Decent';
+	}
+	else if (sentiment < 0)
+	{
+		feeling = 'Could Be Better';
+	}
+	else if (sentiment < range_bad)
+	{
+		feeling = 'Really Bad';
+	}
+	else
+	{
+		feeling = 'Ok';
+	}
+	
+	return feeling;
+}
+
+
 // Live Actions
 $(document).ready(function()
 {
