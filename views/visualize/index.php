@@ -14,6 +14,11 @@
 	<p id="your_language_map" class="hide"><a class="button" href="<?= base_url() ?>visualize/map">Your Language Map</a></p>
 </div>
 
+<div id="visualize_last_five">
+	<h2>Last Five Entries</h2>
+	<div id="last_five"></div>
+</div>
+
 <div id="visualize_common" class="hide">
 	<h2>Common Words & Feelings</h2>
 	<?php $common_count=0; foreach ($common_words as $count => $words): if ($common_count <= 7): $common_count++; ?>
@@ -46,10 +51,13 @@
 -->
 
 <script type="text/javascript" src="<?= $this_module_assets ?>js/raphael.js"></script>
+<script type="text/javascript" src="<?= $this_module_assets ?>js/g.raphael.js"></script>
+<script type="text/javascript" src="<?= $this_module_assets ?>js/g.pie.js"></script>
 <script type="text/javascript">
 $(document).ready(function()
 {
 	var word_map	= <?= $word_map ?>;
+	var last_five	= <?= $last_five ?>;
 	var words		= <?= $word_links ?>;
 	var logs_raw	= <?= $logs ?>;
 	var logs_count	= logs_raw.length;
@@ -113,8 +121,70 @@ $(document).ready(function()
 			$('#your_language_map').fadeIn();
 		}
 	}
-
 	
+
+	function doLastFive()
+	{
+		var types 			= last_five.types;
+		
+		console.log(types);
+		
+		var types_sorted	= types.sort();
+		var types_colors	= new Array();
+		var word_values		= new Array();
+		var word_percents	= new Array();
+	
+		// Build Data Values
+		for (var type in types_sorted)
+		{			
+			if (type != 'U')
+			{
+				console.log(type + ' ' + type_colors[type]);
+			
+				types_colors.push(type_colors[type]);
+				word_values.push(types_sorted[type]);
+				word_percents.push("%% " + word_types[type]);
+			}
+		}		
+	
+		console.log(types_colors);
+	
+	    var r = Raphael("last_five", 600, 400);
+	    pie = r.piechart(170, 170, 150, word_values,
+	    { 
+	    	colors 	 : types_colors,
+	    	legend	 : word_percents,
+	    	'stroke-width': 1, 'stroke': '#c3c3c3',
+	    	legendpos: "east"
+	    }).attr({"font": "24px 'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-family": "'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-size": 24, "font-weight": 100, "letter-spacing": 2});
+
+	    pie.hover(function()
+	    {
+	    	console.log('here in hover');
+	    
+	        this.sector.stop();
+	        this.sector.scale(1.1, 1.1, this.cx, this.cy);
+	
+	        if (this.label) {
+	            this.label[0].stop();
+	            this.label[0].attr({ scale: 2 });
+	            this.label[1].attr({ "font-weight": 100, "font-size": 30 });
+	        }
+	    }, function() 
+	    {
+	    	console.log('here in hover off');
+	    
+	        this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 1000, "bounce");
+	
+	        if (this.label)
+	        {
+	            this.label[0].animate({ scale: 1 }, 750, "bounce");
+	            this.label[1].attr({ "font-weight": 100, "font-size": 24 });
+	        }
+	    });
+	}
+
+		
 	function doCommonLanguage()
 	{
 		$('#visualize_common').delay(750).fadeIn();
@@ -195,11 +265,13 @@ $(document).ready(function()
 	else if (logs_count < 15)
 	{
 		doWordTypes();
+		doLastFive();
 		doCommonLanguage();
 	}
 	else
 	{
 		doWordTypes();
+		doLastFive();
 		doCommonLanguage();
 		doStrongExperiences();
 	}

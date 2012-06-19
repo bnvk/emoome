@@ -20,6 +20,7 @@ class Visualize extends Site_Controller
 		$log_count			= $this->emoome_model->count_logs_user($this->session->userdata('user_id'));
 		$user_logs			= $this->emoome_model->get_logs_user($this->session->userdata('user_id'));
 		$words_link			= $this->emoome_model->get_words_links_user($this->session->userdata('user_id'));
+		$last_five			= $this->emoome_model->get_user_most_recent($this->session->userdata('user_id'), 5);
 
 		$word_map			= '';
 		$common_words		= array();
@@ -87,6 +88,7 @@ class Visualize extends Site_Controller
 		krsort($common_words);
 
 		$this->data['word_map']		= $word_map;
+		$this->data['last_five']	= json_encode($last_five);
 		$this->data['common_words']	= $common_words;
 		$this->data['logs']			= json_encode($user_logs);
 		$this->data['word_links']	= json_encode($log_word_types);

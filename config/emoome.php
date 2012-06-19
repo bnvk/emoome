@@ -25,6 +25,16 @@ $config['emoome_word_types'] = array(
 	'U' => 'Undecided'
 );
 
+$config['emoome_word_types_count'] = array(
+	'E' => 0,
+	'I' => 0,
+	'S' => 0,
+	'D' => 0,
+	'A' => 0,
+	'P' => 0,
+	'U' => 0
+);
+
 $config['emoome_word_types_sub'] = array(
 	'M' => 'Moral',
 	'S' => 'Slang',
