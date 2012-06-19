@@ -197,7 +197,7 @@
 
         var legend = function (labels, otherslabel, mark, dir) {
             var x = cx + r + r / 5,
-                y = cy,
+                y = cy - 30,
                 h = y + 10;
 
             labels = labels || [];
@@ -213,8 +213,12 @@
                 values[i].others && (labels[j] = otherslabel || "Others");
                 labels[j] = chartinst.labelise(labels[j], values[i], total);
                 chart.labels.push(paper.set());
-                chart.labels[i].push(paper[mark](x + 5, h, 5).attr({ fill: clr, stroke: "none" }));
-                chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+                
+                // Added by Brennan
+                h = h + 30;
+    
+                chart.labels[i].push(paper[mark](x + 25, h, 10).attr({ fill: clr, stroke: "none" }));
+                chart.labels[i].push(txt = paper.text(x + 50, h, labels[j] || values[j]).attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#333", "text-anchor": "start"}));
                 covers[i].label = chart.labels[i];
                 h += txt.getBBox().height * 1.2;
             }

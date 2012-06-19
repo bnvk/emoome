@@ -492,10 +492,78 @@ class Emoome_model extends CI_Model
 		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link_thoughts.word_id');
  		$this->db->or_where_in('emoome_words_link_thoughts.category_id', $category_id);
  		$result = $this->db->get();
- 		return $result->result();		
-		
-		
+ 		return $result->result();	
 	}
 
+
+	/* User Specific Calls */
+	function get_user_most_recent($user_id, $limit)
+	{
+		// Get Log & Action
+		$this->db->select('emoome_log.log_id, emoome_log.user_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.source, emoome_log.created_at, emoome_actions.action');
+		$this->db->from('emoome_log');
+		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_log.log_id');
+		$this->db->order_by('emoome_log.created_at', 'desc');
+		$this->db->where('emoome_log.user_id', $user_id);
+		$this->db->limit($limit);
+ 		$result 	= $this->db->get();
+ 		$logs		= $result->result();
+ 		$log_ids 	= array();
+	 	$types		= config_item('emoome_word_types_count');
+ 	 	$sentiment	= 0;
+ 		
+ 		if ($logs)
+ 		{
+ 			// Build log_id
+	 		foreach ($logs as $log)
+	 		{
+		 		$log_ids[] = $log->log_id; 	
+	 		}
+	 		
+	 		// Get Words
+	 		$this->db->select('emoome_words_link.*, emoome_words.word, emoome_words.type, emoome_words.sentiment');
+	 		$this->db->from('emoome_words_link');
+	 		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');	
+	 		$this->db->or_where_in('emoome_words_link.log_id', $log_ids);
+	 		$result 	= $this->db->get();
+	 		$words 		= $result->result();
+
+	 		// Add Words To Logs
+	 		foreach ($logs as $log)
+	 		{
+	 			$this_words = array();
+	 			$this_feeling	= '';
+	 		
+	 			foreach ($words as $word)
+	 			{
+		 			if ($log->log_id == $word->log_id)
+		 			{			 			
+			 			// Type
+			 			$types[$word->type] = $types[$word->type] + 1;
+			 			
+			 			// Sentiment
+			 			$sentiment = ($sentiment + $word->sentiment);
+
+			 			// Feeling & Words
+			 			if ($word->used == 'F') $this_feeling = $word->word;
+			 			else $this_words[] = $word->word;
+		 			}
+	 			}
+
+	 			$log->feeling	= $this_feeling;
+		 		$log->words		= $this_words;
+	 		}
+ 		}
+
+ 		arsort($types);
+
+		$output = array(
+			'types'			=> $types,
+			'sentiment'		=> $sentiment,
+			'experiences'	=> $logs
+		);
+		
+		return $output;
+	}
 
 }
