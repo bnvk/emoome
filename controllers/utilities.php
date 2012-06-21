@@ -148,5 +148,30 @@ class Utilities extends MY_Controller
 
 		echo $output;
 	}
+	
+	function find_duplicates()
+	{
+		$words 		= array();
+		$existing	= array();
+		$duplicates = array();
+		
+		foreach ($words as $word)
+		{
+			if (in_array($word, $existing))
+			{
+				$duplicates[] = $word;
+			}
+			else
+			{
+				$existing[] = $word;
+			}
+		}
+		
+		echo '<h1>Duplicates</h1>';
+		echo '<pre>';
+		print_r($duplicates);
+		echo '<hr>';
+		print_r($existing);
+	}
 
 }
