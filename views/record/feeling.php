@@ -36,21 +36,5 @@ $(document).ready(function()
 {
 	logFeelingStart();
 
-	var patt = 'do regex on value';//new RegExp('a-zA-Z', 'some 5 shit');
-	//console.log(patt);
-
-
-	// Hijack Spacebar in a few places...
-	$('#log_val_feeling').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
-	{		
-		printUserMessage('Enter only a single word (no spaces or numbers)');
-	});
-
-
-	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function()
-	{
-		printUserMessage('Enter only a single word (no spaces or numbers)');
-	});
-
 });
 </script>

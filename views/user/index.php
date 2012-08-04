@@ -1,30 +1,32 @@
 <div id="content_menu" class="content_center text_center">
+	<?php if (!$this->agent->is_mobile()): ?>
 	<h1>Settings</h1>
+	<?php endif; ?>
 	<p>
-		<a id="button_notifications" class="category_button" href="<?= base_url() ?>emoome/user/#!/notifications">
-			<span class="cat_link_icon_small icon_small_notifications"></span>
-			<span class="cat_link_text_small">Notifications</span>
+		<a id="button_notifications" class="list_button" href="<?= base_url() ?>emoome/user/#!/notifications">
+			<span class="list_icon list_icon_notifications"></span>
+			Notifications
 		    <br class="clear">
 		</a>
 	</p>
 	<p>
-		<a id="button_account" class="category_button" href="<?= base_url() ?>emoome/user/#!/account">
-			<span class="cat_link_icon_small icon_small_account"></span>		
-			<span class="cat_link_text_small">Account Info</span>
+		<a id="button_account" class="list_button" href="<?= base_url() ?>emoome/user/#!/account">
+			<span class="list_icon list_icon_account"></span>		
+			Account Info
 	 	    <br class="clear">
 		</a>
 	</p>
 	<p>
-		<a id="button_password" class="category_button" href="<?= base_url() ?>emoome/user/#!/password">
-			<span class="cat_link_icon_small icon_small_password"></span>		
-			<span class="cat_link_text_small">Password</span>
+		<a id="button_password" class="list_button" href="<?= base_url() ?>emoome/user/#!/password">
+			<span class="list_icon list_icon_password"></span>		
+			Password
 	  		<br class="clear">
 		</a>
 	</p>
 	<p>
-		<a class="category_button" href="<?= base_url() ?>logout">
-			<span class="cat_link_icon_small icon_small_login"></span>		
-			<span class="cat_link_text_small">Logout</span>
+		<a class="list_button" href="<?= base_url() ?>logout">
+			<span class="list_icon list_icon_login"></span>		
+			Logout
 	  		<br class="clear">
 		</a>
 	</p>
@@ -38,7 +40,7 @@
 		<label>How Often</label><br>
 		<?= form_dropdown('notifications_frequency', config_item('notifications_frequency'), $notifications_frequency, 'id="notifications_frequency"') ?>
 	</p>
-	<p><input type="checkbox" class="nullify" name="notifications_mobile" value="<?= $notifications_mobile ?>"> &nbsp;Mobile Notifications</p>
+	<p><input type="checkbox" class="nullify" name="notifications_mobile" value="<?= $notifications_mobile ?>"> &nbsp;Mobile (PUSH) Notifications</p>
 	<p><input type="checkbox" class="nullify" name="notifications_sms" value="<?= $notifications_sms ?>"> &nbsp;Text Messages</p>
 	<p><input type="checkbox" class="nullify" name="notifications_email" value="<?= $notifications_email ?>"> &nbsp;Email</p>
 	<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			

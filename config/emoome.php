@@ -147,3 +147,16 @@ $config['emoome_brown_corpus_speech'] = array(
 	'WQL' 	=> 'wh- qualifier (how)',
 	'WRB' 	=> 'wh- adverb (how, where, when)'
 );
+
+$config['define_compass_derose'] = array(
+	'pleasure',
+	'pain', 
+	'power_control_responsibility',
+	'attachment', 
+	'social_standing', 
+	'justice', 
+	'freedom', 
+	'direction_focus', 
+	'desire_interest',
+	'safety_security'
+);
