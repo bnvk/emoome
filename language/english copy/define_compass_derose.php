@@ -23,7 +23,7 @@ $lang["codependent"]	= array("addicted", "codependent", "insecure", "needy", "sy
 $lang["hated"]			= array("abandoned", "chastised", "criticized", "deserted", "discarded", "forsaken", "hated", "ignored", "left out", "let down", "overlooked", "punished", "rejected", "replaced", "unapproved of", "unlovable", "unloved");
 $lang["loved"] 			= array("accepted", "adored", "adorable", "approved", "desirable", "entrusted", "loved", "validated", "valued", "welcomed");
 
-// Social Standing
+// Social Standing / Face
 $lang["belittled"]		= array("belittled", "chagrined", "degraded", "diminished", "discounted", "discredited", "disgraced", "disrespected", "insignificant", "underestimated", "unsupported");
 
 // Embarrassed

@@ -27,6 +27,13 @@ class Record extends Site_Controller
 		
 		$this->render();
 	}
+	
+	function emoticons()
+	{
+		$this->data['page_title']	= 'Record A Feeling';
+	
+		$this->render();
+	}
 
 	function memory()
 	{

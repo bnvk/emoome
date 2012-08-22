@@ -48,8 +48,30 @@ var type_colors		= {"E":"#ff0000","I":"#142bd7","D":"#dcca07","S":"#0aa80e","A":
 var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","U":"Undecided"};
 var word_types_sub	= {"M":"Moral","S":"Slang","P":"Perception","Y":"Psychological","L":"Feeling","F":"Food","C":"Common","U":"Undecided"}
 var speech_types	= {"V":"Verb","N":"Noun","P":"Pro Noun","A":"Adjective","D":"Adverb","R":"Prepositon","C":"Conjunction","I":"Interjection"};
-
-
+var core_emotions	= {
+	"10":"love",
+	"9":"joy",
+	"8":"happy",
+	"7":"amazement",
+	"6":"serenity",
+	"5":"interest",
+	"4":"optimism",
+	"3":"cool",
+	"2":"goofy",
+	"1":"acceptance",
+	"0":"surprise",
+	"-1":"annoyed",
+	"-2":"crazy",
+	"-3":"disapproval",
+	"-4":"disgust",
+	"-5":"fear",
+	"-6":"sad",
+	"-7":"shame",
+	"-8":"grief",
+	"-9":"loathing",
+	"-10":"anger",
+	"-11":"rage"
+}
 
 /* User Messages */
 var messages = {
