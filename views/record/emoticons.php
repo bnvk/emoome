@@ -9,7 +9,7 @@
 
 <div id="emotion_weight" class="hide">
 	
-	<h2>How Strong Are You Feeling This Emotion?</h2>	
+	<h2>How Strongly Are You Feeling This Emotion?</h2>	
 	<p>Mild <input id="emotion_weight_slide" type="range" min="0" max="100" step="1" value="50"> Intense</p>
 
 	<p><button id="emotion_weight_next">Next</button></p>
@@ -63,7 +63,7 @@ input[type='range'] {
 	padding-left: 5px; 
 	padding-right: 5px;
 	-webkit-border-radius: 15px;
-	background-image: -webkit-linear-gradient(top, #c3c3c3, #d9d9d9, #c3c3c3);
+	background-color: #c3c3c3;
 	border: 1px solid #999;
 }
 

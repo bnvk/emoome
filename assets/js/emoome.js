@@ -453,7 +453,15 @@ function showMobileLogged(name)
 	$('#toolbar_logged').fadeIn('normal');
 }
 
+function isNotLoggedUrl(url)
+{
+	if ((url == base_url + '#!/login') || (url == base_url + '#!/signup'))
+	{
+		return true;
+	}
 
+	return false;
+}
 
 /* Thought Demo Stuff for Hackday */
 function logThoughtStart()
@@ -628,15 +636,17 @@ $(document).ready(function()
 					data		: login_data,
 					beforeSend	: requestMade('Logging You In'),					
 			  		success		: function(result)
-			  		{
-			  			console.log(result);
-			  		
+			  		{			  		
 						// Close Loading
 			  			requestComplete(result.message, result.status);
 	  			  		
 						if (result.status == 'success')
 						{							
-							processLogin(result.user, result.meta);
+							$('[name=email]').val('');
+							$('[name=password]').val('');
+
+							// Update URL & View
+							window.location = 'record/feeling';
 						}
 				 	}
 				});
@@ -686,7 +696,12 @@ $(document).ready(function()
 	
 						if (result.status == 'success')
 						{							
-							processSignup(result.user, result.meta);
+							$('[name=name]').val('');
+							$('[name=email]').val('');
+							$('[name=password]').val('');
+
+							// Update URL & View
+							window.location = 'record/feeling';
 						}
 				 	}
 				});
