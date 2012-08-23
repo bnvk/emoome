@@ -174,4 +174,22 @@ class Utilities extends MY_Controller
 		print_r($existing);
 	}
 
+	function split_date_time()
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_log');
+ 		$result = $this->db->get();
+ 		$logs = $result->result();			
+		
+		foreach ($logs as $log)
+		{
+			$date_time = explode(' ', $log->created_at); 
+			
+			echo 'date: '.$date_time[0].' time: '.$date_time[1].'<br>';
+
+			$this->emoome_model->update_log($log->log_id, array('created_date' => $date_time[0], 'created_time' => $date_time[1]));
+		}
+		
+	}
+
 }

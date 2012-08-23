@@ -63,6 +63,24 @@ class Emoome_model extends CI_Model
 		}
     }
 
+
+	function get_emotions_range_time($user_id, $start_time, $end_time)
+	{
+		$start_date	= '1969-12-31 '.$start_time.':00:00';
+		$end_day	= date('d') + 1;
+		$end_date	= date('Y-m').'-'.$end_day.' '.$end_time.':00:00';
+
+		$this->db->select('*');
+		$this->db->from('emoome_log');
+		$this->db->where('emoome_log.user_id', $user_id);
+		$this->db->where('emoome_log.created_time >=', $start_date);
+		$this->db->where('emoome_log.created_time <=', $end_date);
+		$this->db->order_by('emoome_log.created_time', 'asc');
+ 		$result = $this->db->get();
+ 		return $result->result();	
+	}
+        
+
 	function add_log($log_data)
 	{
 		$log_data['created_at'] = unix_to_mysql(now());
@@ -77,8 +95,12 @@ class Emoome_model extends CI_Model
 	    return FALSE;
 	}
 
-
-
+	function update_log($log_id, $log_data)
+	{
+		$this->db->where('log_id', $log_id);
+		$this->db->update('emoome_log', $log_data);
+		return TRUE;
+	}
 
 	// Actions
 	function get_action($action_id)

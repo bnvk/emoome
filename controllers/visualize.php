@@ -117,4 +117,12 @@ class Visualize extends Site_Controller
 		$this->render();
 	}
 
+	function search()
+	{
+		$this->data['page_title'] 	= 'Search';
+
+		$this->render();
+	}
+
+
 }
