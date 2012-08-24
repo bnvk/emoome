@@ -81,7 +81,7 @@ class Api extends Oauth_Controller
 			}
 			else
 			{
-	            $message = array('status' => 'error', 'message' => 'You have not recorded any feelings during that period');
+	            $message = array('status' => 'error', 'message' => 'You have not recorded any feelings during that time period');
 			}
 		}
 		else
