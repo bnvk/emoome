@@ -22,7 +22,7 @@ class Emoome_model extends CI_Model
 		$this->db->select('*');
 		$this->db->from('emoome_log');
 		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_log.log_id');
-		$this->db->order_by('emoome_log.created_at', 'desc');
+		$this->db->order_by('emoome_log.created_date', 'desc');
 		$this->db->where('user_id', $user_id);
  		$result = $this->db->get();
  		return $result->result();	
@@ -66,15 +66,18 @@ class Emoome_model extends CI_Model
 
 	function get_emotions_range_time($user_id, $start_time, $end_time)
 	{
-		$start_date	= '1969-12-31 '.$start_time.':00:00';
+		$start_date	= '1900-01-01 '.$start_time.':00:00';
 		$end_day	= date('d') + 1;
 		$end_date	= date('Y-m').'-'.$end_day.' '.$end_time.':00:00';
 
 		$this->db->select('*');
 		$this->db->from('emoome_log');
+		$this->db->join('emoome_words_link', 'emoome_words_link.log_id = emoome_log.log_id');
+		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
 		$this->db->where('emoome_log.user_id', $user_id);
 		$this->db->where('emoome_log.created_time >=', $start_date);
 		$this->db->where('emoome_log.created_time <=', $end_date);
+		$this->db->where('emoome_words_link.used', 'F');
 		$this->db->order_by('emoome_log.created_time', 'asc');
  		$result = $this->db->get();
  		return $result->result();	
@@ -83,7 +86,10 @@ class Emoome_model extends CI_Model
 
 	function add_log($log_data)
 	{
-		$log_data['created_at'] = unix_to_mysql(now());
+		$date_time = explode(' ', unix_to_mysql(now()));
+
+		$log_data['created_date'] = $date_time[0];
+		$log_data['created_time'] = $date_time[1];
 
 		$this->db->insert('emoome_log', $log_data);
 
@@ -522,10 +528,10 @@ class Emoome_model extends CI_Model
 	function get_user_most_recent($user_id, $limit)
 	{
 		// Get Log & Action
-		$this->db->select('emoome_log.log_id, emoome_log.user_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.source, emoome_log.created_at, emoome_actions.action');
+		$this->db->select('emoome_log.log_id, emoome_log.user_id, emoome_log.geo_lat, emoome_log.geo_lon, emoome_log.source, emoome_log.created_date, emoome_log.created_time, emoome_actions.action');
 		$this->db->from('emoome_log');
 		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_log.log_id');
-		$this->db->order_by('emoome_log.created_at', 'desc');
+		$this->db->order_by('emoome_log.created_date', 'desc');
 		$this->db->where('emoome_log.user_id', $user_id);
 		$this->db->limit($limit);
  		$result 	= $this->db->get();
@@ -533,7 +539,7 @@ class Emoome_model extends CI_Model
  		$log_ids 	= array();
 	 	$types		= config_item('emoome_word_types_count');
  	 	$sentiment	= 0;
- 		
+
  		if ($logs)
  		{
  			// Build log_id

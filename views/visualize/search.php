@@ -1,10 +1,13 @@
 <h2>How Do I Feel Between</h2>
 
-<?= form_dropdown('start_time', range(1, 24), date('h'), 'id="start_time"') ?>
-<?= form_dropdown('start_meridian', array('AM' => 'AM', 'PM' => 'PM')) ?>
-&nbsp; to &nbsp;
-<?= form_dropdown('end_time', range(1, 24), date('h') + 2, 'id="end_time"') ?>
-<?= form_dropdown('end_meridian', array('AM' => 'AM', 'PM' => 'PM')) ?>
+<p>
+	<?= form_dropdown('start_time', range(1, 24), date('h'), 'id="start_time"') ?>
+	<?= form_dropdown('start_meridian', array('AM' => 'AM', 'PM' => 'PM')) ?>
+	&nbsp; to &nbsp;
+	<?= form_dropdown('end_time', range(1, 24), date('h') + 2, 'id="end_time"') ?>
+	<?= form_dropdown('end_meridian', array('AM' => 'AM', 'PM' => 'PM')) ?>
+</p>
+
 <button name="search" id="search">Search</button>
 
 <script type="text/javascript">
