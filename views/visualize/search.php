@@ -1,27 +1,10 @@
-<h2 id="search_title">How Do I Feel Between
+<h2 id="search_title">
+	<!-- When Do I -->
+	How Do I Feel Between
 	<!-- Between (hours), Between (dates), About (enter keyword), At (location) -->
 	<?php
-	$start_hour = date('h');
-	$end_hour = date('h') + 3;
-
-	if ($start_hour > 12)
-	{
-		$start_hour = $start_hour - 12;
-	}
-
-	if ($end_hour > 12)
-	{
-		$end_hour = $end_hour - 12;
-		$end_meridian = 'PM';
-	}
-	else
-	{
-		$end_hour = $end_hour;
-		$end_meridian = 'AM';
-	}
-
 	echo form_dropdown('start_time', config_item('time_increments_hours_twelve'), $start_hour, 'id="start_time"');
-	echo form_dropdown('start_meridian', config_item('time_meridian'), date('A'), 'id="start_meridian"');
+	echo form_dropdown('start_meridian', config_item('time_meridian'), $start_meridian, 'id="start_meridian"');
 	echo ' to ';
 	echo form_dropdown('end_time', config_item('time_increments_hours_twelve'), $end_hour, 'id="end_time"');
 	echo form_dropdown('end_meridian', config_item('time_meridian'), $end_meridian, 'id="end_meridian"'); 
@@ -30,6 +13,9 @@
 <button name="search_button" id="search_button">Go</button>
 
 <div id="visualize_feelings" data-start="" data-end=""></div>
+
+
+
 
 <style type="text/css">
 /* Search Controls */
@@ -55,7 +41,7 @@
 }
 
 div.hour_bar {
-	width: 250px;
+	width: 230px;
 	height: 100px;
 	font-size: 18px;
 	border-bottom: 1px solid #999;
@@ -65,7 +51,6 @@ div.hour_bar_time {
 	width: 80px;
 	float: left;
 	text-align: center;
-	margin-right: 20px;
 	padding-top: 40px;
 }
 span.hour_time_meridian {
@@ -79,7 +64,7 @@ div.hour_bar_emotion {
 	text-align: center;
 	padding-top: 25px;
 	margin-top: 20px;
-	margin-right: 20px;
+	margin-left: 20px;
 	float: left;	
 	border-radius: 30px;
 	font-size: 11px;
@@ -87,6 +72,15 @@ div.hour_bar_emotion {
 	color: #ddd;
 }
 </style>
+<script type="text/javascript" src="<?= base_url() ?>js/underscore.js"></script>
+<script src="http://backbonejs.org/backbone-min.js"></script>
+
+<script type="text/template" id="hour_row">
+	<div id="hour_bar_<%= hour_time %>" class="hour_bar">
+		<div class="hour_bar_time"><?= hour_display ?></div>
+	</div>		
+</script>
+
 <script type="text/javascript">
 $(document).ready(function()
 {
@@ -94,24 +88,26 @@ $(document).ready(function()
 	$('#search_button').bind('click', function(e)
 	{
 		// Start Time
-		var start_time	= $('#start_time').val();
-		if (($('#start_meridian').val() == 'PM') && ($('#start_time').val() != 12))
+		var start_time		= $('#start_time').val();
+		var start_meridian	= $('#start_meridian').val();
+		if ((start_meridian == 'PM') && ($('#start_time').val() != 12))
 		{
 			start_time = parseInt(start_time) + 12;
 		}
 		else
 		{
 			start_time = parseInt(start_time);
-		}
-		
-		console.log(start_time);
+		}		
 		
 		// End Time
-		var end_time 	= $('#end_time').val();
-		if ($('#end_meridian').val() == 'PM')
+		var end_time		= $('#end_time').val();
+		var end_meridian	= $('#end_meridian').val();
+		if (end_meridian == 'PM')
 		{
 			end_time = parseInt(end_time) + 12;
 		}
+		
+
 
 		// If One Time Value is Different
 		if ((start_time != $('#visualize_feelings').data('start')) || (end_time != $('#visualize_feelings').data('end')))	
@@ -133,48 +129,73 @@ $(document).ready(function()
 						// Update Range
 						$('#visualize_feelings').data('start', start_time);
 						$('#visualize_feelings').data('end', end_time)
-					
-						var hour_array = new Array();
+
+						// Hour Array
+						var hour_object	= new Object;
+
+						// Build Start Rows						
+						for (i=0; end_time - start_time + 1 > i; i++)
+						{							
+							hour = start_time + i;
+							display_hour = hour + ' ';
+							
+							if (hour > 12)
+							{
+								var time_hour = parseInt(hour) - 12;
+								var display_hour = time_hour + ' <span class="hour_time_meridian">PM</span>';
+							}
+							else if (hour == 12)
+							{
+								var display_hour = hour + ' <span class="hour_time_meridian">PM</span>';										
+							}
+							else
+							{
+								var display_hour = hour + ' <span class="hour_time_meridian">AM</span>';	
+							}
+
+							// Add To Backbone
+							$visualize_feelings.append('');						
+						}
+
+						console.log(result.emotions);
 					
 						// Loop Through Results
 						$.each(result.emotions, function(key, value)
 						{
-							var hour	= value.created_time.split(':');
-							var emotion	= '<div class="hour_bar_emotion" style="background-color: ' + type_colors[value.type] + '">' + value.word + '</div>';
+							$hour_bar = $('#hour_bar_' + hour);
+
+							var hour		= value.created_time.split(':');
+							var hour 		= hour[0];
+							var emotion		= '<div class="hour_bar_emotion" style="background-color: ' + type_colors[value.type] + '">' + value.word + '</div>';
+							var bar_width	= parseInt($hour_bar.width()) + 80;
 						
-							if ($.inArray(hour[0], hour_array) > -1)
+							// Emotions
+							$hour_bar.width(bar_width).append(emotion);
+
+							//console.log('hour: ' + hour + ' type: ' + value.type + ' count: ' + type_count + ' log_id: ' + value.log_id);
+							
+							if (hour_object[hour] == undefined)
 							{
-								$hour_bar = $('#hour_bar_' + hour[0]);
-								var new_width = parseInt($hour_bar.width()) + 80;
+								console.log('is undefined');
+								hour_object[hour] = { "type": types_count, "type_sub" : types_sub_count, "words" : "hiii"};
+								hour_object[hour]["type"][value.type] = 1;
 								
-								console.log('original: ' + parseInt($hour_bar.width()));
-								console.log('new: ' + new_width);
+								console.log(value.type + ': ' + hour_object[hour]["type"][value.type])
 								
-								$hour_bar.append(emotion).width(new_width);
 							}
 							else
 							{
-								// Add To Hour
-								hour_array.push(hour[0]);
-								
-								if (hour[0] > 12)
-								{
-									var time_hour = parseInt(hour[0]) - 12;
-									var display_hour = time_hour + ' <span class="hour_time_meridian">PM</span>';
-								}
-								else if (hour[0] == 12)
-								{
-									var display_hour = hour[0] + ' <span class="hour_time_meridian">PM</span>';										
-								}
-								else
-								{
-									var display_hour = hour[0] + ' <span class="hour_time_meridian">AM</span>';	
-								}
-								
-								// Add Hour Row
-								$visualize_feelings.append('<div id="hour_bar_' + hour[0] + '" class="hour_bar"><div class="hour_bar_time">' + display_hour + '</div>' + emotion + '</div>');
-							}		
+								var type_count 	= hour_object[hour]["type"][value.type];
+
+								console.log('is DEFINED');
+								hour_object[hour]["type"][value.type] = type_count + 1;
+							}
+							
+	
 						});
+						
+						console.log(hour_object);
+						
 					}
 					else
 					{

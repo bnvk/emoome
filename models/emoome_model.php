@@ -64,11 +64,11 @@ class Emoome_model extends CI_Model
     }
 
 
-	function get_emotions_range_time($user_id, $start_time, $end_time)
+	function get_emotions_range_time($user_id, $start_time, $end_time, $order='type')
 	{
 		$start_date	= '1900-01-01 '.$start_time.':00:00';
-		$end_day	= date('d') + 1;
-		$end_date	= date('Y-m').'-'.$end_day.' '.$end_time.':00:00';
+		$end_time	= $end_time + 1;
+		$end_date	= date('Y-m-d').' '.$end_time.':00:00';
 
 		$this->db->select('*');
 		$this->db->from('emoome_log');

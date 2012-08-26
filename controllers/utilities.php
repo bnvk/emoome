@@ -130,7 +130,7 @@ class Utilities extends MY_Controller
 		$text = "";
 
 		// Prepare Text
-		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
+		//$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
 		$text	= preg_replace('/\s+/', ' ', $text);		// Strip Whitespace & Breaks
 		$text	= strtolower($text);						// Lowercase
 		$words	= explode(" ", $text);						// Make into array
