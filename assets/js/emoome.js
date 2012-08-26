@@ -46,7 +46,9 @@ this._chain)}});j(["concat","join","slice"],function(a){var b=k[a];m.prototype[a
 /* Global Values */
 var type_colors		= {"E":"#ff0000","I":"#142bd7","D":"#dcca07","S":"#0aa80e","A":"#ee9700","P":"#cf00ee","U":"#c3c3c3"}
 var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","U":"Undecided"};
+var types_count		= {"E":0,"I":0,"D":0,"S":0,"A":0,"P":0,"U":0};
 var word_types_sub	= {"M":"Moral","S":"Slang","P":"Perception","Y":"Psychological","L":"Feeling","F":"Food","C":"Common","U":"Undecided"}
+var types_sub_count	= {"M":0,"S":0,"P":0,"Y":0,"L":0,"F":0,"C":0};
 var speech_types	= {"V":"Verb","N":"Noun","P":"Pro Noun","A":"Adjective","D":"Adverb","R":"Prepositon","C":"Conjunction","I":"Interjection"};
 var core_emotions	= {
 	"10":"love",

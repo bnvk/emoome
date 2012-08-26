@@ -245,7 +245,7 @@ $(document).ready(function()
 								var svg_size= 8 * visualization_sizes[user_data.source].circle_strong_experiences;
 								var position= svg_size / 2;
 			
-								$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_action">"' + logs_raw[log].action + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_at).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+								$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_action">"' + logs_raw[log].action + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
 			
 							    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), svg_size, svg_size);
 								paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);

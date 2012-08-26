@@ -60,6 +60,37 @@ class Api extends Oauth_Controller
 
         $this->response($message, 200);	
 	}
+
+	function get_emotions_range_authd_get()
+	{
+		if (($this->get('range') != '') AND ($this->get('start') != '') AND ($this->get('end') != ''))
+		{
+			// Set Range
+			if ($this->get('range') == 'time')
+			{
+				$emotions = $this->emoome_model->get_emotions_range_time($this->oauth_user_id, $this->get('start'), $this->get('end'));
+			}
+			elseif ($this->get('range') == 'date')
+			{
+				$emotions = $this->emoome_model->get_emotions_range_date($this->oauth_user_id, $this->get('start'), $this->get('end'));
+			}
+	
+			if ($emotions)
+			{				
+	            $message = array('status' => 'success', 'message' => 'Yay we found some feelings', 'emotions' => $emotions);
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'You have not recorded any feelings during that time period');
+			}
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'One or more search parameters are missing');
+		}
+
+        $this->response($message, 200);
+	}
 	
 
 	// Log Feeling

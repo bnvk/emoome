@@ -107,8 +107,8 @@ class Utilities extends MY_Controller
 
 	function add_words()
 	{
-		$this->lang->load('food');
-		$words_array = $this->lang->line('alcohol_sensory');
+		$this->lang->load('firstnames');
+		$words_array = $this->lang->line('firstnames');
 		$output = '';
 
 		if ($words_array)
@@ -116,7 +116,7 @@ class Utilities extends MY_Controller
 			foreach ($words_array as $word)
 			{
 				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
-				$add_word = $this->emoome_model->add_word($word, TRUE, 'P', 'AL', 'U', -1);
+				$add_word = $this->emoome_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
 				$output .= $add_word.' '.$word.'<br>';
 			}
 		}
@@ -130,7 +130,7 @@ class Utilities extends MY_Controller
 		$text = "";
 
 		// Prepare Text
-		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
+		//$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
 		$text	= preg_replace('/\s+/', ' ', $text);		// Strip Whitespace & Breaks
 		$text	= strtolower($text);						// Lowercase
 		$words	= explode(" ", $text);						// Make into array
@@ -172,6 +172,24 @@ class Utilities extends MY_Controller
 		print_r($duplicates);
 		echo '<hr>';
 		print_r($existing);
+	}
+
+	function split_date_time()
+	{
+		$this->db->select('*');
+		$this->db->from('emoome_log');
+ 		$result = $this->db->get();
+ 		$logs = $result->result();			
+		
+		foreach ($logs as $log)
+		{
+			$date_time = explode(' ', $log->created_at); 
+			
+			echo 'date: '.$date_time[0].' time: '.$date_time[1].'<br>';
+
+			$this->emoome_model->update_log($log->log_id, array('created_date' => $date_time[0], 'created_time' => $date_time[1]));
+		}
+		
 	}
 
 }

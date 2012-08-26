@@ -117,4 +117,42 @@ class Visualize extends Site_Controller
 		$this->render();
 	}
 
+	function search()
+	{
+		$this->data['page_title'] 	= 'Search';
+		
+		// Hour Stuff
+		$start_hour = date('H');
+		$end_hour	= date('H') + 3;
+	
+		if ($start_hour > 12)
+		{
+			$start_hour		= $start_hour - 12;
+			$start_meridian	= 'PM';
+		}
+		else
+		{
+			$start_meridian	= date('A');
+			
+		}
+			
+		if ($end_hour >= 12)
+		{
+			$end_hour = $end_hour - 12;
+			$end_meridian = 'PM';
+		}
+		else
+		{
+			$end_meridian = 'AM';
+		}
+
+		$this->data['start_hour']		= 04;//$start_hour;
+		$this->data['start_meridian']	= 'PM';//$start_meridian;
+		$this->data['end_hour']			= 05;//$end_hour;
+		$this->data['end_meridian']		= 'PM';//$end_meridian;
+
+		$this->render();
+	}
+
+
 }
