@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 /*
- * Emoome API : Module : Social-Igniter
+ * Emoome API : Social-Igniter
  *
  */
 class Api extends Oauth_Controller
@@ -8,17 +8,15 @@ class Api extends Oauth_Controller
     function __construct()
     {
         parent::__construct();
+       
+        $this->load->library('emoome');
 
-		$this->load->config('emoome');
-		$this->load->helper('math');
-        $this->load->model('emoome_model');
-        
     	$this->form_validation->set_error_delimiters('', '');        
 	}
 	
 	function get_logs_user_authd_get()
 	{
-		if ($logs = $this->emoome_model->get_logs_user($this->oauth_user_id))
+		if ($logs = $this->logs_model->get_logs_user($this->oauth_user_id))
 		{
 			$log_array	= array();
 			$output		= array();
@@ -27,9 +25,9 @@ class Api extends Oauth_Controller
 			{
 				$log_array[] = $log->log_id;
 			}
-			
-			$words = $this->emoome_model->get_words_links($log_array);
-			
+
+			$words = $this->words_model->get_words_links($log_array);
+
             $message = array('status' => 'success', 'message' => 'Success logged feeling', 'logs' => $logs, 'words' => $words);
 		}
 		else
@@ -47,7 +45,7 @@ class Api extends Oauth_Controller
 		else $distance = 10;
 
 		// Get Feelings
-		$nearby_feelings = $this->emoome_model->get_nearby_feelings($this->get('geo_lat'), $this->get('geo_lon'), $distance, $this->oauth_user_id);		
+		$nearby_feelings = $this->logs_model->get_nearby_feelings($this->get('geo_lat'), $this->get('geo_lon'), $distance, $this->oauth_user_id);		
 		
 		if ($nearby_feelings)
 		{				
@@ -61,18 +59,18 @@ class Api extends Oauth_Controller
         $this->response($message, 200);	
 	}
 
-	function get_emotions_range_authd_get()
+	function get_emotions_range_get()
 	{
 		if (($this->get('range') != '') AND ($this->get('start') != '') AND ($this->get('end') != ''))
 		{
 			// Set Range
 			if ($this->get('range') == 'time')
 			{
-				$emotions = $this->emoome_model->get_emotions_range_time($this->oauth_user_id, $this->get('start'), $this->get('end'));
+				$emotions = $this->logs_model->get_emotions_range_time($this->oauth_user_id, $this->get('start'), $this->get('end'));
 			}
 			elseif ($this->get('range') == 'date')
 			{
-				$emotions = $this->emoome_model->get_emotions_range_date($this->oauth_user_id, $this->get('start'), $this->get('end'));
+				$emotions = $this->logs_model->get_emotions_range_date($this->oauth_user_id, $this->get('start'), $this->get('end'));
 			}
 	
 			if ($emotions)
@@ -119,20 +117,20 @@ class Api extends Oauth_Controller
 			);
 		
 			// Add Log
-			if ($log_id = $this->emoome_model->add_log($log_data))
+			if ($log_id = $this->logs_model->add_log($log_data))
 			{
 				// Add Word / Action / Descriptors
-				$feeling	= $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
-				$action_id	= $this->emoome_model->add_action($log_id, $this->input->post('action'));
-				$describe_1 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
-				$describe_2 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
-				$describe_3 = $this->emoome_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
+				$feeling	= $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
+				$action_id	= $this->actions_model->add_action($log_id, $this->input->post('action'));
+				$describe_1 = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
+				$describe_2 = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
+				$describe_3 = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
 	
 				// Update Word Map
-				$word_map = $this->emoome_model->update_users_meta_map($this->oauth_user_id);
+				$word_map = $this->emoome->update_users_meta_map($this->oauth_user_id);
 	
 				// Log Count
-				$log_count = $this->emoome_model->count_logs_user($this->uri->segment(4));
+				$log_count = $this->logs_model->count_logs_user($this->uri->segment(4));
 				
 				// Message
 	            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map, 'log_count' => $log_count);
@@ -154,19 +152,19 @@ class Api extends Oauth_Controller
 	{		
 		// TEST DATA
 		$msg_action = array(
-			'one' => 'I had fun classy sexy depressing time',
-			'two' => 'hurt worrying frightening glad', 
+			'one'	=> 'I had fun classy sexy depressing time',
+			'two'	=> 'hurt worrying frightening glad', 
 			'three' => 'crying happy sad glad fucking water'
 		);
-		
+
 		$msg_show = $msg_action[$this->get('msg')];
 	
 	
 		// Values
-		$feeling			= $this->emoome_model->check_word('confusing');
-		$describe_1			= $this->emoome_model->check_word('glad');
-		$describe_2			= $this->emoome_model->check_word('uneasy');
-		$describe_3			= $this->emoome_model->check_word('lonely');
+		$feeling			= $this->words_model->check_word('confusing');
+		$describe_1			= $this->words_model->check_word('glad');
+		$describe_2			= $this->words_model->check_word('uneasy');
+		$describe_3			= $this->words_model->check_word('lonely');
 		$words_action		= explode(' ', $msg_show);
 		$words_desribe		= array($describe_1, $describe_2, $describe_3);
 		$words_count_action = count($words_action);
@@ -186,9 +184,8 @@ class Api extends Oauth_Controller
 		// Action
 		foreach ($words_action as $word)
 		{
-			$check_word = $this->emoome_model->check_word(strtolower($word));
-	
-			$sentiment_action = $check_word->sentiment + $sentiment_action;
+			$check_word			= $this->words_model->check_word(strtolower($word));
+			$sentiment_action	= $check_word->sentiment + $sentiment_action;
 
 			// Increment Type
 			$type_count[$check_word->type] = ($type_count[$check_word->type] + 1);
@@ -256,26 +253,26 @@ class Api extends Oauth_Controller
 				// Is Not Common
 				if (!in_array($word, $words_array))
 				{
-					$get_word = $this->emoome_model->check_word($word);
+					$get_word = $this->words_model->check_word($word);
 				
 					// Word Exists
 					if ($get_word)
 					{
 						// Output
-						$sentiment = $sentiment + $get_word->sentiment;	
-						$words_type[$get_word->word] = $get_word->type;
-						$words_type_count[$get_word->type] = 1 + $words_type_count[$get_word->type];				
+						$sentiment 							= $sentiment + $get_word->sentiment;	
+						$words_type[$get_word->word]		= $get_word->type;
+						$words_type_count[$get_word->type]	= 1 + $words_type_count[$get_word->type];				
 					}
 					// Add Word
 					else
 					{
-						$word_id = $this->emoome_model->add_word($word, TRUE, 'U', 'U', 'U', 0);						
-						$get_word =	$this->emoome_model->get_word($word_id);
+						$word_id	= $this->words_model->add_word($word, TRUE, 'U', 'U', 'U', 0);						
+						$get_word	= $this->words_model->get_word($word_id);
 	
 						// Output
-						$sentiment = $sentiment + $get_word->sentiment;						
-						$words_type[$get_word->word] = $get_word->type;				
-						$words_type_count[$get_word->type] = 1 + $words_type_count[$get_word->type];
+						$sentiment 							= $sentiment + $get_word->sentiment;						
+						$words_type[$get_word->word] 		= $get_word->type;				
+						$words_type_count[$get_word->type]	= 1 + $words_type_count[$get_word->type];
 					}
 					
 					$words_type_total++;
@@ -292,21 +289,21 @@ class Api extends Oauth_Controller
 					}					
 				}
 			}
-			
+
 			// Prep Output
 			arsort($words_common);
-			
+
 			// Output Data
 			$analysis = array(
-				'words'				=> $words_type,
-				'words_count'		=> count($words_raw),
-				'words_type_count'	=> $words_type_count,
-				'words_type_total_count' => $words_type_total,
-				'sentiment'			=> $sentiment,
-				'common_count'		=> count($words_common),
-				'common_words'		=> $words_common
+				'words'						=> $words_type,
+				'words_count'				=> count($words_raw),
+				'words_type_count'			=> $words_type_count,
+				'words_type_total_count' 	=> $words_type_total,
+				'sentiment'					=> $sentiment,
+				'common_count'				=> count($words_common),
+				'common_words'				=> $words_common
 			);
-		
+
             $message = array('status' => 'success', 'message' => 'Success word analysis performed', 'analysis' => $analysis);		
 		}
 		else
@@ -325,7 +322,7 @@ class Api extends Oauth_Controller
 	{
 		if ($this->get('id'))
 		{
-			if ($words = $this->emoome_model->get_thoughts_category($this->get('id')))
+			if ($words = $this->thoughts_model->get_thoughts_category($this->get('id')))
 			{			
 	            $message = array('status' => 'success', 'message' => 'Success some thoughts found', 'words' => $words);
 			}
@@ -349,7 +346,7 @@ class Api extends Oauth_Controller
 		// Passes Validation
 	    if ($this->form_validation->run() == true)
 	    {	
-	    	$log_thought = $this->emoome_model->add_thought($this->oauth_user_id, $this->input->post('category_id'), $this->input->post('source'), $this->input->post('log_thought'));
+	    	$log_thought = $this->thoughts_model->add_thought($this->oauth_user_id, $this->input->post('category_id'), $this->input->post('source'), $this->input->post('log_thought'));
 
 			if ($log_thought)
 			{

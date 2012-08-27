@@ -8,8 +8,7 @@ class Home extends Dashboard_Controller
 		$this->data['page_title']		= 'Emoome';
 		$this->data['emoome_assets']	= base_url().'application/modules/emoome/assets/';
 
-		$this->load->config('emoome');
-		$this->load->model('emoome_model');
+        $this->load->library('emoome');
 	}
 	
 	function people()
@@ -18,7 +17,7 @@ class Home extends Dashboard_Controller
 		{			
 			$person			= $this->social_auth->get_user('user_id', $this->uri->segment(4));
 			$person_meta	= $this->social_auth->get_user_meta($this->uri->segment(4));
-			$log_count		= $this->emoome_model->count_logs_user($this->uri->segment(4));
+			$log_count		= $this->logs_model->count_logs_user($this->uri->segment(4));
 			$devices		= array();
 			$word_map		= '';
 			

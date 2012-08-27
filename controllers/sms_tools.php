@@ -6,8 +6,7 @@ class Sms_tools extends MY_Controller
         parent::__construct();       
 
 		// Load Things
-		$this->load->config('emoome');
-		$this->load->model('emoome_model');
+        $this->load->library('emoome');
 	}
 		
 	/*	
@@ -72,7 +71,7 @@ class Sms_tools extends MY_Controller
 		// Process SMS
 		if ($process_sms)
 		{
-	    	$log_thought = $this->emoome_model->add_thought($user_id, 10, 'sms', $this->input->post('Body'));
+	    	$log_thought = $this->thoughts_model->add_thought($user_id, 10, 'sms', $this->input->post('Body'));
 		}
 		
 		// Ask For Email

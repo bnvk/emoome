@@ -7,8 +7,7 @@ class Visualize extends Site_Controller
         
 	    if (!$this->social_auth->logged_in()) redirect('login');        
 
-		$this->load->config('emoome');
-		$this->load->model('emoome_model');		
+        $this->load->library('emoome');
 	}
 
 	function index()
@@ -17,9 +16,9 @@ class Visualize extends Site_Controller
 
 		$person				= $this->social_auth->get_user('user_id', $this->session->userdata('user_id'));
 		$person_meta		= $this->social_auth->get_user_meta($this->session->userdata('user_id'));
-		$log_count			= $this->emoome_model->count_logs_user($this->session->userdata('user_id'));
-		$user_logs			= $this->emoome_model->get_logs_user($this->session->userdata('user_id'));
-		$words_link			= $this->emoome_model->get_words_links_user($this->session->userdata('user_id'));
+		$log_count			= $this->logs_model->count_logs_user($this->session->userdata('user_id'));
+		$user_logs			= $this->logs_model->get_logs_user($this->session->userdata('user_id'));
+		$words_link			= $this->words_model->get_words_links_user($this->session->userdata('user_id'));
 		$last_five			= $this->emoome_model->get_user_most_recent($this->session->userdata('user_id'), 5);
 
 		$word_map			= '';

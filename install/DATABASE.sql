@@ -21,14 +21,15 @@ CREATE TABLE `emoome_words` (
   PRIMARY KEY (`word_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=799 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `emoome_log` (
+CREATE TABLE `emoome_logs` (
   `log_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `type` char(16) DEFAULT NULL,
   `time` int(16),  
   `geo_lat` varchar(16) DEFAULT NULL,
   `geo_lon` varchar(16) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_date` date DEFAULT NULL,
+  `created_time` time DEFAULT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

@@ -7,8 +7,7 @@ class User extends Site_Controller
         
 	    if (!$this->social_auth->logged_in()) redirect('login');        
 
-		$this->load->config('emoome');
-		$this->load->model('emoome_model');		
+        $this->load->library('emoome');	
 	}
 
 	function index()

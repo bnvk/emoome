@@ -3,6 +3,7 @@
 // http://en.wikipedia.org/wiki/Contrasting_and_categorization_of_emotions#Parrott.27s_emotions_by_groups
 $lang["primary"] 				= array("love", "joy", "surprise", "anger", "sadness", "fear");
 
+
 // 2nd - Love
 $lang["secondary_love"]			= array("affection", "lust", "sex", "longing");
 
@@ -11,6 +12,7 @@ $lang["tertiary_affection"]		= array("adoration", "fondness", "liking", "attract
 $lang["tertiary_lust"]			= array("arousal", "desire", "passion", "infatuation");
 $lang["tertiary_sex"]			= array("sexy", "pretty", "handsome");
 $lang["tertiary_longing"]		= array("longing");
+
 
 // 2nd - Joy
 $lang["secondary_joy"]			= array("cheerfulness", "zest", "contentment", "pride", "optimism", "enthrallment", "relief");
@@ -24,11 +26,13 @@ $lang["tertiary_optimism"]		= array("eagerness", "hope");
 $lang["tertiary_enthrallment"]	= array("enthrallment", "rapture");
 $lang["tertiary_relief"]		= array("relief");
 
+
 // 2nd - Surprise
 $lang["secondary_surprise"] 	= array("surprise");
 
 // 3rd - Surprise
 $lang["tertiary_surprise"]		= array("amazement", "astonishment");
+
 
 // 2nd - Anger 
 $lang["secondary_anger"]		= array("irritability", "exasperation", "rage", "disgust", "envy", "torment");
@@ -41,6 +45,7 @@ $lang["tertiary_disgust"]		= array("revulsion", "contempt", "loathing");
 $lang["tertiary_envy"]			= array("jealousy");
 $lang["tertiary_torment"]		= array("torment");
 
+
 // 2nd - Sadness
 $lang["secondary_sadness"]		= array("suffering", "sadness", "disappointment", "shame", "neglect", "sympathy");
 
@@ -51,6 +56,7 @@ $lang["tertiary_disappointment"]= array("dismay", "displeasure");
 $lang["tertiary_shame"]			= array("guilt", "regret", "remorse");
 $lang["tertiary_neglect"]		= array("alienation", "defeatism", "dejection", "embarrassment", "homesickness", "humiliation", "insecurity", "insult", "isolation", "loneliness", "rejection");
 $lang["tertiary_sympathy"]		= array("pity");
+
 
 // 2nd - Fear
 $lang["secondary_fear"]			= array("horror", "nervousness");

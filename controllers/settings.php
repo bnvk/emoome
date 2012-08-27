@@ -7,7 +7,7 @@ class Settings extends Dashboard_Controller
 
 		if ($this->data['logged_user_level_id'] > 1) redirect('home');	
         
-        $this->load->config('emoome');
+        $this->load->library('emoome');
         
 		$this->data['page_title']	= 'Settings';
     }
