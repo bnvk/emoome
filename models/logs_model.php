@@ -9,11 +9,11 @@ class Logs_model extends CI_Model
     }
  
  	// Logs
- 	// Interacts with "emoome_logs"
+ 	// Interacts with "logs"
 	function count_logs_user($user_id)
 	{		
  		$this->db->select('*');
- 		$this->db->from('emoome_logs');  
+ 		$this->db->from('logs');  
 	 	$this->db->where('user_id', $user_id);
  		return $this->db->count_all_results();
 	}	
@@ -21,9 +21,9 @@ class Logs_model extends CI_Model
 	function get_logs_user($user_id)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_logs');
-		$this->db->join('experiences', 'experiences.log_id = emoome_logs.log_id');
-		$this->db->order_by('emoome_logs.created_date', 'desc');
+		$this->db->from('logs');
+		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
+		$this->db->order_by('logs.created_date', 'desc');
 		$this->db->where('user_id', $user_id);
  		$result = $this->db->get();
  		return $result->result();	
@@ -34,20 +34,20 @@ class Logs_model extends CI_Model
     	if ($user_id)
     	{
     		$actions	= 'JOIN';
-    		$user_where = 'AND emoome_logs.user_id = '.$user_id;
+    		$user_where = 'AND logs.user_id = '.$user_id;
     	}
     	else
     	{
     		$user_where = '';
     	}
     
-		$sql = "SELECT emoome_logs.log_id, emoome_logs.geo_lat, emoome_logs.geo_lon, emoome_logs.created_at, emoome_words.word,  emoome_words.type, experiences.action,     
+		$sql = "SELECT logs.log_id, logs.geo_lat, logs.geo_lon, logs.created_at, words.word,  words.type, experiences.action,     
 				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
 				FROM emoome_log
-				JOIN experiences ON experiences.log_id = emoome_logs.log_id
-				JOIN emoome_words_link ON emoome_words_link.log_id = emoome_logs.log_id
-				JOIN emoome_words ON emoome_words.word_id = emoome_words_link.word_id
-				WHERE emoome_logs.geo_lat IS NOT NULL AND emoome_logs.geo_lon IS NOT NULL ".$user_where." AND emoome_words_link.used = 'F' 
+				JOIN experiences ON experiences.log_id = logs.log_id
+				JOIN words_link ON words_link.log_id = logs.log_id
+				JOIN words ON words.word_id = words_link.word_id
+				WHERE logs.geo_lat IS NOT NULL AND logs.geo_lon IS NOT NULL ".$user_where." AND words_link.used = 'F' 
 				ORDER BY distance ASC
 				LIMIT 0,".$distance;
 
@@ -73,14 +73,14 @@ class Logs_model extends CI_Model
 		$hours		= $end_hour - $start_hour;
 
 		$this->db->select('*');
-		$this->db->from('emoome_logs');
-		$this->db->join('emoome_words_link', 'emoome_words_link.log_id = emoome_logs.log_id');
-		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
-		$this->db->where('emoome_logs.user_id', $user_id);
-		$this->db->where('emoome_logs.created_time >=', $start_time);
-		$this->db->where('emoome_logs.created_time <=', $end_time);
-		$this->db->where('emoome_words_link.used', 'F');
-		$this->db->order_by('emoome_logs.created_time', 'asc');
+		$this->db->from('logs');
+		$this->db->join('words_link', 'words_link.log_id = logs.log_id');
+		$this->db->join('words', 'words.word_id = words_link.word_id');
+		$this->db->where('logs.user_id', $user_id);
+		$this->db->where('logs.created_time >=', $start_time);
+		$this->db->where('logs.created_time <=', $end_time);
+		$this->db->where('words_link.used', 'F');
+		$this->db->order_by('logs.created_time', 'asc');
  		$result = $this->db->get();
  		$results = $result->result();
 
@@ -95,7 +95,7 @@ class Logs_model extends CI_Model
 		$log_data['created_date'] = $date_time[0];
 		$log_data['created_time'] = $date_time[1];
 
-		$this->db->insert('emoome_logs', $log_data);
+		$this->db->insert('logs', $log_data);
 
 		if ($log_id = $this->db->insert_id())
 		{
@@ -108,7 +108,7 @@ class Logs_model extends CI_Model
 	function update_log($log_id, $log_data)
 	{
 		$this->db->where('log_id', $log_id);
-		$this->db->update('emoome_logs', $log_data);
+		$this->db->update('logs', $log_data);
 		return TRUE;
 	}
 

@@ -9,11 +9,11 @@ class Words_model extends CI_Model
     }
     
  	// Words
- 	// Interacts with "emoome_words"
+ 	// Interacts with "words"
 	function get_word($word_id)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words');
+		$this->db->from('words');
 		$this->db->where('word_id', $word_id);
 		$this->db->limit(1);
  		
@@ -28,7 +28,7 @@ class Words_model extends CI_Model
 	function check_word($word)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words');
+		$this->db->from('words');
 		$this->db->where('word', $word);
 		$this->db->limit(1);
  		
@@ -43,7 +43,7 @@ class Words_model extends CI_Model
 	function get_words_stem($stem)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words');
+		$this->db->from('words');
 		$this->db->where('stem', $stem);
  		$result = $this->db->get();
  		return $result->result();	      
@@ -87,7 +87,7 @@ class Words_model extends CI_Model
 				'sentiment'	=> $sentiment
 			);			
 
-			$this->db->insert('emoome_words', $word_data);
+			$this->db->insert('words', $word_data);
 
 			if ($word_id = $this->db->insert_id())
 			{
@@ -105,7 +105,7 @@ class Words_model extends CI_Model
 	function update_word($word_id, $word_data)
 	{
 		$this->db->where('word_id', $word_id);
-		$this->db->update('emoome_words', $word_data);
+		$this->db->update('words', $word_data);
 
 		return TRUE;
 	}
@@ -113,23 +113,23 @@ class Words_model extends CI_Model
 
 
 	// Words Link
- 	// Interacts with "emoome_words_link"
+ 	// Interacts with "words_link"
 	function count_user_word_type($user_id, $type)
 	{		
  		$this->db->select('*');
- 		$this->db->from('emoome_words_link');  
-		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');		
-	 	$this->db->where('emoome_words_link.user_id', $user_id);
-		$this->db->where('emoome_words.type', $type);
+ 		$this->db->from('words_link');  
+		$this->db->join('words', 'words.word_id = words_link.word_id');		
+	 	$this->db->where('words_link.user_id', $user_id);
+		$this->db->where('words.type', $type);
  		return $this->db->count_all_results();
 	} 	
 	
 	function get_words_links_log($log_id)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words_link');
-		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
- 		$this->db->where('emoome_words_link.log_id', $log_id);
+		$this->db->from('words_link');
+		$this->db->join('words', 'words.word_id = words_link.word_id');
+ 		$this->db->where('words_link.log_id', $log_id);
  		$result = $this->db->get();
  		return $result->result();
 	}
@@ -137,9 +137,9 @@ class Words_model extends CI_Model
 	function get_words_links($log_array)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words_link');
-		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
- 		$this->db->or_where_in('emoome_words_link.log_id', $log_array);
+		$this->db->from('words_link');
+		$this->db->join('words', 'words.word_id = words_link.word_id');
+ 		$this->db->or_where_in('words_link.log_id', $log_array);
  		$result = $this->db->get();
  		return $result->result();
 	}
@@ -147,9 +147,9 @@ class Words_model extends CI_Model
 	function get_words_links_user($user_id)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words_link');
-		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');
- 		$this->db->where('emoome_words_link.user_id', $user_id);
+		$this->db->from('words_link');
+		$this->db->join('words', 'words.word_id = words_link.word_id');
+ 		$this->db->where('words_link.user_id', $user_id);
  		$result = $this->db->get();
  		return $result->result();
 	}
@@ -157,7 +157,7 @@ class Words_model extends CI_Model
 	function get_word_user_count($user_id, $word_id, $used)
 	{
 		$this->db->select('*');
-		$this->db->from('emoome_words_link');
+		$this->db->from('words_link');
  		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used));
  		return $this->db->count_all_results();
 	}
@@ -176,7 +176,7 @@ class Words_model extends CI_Model
 				'used'		=> $used
 			);
 	
-			$this->db->insert('emoome_words_link', $link_data);
+			$this->db->insert('words_link', $link_data);
 
 			if ($word_link_id = $this->db->insert_id())
 			{
@@ -192,7 +192,7 @@ class Words_model extends CI_Model
 	function update_word_link($link_id, $link_data)
 	{
 		$this->db->where('link_id', $link_id);
-		$this->db->update('emoome_words_link', $link_data);
+		$this->db->update('words_link', $link_data);
 		
 		return TRUE;
 	}
@@ -200,7 +200,7 @@ class Words_model extends CI_Model
 
 
     // Words Taxonomy
- 	// Interacts with "emoome_words_taxonomy"    
+ 	// Interacts with "words_taxonomy"    
     function increment_word_taxonomy($user_id, $word_id, $use)
     {
 		$word_total		= $this->get_word_user_count($user_id, $word_id, $use);			
@@ -219,7 +219,7 @@ class Words_model extends CI_Model
     function get_word_taxonomy($user_id, $word_id, $used)
     {
  		$this->db->select('*');
- 		$this->db->from('emoome_words_taxonomy');    
+ 		$this->db->from('words_taxonomy');    
  		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used)); 				
  		$result = $this->db->get()->row();	
  		return $result;    	
@@ -234,13 +234,13 @@ class Words_model extends CI_Model
 			'used'		=> $used
 		);
 
-		return $this->db->insert('emoome_words_taxonomy', $data);
+		return $this->db->insert('words_taxonomy', $data);
     }
     
     function update_word_taxonomy($word_taxonomy_id, $count)
     {
 		$this->db->where('word_taxonomy_id', $word_taxonomy_id);
-		$this->db->update('emoome_words_taxonomy', array('count' => $count));        
+		$this->db->update('words_taxonomy', array('count' => $count));        
     }
 
 

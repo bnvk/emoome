@@ -79,11 +79,11 @@ class Emoome_model extends CI_Model
 	function get_user_most_recent($user_id, $limit)
 	{
 		// Get Log & Experience
-		$this->db->select('emoome_logs.log_id, emoome_logs.user_id, emoome_logs.geo_lat, emoome_logs.geo_lon, emoome_logs.source, emoome_logs.created_date, emoome_logs.created_time, experiences.experience');
-		$this->db->from('emoome_logs');
-		$this->db->join('experiences', 'experiences.log_id = emoome_logs.log_id');
-		$this->db->order_by('emoome_logs.created_date', 'desc');
-		$this->db->where('emoome_logs.user_id', $user_id);
+		$this->db->select('logs.log_id, logs.user_id, logs.geo_lat, logs.geo_lon, logs.source, logs.created_date, logs.created_time, experiences.experience');
+		$this->db->from('logs');
+		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
+		$this->db->order_by('logs.created_date', 'desc');
+		$this->db->where('logs.user_id', $user_id);
 		$this->db->limit($limit);
  		$result 	= $this->db->get();
  		$logs		= $result->result();
@@ -100,10 +100,10 @@ class Emoome_model extends CI_Model
 	 		}
 	 		
 	 		// Get Words
-	 		$this->db->select('emoome_words_link.*, emoome_words.word, emoome_words.type, emoome_words.sentiment');
-	 		$this->db->from('emoome_words_link');
-	 		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link.word_id');	
-	 		$this->db->or_where_in('emoome_words_link.log_id', $log_ids);
+	 		$this->db->select('words_link.*, words.word, words.type, words.sentiment');
+	 		$this->db->from('words_link');
+	 		$this->db->join('words', 'words.word_id = words_link.word_id');	
+	 		$this->db->or_where_in('words_link.log_id', $log_ids);
 	 		$result 	= $this->db->get();
 	 		$words 		= $result->result();
 
