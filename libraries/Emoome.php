@@ -16,7 +16,7 @@ class Emoome
 
 		$this->ci->load->config('emoome');
 		$this->ci->load->helper('math');
-        $this->ci->load->model('actions_model');
+        $this->ci->load->model('experiences_model');
         $this->ci->load->model('emoome_model');
         $this->ci->load->model('logs_model');
         $this->ci->load->model('thoughts_model');

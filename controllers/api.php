@@ -96,7 +96,7 @@ class Api extends Oauth_Controller
 	{
 		// Validation Rules
 	   	$this->form_validation->set_rules('feeling', 'Feeling', 'alpha_dash');
-	   	$this->form_validation->set_rules('action', 'Something you did today', 'required');
+	   	$this->form_validation->set_rules('experience', 'Something you did today', 'required');
 	   	$this->form_validation->set_rules('describe_1', '1st Describe', 'alpha_dash');
 	   	$this->form_validation->set_rules('describe_2', '2nd Describe', 'alpha_dash');
 	   	$this->form_validation->set_rules('describe_3', '3rd Describe', 'alpha_dash');
@@ -110,7 +110,7 @@ class Api extends Oauth_Controller
 				'geo_lat'	=> $this->input->post('geo_lat'),
 				'geo_lon'	=> $this->input->post('geo_lon'),
 				'time_1'	=> $this->input->post('time_feeling'),
-				'time_2'	=> $this->input->post('time_action'),
+				'time_2'	=> $this->input->post('time_experience'),
 				'time_3'	=> $this->input->post('time_describe'),
 				'time_total'=> $this->input->post('time_total'),
 				'source'	=> $this->input->post('source')
@@ -119,12 +119,12 @@ class Api extends Oauth_Controller
 			// Add Log
 			if ($log_id = $this->logs_model->add_log($log_data))
 			{
-				// Add Word / Action / Descriptors
-				$feeling	= $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
-				$action_id	= $this->actions_model->add_action($log_id, $this->input->post('action'));
-				$describe_1 = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
-				$describe_2 = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
-				$describe_3 = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
+				// Add Word / Experience / Descriptors
+				$feeling		= $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
+				$experience_id	= $this->experiences_model->add_experience($log_id, $this->input->post('experience'));
+				$describe_1 	= $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_1'), 'D');
+				$describe_2 	= $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_2'), 'D');
+				$describe_3 	= $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('describe_3'), 'D');
 	
 				// Update Word Map
 				$word_map = $this->emoome->update_users_meta_map($this->oauth_user_id);
@@ -151,41 +151,41 @@ class Api extends Oauth_Controller
 	function log_feedback_get()
 	{		
 		// TEST DATA
-		$msg_action = array(
+		$msg_experience = array(
 			'one'	=> 'I had fun classy sexy depressing time',
 			'two'	=> 'hurt worrying frightening glad', 
 			'three' => 'crying happy sad glad fucking water'
 		);
 
-		$msg_show = $msg_action[$this->get('msg')];
+		$msg_show = $msg_experience[$this->get('msg')];
 	
 	
 		// Values
-		$feeling			= $this->words_model->check_word('confusing');
-		$describe_1			= $this->words_model->check_word('glad');
-		$describe_2			= $this->words_model->check_word('uneasy');
-		$describe_3			= $this->words_model->check_word('lonely');
-		$words_action		= explode(' ', $msg_show);
-		$words_desribe		= array($describe_1, $describe_2, $describe_3);
-		$words_count_action = count($words_action);
-		$words_count_total	= 4 + $words_count_action;
-		$words_types		= config_item('emoome_word_types');
+		$feeling				= $this->words_model->check_word('confusing');
+		$describe_1				= $this->words_model->check_word('glad');
+		$describe_2				= $this->words_model->check_word('uneasy');
+		$describe_3				= $this->words_model->check_word('lonely');
+		$words_experience		= explode(' ', $msg_show);
+		$words_desribe			= array($describe_1, $describe_2, $describe_3);
+		$words_count_experience = count($words_experience);
+		$words_count_total		= 4 + $words_count_experience;
+		$words_types			= config_item('emoome_word_types');
 		
 		// Type
-		$type_count		= array('E' => 0, 'I' => 0, 'D' => 0, 'S' => 0, 'A' => 0, 'P' => 0, 'U' => 0);
+		$type_count	= array('E' => 0, 'I' => 0, 'D' => 0, 'S' => 0, 'A' => 0, 'P' => 0, 'U' => 0);
 		$type_count[$feeling->type] = 1;
 		
 		
 		// Sentiment
-		$sentiment_feeling = $feeling->sentiment;
-		$sentiment_action = 0;
-		$sentiment_describe = 0;
+		$sentiment_feeling 		= $feeling->sentiment;
+		$sentiment_experience 	= 0;
+		$sentiment_describe 	= 0;
 
-		// Action
-		foreach ($words_action as $word)
+		// experience
+		foreach ($words_experience as $word)
 		{
-			$check_word			= $this->words_model->check_word(strtolower($word));
-			$sentiment_action	= $check_word->sentiment + $sentiment_action;
+			$check_word				= $this->words_model->check_word(strtolower($word));
+			$sentiment_experience	= $check_word->sentiment + $sentiment_experience;
 
 			// Increment Type
 			$type_count[$check_word->type] = ($type_count[$check_word->type] + 1);
@@ -195,15 +195,15 @@ class Api extends Oauth_Controller
 		// Describe
 		foreach ($words_desribe as $describe)
 		{
-			$sentiment_describe = $describe->sentiment + $sentiment_describe;
-			$type_count[$describe->type] = ($type_count[$describe->type] + 1);
+			$sentiment_describe 			= $describe->sentiment + $sentiment_describe;
+			$type_count[$describe->type] 	= ($type_count[$describe->type] + 1);
 		}
 
 		// Totals
-		$sentiment_total = $sentiment_feeling + $sentiment_action + $sentiment_describe;
+		$sentiment_total = $sentiment_feeling + $sentiment_experience + $sentiment_describe;
 		
 		echo '<h1>Source</h1>';
-		echo $msg_show.' ('.$words_count_action.' words)';
+		echo $msg_show.' ('.$words_count_experience.' words)';
 		echo '<h1>Type</h1>';
 
 		foreach ($type_count as $type => $count)
@@ -218,7 +218,7 @@ class Api extends Oauth_Controller
 
 		echo '<h1>Sentiment</h1>';
 		echo 'Feeling: '.$sentiment_feeling.'<br>';	
-		echo 'Action: '.$sentiment_action.'<br>';
+		echo 'Experience: '.$sentiment_experience.'<br>';
 		echo 'Describe: '.$sentiment_describe.'<br>';
 		echo 'Total: '.$sentiment_total;
 	}

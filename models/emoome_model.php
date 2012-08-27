@@ -78,10 +78,10 @@ class Emoome_model extends CI_Model
 	/* User Specific Calls */
 	function get_user_most_recent($user_id, $limit)
 	{
-		// Get Log & Action
-		$this->db->select('emoome_logs.log_id, emoome_logs.user_id, emoome_logs.geo_lat, emoome_logs.geo_lon, emoome_logs.source, emoome_logs.created_date, emoome_logs.created_time, emoome_actions.action');
+		// Get Log & Experience
+		$this->db->select('emoome_logs.log_id, emoome_logs.user_id, emoome_logs.geo_lat, emoome_logs.geo_lon, emoome_logs.source, emoome_logs.created_date, emoome_logs.created_time, experiences.experience');
 		$this->db->from('emoome_logs');
-		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_logs.log_id');
+		$this->db->join('experiences', 'experiences.log_id = emoome_logs.log_id');
 		$this->db->order_by('emoome_logs.created_date', 'desc');
 		$this->db->where('emoome_logs.user_id', $user_id);
 		$this->db->limit($limit);

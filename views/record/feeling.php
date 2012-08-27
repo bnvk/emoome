@@ -5,10 +5,10 @@
 	<p><a id="log_feel_next" class="button" href="javascript:logFeeling()">Next</a></p>
 </div>
 
-<div id="log_action" class="content_center text_center hide">
+<div id="log_experience" class="content_center text_center hide">
 	<h1>What is one thing you did today?</h1>
-	<p><textarea name="log_action" id="log_val_action" placeholder="Walked my pet dog"></textarea></p>
-	<p><a id="log_action_next" href="javascript:logAction()" class="button">Next</a></p>
+	<p><textarea name="log_experience" id="log_val_experience" placeholder="Walked my pet dog"></textarea></p>
+	<p><a id="log_experience_next" href="javascript:logExperience()" class="button">Next</a></p>
 </div>
 
 <div id="log_describe" class="content_center text_center hide">
@@ -28,7 +28,7 @@
 <div id="log_thanks" class="content_center text_center hide">
 	<h1>Thanks :)</h1>
 	<h3 id="log_completion_message"></h3>
-	<p><a id="log_action_next" class="button" href="javascript:logThanks();">Another</a></p>
+	<p><a id="log_thanks_next" class="button" href="javascript:logThanks();">Another</a></p>
 </div>
 
 <script type="text/javascript">

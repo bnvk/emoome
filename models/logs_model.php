@@ -22,7 +22,7 @@ class Logs_model extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('emoome_logs');
-		$this->db->join('emoome_actions', 'emoome_actions.log_id = emoome_logs.log_id');
+		$this->db->join('experiences', 'experiences.log_id = emoome_logs.log_id');
 		$this->db->order_by('emoome_logs.created_date', 'desc');
 		$this->db->where('user_id', $user_id);
  		$result = $this->db->get();
@@ -41,10 +41,10 @@ class Logs_model extends CI_Model
     		$user_where = '';
     	}
     
-		$sql = "SELECT emoome_logs.log_id, emoome_logs.geo_lat, emoome_logs.geo_lon, emoome_logs.created_at, emoome_words.word,  emoome_words.type, emoome_actions.action,     
+		$sql = "SELECT emoome_logs.log_id, emoome_logs.geo_lat, emoome_logs.geo_lon, emoome_logs.created_at, emoome_words.word,  emoome_words.type, experiences.action,     
 				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
 				FROM emoome_log
-				JOIN emoome_actions ON emoome_actions.log_id = emoome_logs.log_id
+				JOIN experiences ON experiences.log_id = emoome_logs.log_id
 				JOIN emoome_words_link ON emoome_words_link.log_id = emoome_logs.log_id
 				JOIN emoome_words ON emoome_words.word_id = emoome_words_link.word_id
 				WHERE emoome_logs.geo_lat IS NOT NULL AND emoome_logs.geo_lon IS NOT NULL ".$user_where." AND emoome_words_link.used = 'F' 
