@@ -1,12 +1,3 @@
-<pre>
-<?php 
-
-$a = array_fill(5, 6, 'empty');
-print_r($a);
-
-?>
-</pre>
-
 <div id="search_container"></div>
 
 <script type="text/javascript" src="<?= base_url() ?>js/underscore.js"></script>
@@ -70,16 +61,10 @@ Logs = Backbone.Model.extend(
 					// Update Hours
 					this.set({ hours: hours_array });
 				
-				
-					// Update Hours Data
-					
+					// Update Hours Data					
 				}
-				
-				
-							
 	        }
 	    }
-
 	},
     addHourData: function(row)  
     {
@@ -142,15 +127,11 @@ SearchBox = Backbone.View.extend(
 				if (result.status == 'success')
 				{
 					// Make Model
-					var logs = new Logs();
-
-					logs.addHours(result.emotions);
-				
-					console.log(logs.get('hours'));
+					// var logs = new Logs();
+					// logs.addHours(result.emotions);
 				
 			  		var render_search = new ResultHours({ el: $("#search_visualization") });
-			  		
-			  		render_search.addHourRow();
+			  		render_search.addHourRow(result.emotions);
 				}				
 				else
 				{
@@ -176,8 +157,6 @@ ResultHours = Backbone.View.extend(
     },
     addHourRow: function(rows)
     {
-
-/*    
     	$.each(rows, function(key, value)
 	    {	    
 			var time = value.created_time.split(':');
@@ -204,9 +183,9 @@ ResultHours = Backbone.View.extend(
 		        var hour_data = { 
 		        	id      : hour,
 		        	display : hour_display,
-		        	circles : 'CIRCLES',
-		        	words   : 'WORDS',
-		        	topics  : 'TOPICS'
+		        	circles : '',
+		        	words   : '',
+		        	topics  : ''
 		        };
 
 		        var hour_item = _.template($("#hour_row").html(), hour_data);
@@ -226,7 +205,6 @@ ResultHours = Backbone.View.extend(
 			// Emotions
 			$hour_bar.append(emotion).width(bar_width);	
 	    });
-*/	   	   
     }
 });
 
@@ -259,34 +237,6 @@ $(document).ready(function()
 	// Instantiate Search
 	new SearchBox({ el: $("#search_container") });
 	
-	
-	
-	var Book = Backbone.Model.extend({
-		defaults: {
-			genre: 'historical'
-		}
-	});
-	 
-	var BookCollection = Backbone.Collection.extend({
-		model: Book
-	});
-	 
-	var books = new BookCollection();
-	 
-	books.add({
-		title: 'A Tale of Two Cities',
-		author: 'Charles Dickens',
-		publisher: 'Chapman & Hall'
-	});
-	 
-	books.add({
-		title: 'The Good Earth',
-		author: 'Pearl S. Buck',
-		publisher: 'John Day'
-	});
-	
-	console.log(BookCollection.get(0));	
-
 		
 });
 </script>

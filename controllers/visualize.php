@@ -145,9 +145,9 @@ class Visualize extends Site_Controller
 			$end_meridian = 'AM';
 		}
 
-		$this->data['start_hour']		= 04;//$start_hour;
+		$this->data['start_hour']		= $start_hour;
 		$this->data['start_meridian']	= 'PM';//$start_meridian;
-		$this->data['end_hour']			= 05;//$end_hour;
+		$this->data['end_hour']			= $end_hour;
 		$this->data['end_meridian']		= 'PM';//$end_meridian;
 
 		$this->render();

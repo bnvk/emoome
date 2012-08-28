@@ -60,7 +60,7 @@ class Api extends Oauth_Controller
         $this->response($message, 200);	
 	}
 
-	function get_emotions_range_get()
+	function get_emotions_range_authd_get()
 	{
 		if (($this->get('range') != '') AND ($this->get('start') != '') AND ($this->get('end') != ''))
 		{
@@ -155,48 +155,18 @@ class Api extends Oauth_Controller
 	
 	function log_feedback_get()
 	{		
-		// TEST DATA
-/*
-		$chooser = array(
-			'one'	=> 'I had fun classy sexy depressing time',
-			'two'	=> 'hurt worrying frightening glad', 
-			'three' => 'crying happy sad glad fucking water'
-		);
-	
-		$log_data = array(
-			'feeling'		=> 'confusing',
-			'experience'	=> $chooser[$this->get('id')],
-			'word_count'	=> count(explode(' ', $log['experience'])),
-			'describe_1'	=> 'glad',
-			'describe_2'	=> 'uneasy',
-			'describe_3'	=> 'lonely'		
-		);
-*/
 		if ($log = $this->logs_model->get_log($this->get('id')))
 		{
 			$analysis = $this->emoome->analyze_log($log, TRUE);
 
-			echo '<pre>	';
+			echo '<pre>';
 			print_r($analysis);
 		}
 		else
 		{
-			echo 'Nooo dice';
+			echo 'Soz, no dice soldier!';
 		}
-
-/*		
-		echo '<h1>Source</h1>';
-		echo $msg_show.' ('.$words_count_experience.' words)';
-		echo '<h1>Type</h1>';
-		echo '<h1>Sentiment</h1>';
-		echo 'Feeling: '.$sentiment_feeling.'<br>';	
-		echo 'Experience: '.$sentiment_experience.'<br>';
-		echo 'Describe: '.$sentiment_describe.'<br>';
-		echo 'Total: '.$sentiment_total;
-*/
 	}
-
-
 
 
 

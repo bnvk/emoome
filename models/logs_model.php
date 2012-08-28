@@ -101,6 +101,7 @@ class Logs_model extends CI_Model
 		$this->db->where('logs.created_time >=', $start_time);
 		$this->db->where('logs.created_time <=', $end_time);
 		$this->db->where('words_link.used', 'F');
+		$this->db->order_by('words.type', 'asc');
 		$this->db->order_by('logs.created_time', 'asc');
  		$result = $this->db->get();
  		$results = $result->result();
