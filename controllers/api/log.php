@@ -1,9 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 /*
- * Emoome API : Social-Igniter
+ * Emoome API : Log 
  *
  */
-class Api extends Oauth_Controller
+class Log extends Oauth_Controller
 {
     function __construct()
     {
@@ -15,6 +15,7 @@ class Api extends Oauth_Controller
     	$this->form_validation->set_error_delimiters('', '');        
 	}
 	
+	// Interacts with Log Table
 	function get_logs_user_authd_get()
 	{
 		if ($logs = $this->logs_model->get_logs_user($this->oauth_user_id))
@@ -167,193 +168,5 @@ class Api extends Oauth_Controller
 			echo 'Soz, no dice soldier!';
 		}
 	}
-
-
-
-	// Tools
-	function analyze_text_post()
-	{
-	   	$this->form_validation->set_rules('analyze_text', 'Text', 'required');
-
-		// Passes Validation
-	    if ($this->form_validation->run() == true)
-	    {		
-			$words_array 	= $this->lang->line('common');	
-			$text_raw		= $this->input->post('analyze_text');
-			$text_clean 	= preg_replace('/[^a-z0-9 ]/i', '', $text_raw);
-			$words_raw		= explode(' ', $text_clean);
-			$words_types	= array();
-			$words_common	= array();
-			$words_type		= array();
-			$words_type_count= array('E' => 0, 'I' => 0, 'D' => 0, 'S' => 0, 'A' => 0, 'P' => 0, 'U' => 0);
-			$words_type_total= 0;
-			$sentiment		= 0;
-	
-			foreach ($words_raw as $word)
-			{
-				$word = strtolower($word);
-			
-				// Is Not Common
-				if (!in_array($word, $words_array))
-				{
-					$get_word = $this->words_model->check_word($word);
-				
-					// Word Exists
-					if ($get_word)
-					{
-						// Output
-						$sentiment 							= $sentiment + $get_word->sentiment;	
-						$words_type[$get_word->word]		= $get_word->type;
-						$words_type_count[$get_word->type]	= 1 + $words_type_count[$get_word->type];				
-					}
-					// Add Word
-					else
-					{
-						$word_id	= $this->words_model->add_word($word, TRUE, 'U', 'U', 'U', 0);						
-						$get_word	= $this->words_model->get_word($word_id);
-	
-						// Output
-						$sentiment 							= $sentiment + $get_word->sentiment;						
-						$words_type[$get_word->word] 		= $get_word->type;				
-						$words_type_count[$get_word->type]	= 1 + $words_type_count[$get_word->type];
-					}
-					
-					$words_type_total++;
-				}
-				else
-				{
-					if (array_key_exists($word, $words_common))
-					{
-						$words_common[$word] = 1 + $words_common[$word];
-					}
-					else
-					{
-						$words_common[$word] = 1;
-					}					
-				}
-			}
-
-			// Prep Output
-			arsort($words_common);
-
-			// Output Data
-			$analysis = array(
-				'words'						=> $words_type,
-				'words_count'				=> count($words_raw),
-				'words_type_count'			=> $words_type_count,
-				'words_type_total_count' 	=> $words_type_total,
-				'sentiment'					=> $sentiment,
-				'common_count'				=> count($words_common),
-				'common_words'				=> $words_common
-			);
-
-            $message = array('status' => 'success', 'message' => 'Success word analysis performed', 'analysis' => $analysis);		
-		}
-		else
-		{
-	    	$message = array('status' => 'error', 'message' => validation_errors());		
-		}
-
-        $this->response($message, 200);
-	}
-	
-	
-	
-		
-	/* Thoughts Stuff */
-	function get_thoughts_words_get()
-	{
-		if ($this->get('id'))
-		{
-			if ($words = $this->thoughts_model->get_thoughts_category($this->get('id')))
-			{			
-	            $message = array('status' => 'success', 'message' => 'Success some thoughts found', 'words' => $words);
-			}
-			else
-			{
-	            $message = array('status' => 'error', 'message' => 'There are no thoughts for this', 'words' => 0);
-			}
-		}
-		else
-		{
-	    	$message = array('status' => 'error', 'message' => 'Specify a category of thoughts', 'words' => 0);			
-		}
-
-        $this->response($message, 200);			
-	}
-
-	function log_thought_authd_post()
-	{
-	   	$this->form_validation->set_rules('log_thought', 'Thought', 'required');
-
-		// Passes Validation
-	    if ($this->form_validation->run() == true)
-	    {	
-	    	$log_thought = $this->thoughts_model->add_thought($this->oauth_user_id, $this->input->post('category_id'), $this->input->post('source'), $this->input->post('log_thought'));
-
-			if ($log_thought)
-			{
-	            $message = array('status' => 'success', 'message' => 'Success we logged your thought', 'data' => $log_thought);		
-			}
-			else
-			{
-	            $message = array('status' => 'error', 'message' => 'Oops could not log your thought');
-			}			
-		}
-		else
-		{
-	    	$message = array('status' => 'error', 'message' => validation_errors());		
-		}			
-
-        $this->response($message, 200);	
-	}
-	
-
-
-	// Utilities & Stats
-	function get_user_word_maps_get()
-	{
-		if ($word_map = $this->emoome_model->get_users_meta_map($this->get('id')))
-		{
-            $message = array('status' => 'success', 'message' => 'Success word types found', 'word_map' => $word_map);		
-		}
-		else
-		{
-            $message = array('status' => 'error', 'message' => 'Could not find any word types');
-		}
-
-        $this->response($message, 200);
-	}
-
-	function add_user_word_maps_get()
-	{
-		if ($word_map = $this->emoome_model->add_users_meta_map($this->get('id')))
-		{
-            $message = array('status' => 'success', 'message' => 'Success word types were added', 'word_map' => $word_map);		
-		}
-		else
-		{
-            $message = array('status' => 'error', 'message' => 'Could not find any word types');
-		}
-
-        $this->response($message, 200);
-	}	
-	
-	function update_user_word_maps_get()
-	{
-		$word_map = $this->emoome_model->update_users_meta_map($this->get('id'));
-
-		if ($word_map)
-		{
-            $message = array('status' => 'success', 'message' => 'Success word types were found and updated', 'word_map' => $word_map);		
-		}
-		else
-		{
-            $message = array('status' => 'error', 'message' => 'Could not find any word types');
-		}
-
-        $this->response($message, 200);
-	}	
-	
 	
 }
