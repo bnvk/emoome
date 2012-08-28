@@ -14,7 +14,30 @@ class Logs_model extends CI_Model
  		$this->db->from('logs');  
 	 	$this->db->where('user_id', $user_id);
  		return $this->db->count_all_results();
-	}	
+	}
+	
+	function get_log($log_id)
+	{	
+		$this->db->select('*');
+		$this->db->from('logs');
+		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
+		$this->db->where('logs.log_id', $log_id);
+ 		$log = $this->db->get()->row();
+ 		
+ 		if ($log)
+ 		{
+	 		$this->db->select('*');
+			$this->db->from('words_link');
+			$this->db->join('words', 'words_link.word_id = words.word_id');
+			$this->db->where('words_link.log_id', $log_id);
+	 		$log->words = $this->db->get()->result();			
+ 		 		
+	 		return $log;	 		
+ 		}
+ 		
+ 		return FALSE;	
+		
+	}
 	
 	function get_logs_user($user_id)
 	{
@@ -109,6 +132,5 @@ class Logs_model extends CI_Model
 		$this->db->update('logs', $log_data);
 		return TRUE;
 	}
-
     
 }

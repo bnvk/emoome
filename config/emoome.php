@@ -105,10 +105,10 @@ $config['emoome_word_types_sub_count'] = array(
 	'U'  => 0
 );
 
-$config['emoome_word_use'] = array(
-	'F' => 'Feeling',
-	'D' => 'Descriptor',
-	'E' => 'Actions'
+$config['emoome_word_used'] = array(
+	'F' => 'feeling',
+	'D' => 'descriptor',
+	'E' => 'experience'
 );
 
 $config['emoome_speech_types'] = array(

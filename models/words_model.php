@@ -37,6 +37,15 @@ class Words_model extends CI_Model
 
 		return FALSE;
 	}
+	
+	function get_words_words($words_array)
+	{
+		$this->db->select('*');
+ 		$this->db->from('words');
+ 		$this->db->or_where_in('word', $words_array);	 	
+ 		$result = $this->db->get();	
+ 		return $result->result();		
+	}
 
 	function get_words_stem($stem)
 	{

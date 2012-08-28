@@ -58,66 +58,83 @@ class Emoome
 
 
 	/* Analyze Logs */
-	function analyze_log($log)
+	function analyze_log($log, $details=FALSE)
 	{
-		// Returns at End
-		$analysis		= array();
-		$type_count		= config_item('emoome_word_types_count');
-		$type_sub_count	= config_item('emoome_word_types_sub_count');
-
-		$words_experience		= explode(' ', $log['experience']);
-		$words_desribe			= array($log['describe_1'], $log['describe_2'], $log['describe_3']);
-		$words_count_total		= 4 + $words_count_experience;
-		$words_types			= config_item('emoome_word_types');
-
-
-		// Analyze 'Type'
-		$type_count[$feeling->type] = 1;
-
-
-
-		// Analyze 'Type Sub'
-		
-
-		// Sentiment
-		$sentiment_feeling 		= $feeling->sentiment;
-		$sentiment_experience 	= 0;
-		$sentiment_describe 	= 0;
-	
+		$analysis				= array();
+		$words					= array();
+		$word_used				= config_item('emoome_word_used');
+		$word_type				= config_item('emoome_word_types');
+		$word_type_sub			= config_item('emoome_word_types_sub');
+		$word_type_count		= config_item('emoome_word_types_count');
+		$word_type_sub_count	= config_item('emoome_word_types_sub_count');
+		$sentiment				= 0;
+		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 
 
 		// Experience
-		foreach ($words_experience as $word)
+		$experience_words = $this->ci->words_model->get_words_words(explode(' ', $log->experience));
+		
+		// Analyze Experience
+		foreach ($experience_words as $word)
 		{
-			$check_word				= $this->words_model->check_word(strtolower($word));
-			$sentiment_experience	= $check_word->sentiment + $sentiment_experience;
+			// Type
+			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
 
-			// Increment Type
-			$type_count[$check_word->type] = ($type_count[$check_word->type] + 1);
-		}
-
-
-		// Describe
-		foreach ($words_desribe as $describe)
-		{
-			$sentiment_describe 			= $describe->sentiment + $sentiment_describe;
-			$type_count[$describe->type] 	= ($type_count[$describe->type] + 1);
-		}
-
-		// Totals
-		$sentiment_total = $sentiment_feeling + $sentiment_experience + $sentiment_describe;
-
-
-
-		foreach ($type_count as $type => $count)
-		{
-			if ($count > 0 AND $type != 'U')
-			{
-				$percent = percent($count, $words_count_total);
-
-				$analysis['language'][] = array($words_types[$type] => $percent);
-			}
+			// Type Sub
+			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1;
+			
+			// Sentiment
+			$sentiment += $word->sentiment * $sentiment_normalize['E'];
 		}
 		
+		// Analyze Words
+		foreach ($log->words as $word)
+		{
+			// Type
+			$word_type_count[$word->type] = $word_type_count[$word->type] + 2;
+
+			// Type Sub
+			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1;
+			
+			// Sentiment
+			$sentiment += $word->sentiment * $sentiment_normalize[$word->used];
+			
+			// Words
+			$words[$word->word] = $word_used[$word->used];
+		}
+		
+		// Output Type		
+		foreach (array_filter($word_type_count) as $type => $count)
+		{
+		    $type    = $word_type[$type];
+		    $percent = percent($count, 4 + count($experience_words));
+		    $analysis['language'][$type] = $percent;
+		}
+		
+		// Output Type Sub
+		foreach (array_filter($word_type_sub_count) as $type_sub => $count)
+		{
+		    $type_sub_word = $word_type_sub[$type_sub];
+		    $analysis['topics'][$type_sub_word] = $word_type_sub_count[$type_sub];
+		}		
+
+		// Output Sentiment
+		$analysis['sentiment']	= $sentiment;
+		
+		// Output Words
+		$analysis['words'] = $words;
+		
+
+		// Details (full log result)
+		if ($details)
+		{
+			$analysis['user_id']	= $log->user_id;
+			$analysis['experience'] = $log->experience;
+			$analysis['type']		= $log->type;
+			$analysis['source']		= $log->source;
+			$analysis['geo_lat']	= $log->geo_lat;
+			$analysis['geo_lon']	= $log->geo_lon;
+			$analysis['created_at'] = $log->created_date.' '.$log->created_time; 
+		}
 				
 		return $analysis;
 	}

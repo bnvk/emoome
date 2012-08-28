@@ -128,7 +128,7 @@ class Utilities extends MY_Controller
 		$text = "";
 
 		// Prepare Text
-		//$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
+		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
 		$text	= preg_replace('/\s+/', ' ', $text);		// Strip Whitespace & Breaks
 		$text	= strtolower($text);						// Lowercase
 		$words	= explode(" ", $text);						// Make into array
@@ -187,7 +187,25 @@ class Utilities extends MY_Controller
 
 			$this->logs_model->update_log($log->log_id, array('created_date' => $date_time[0], 'created_time' => $date_time[1]));
 		}
+	}
+
+	function update_null_attributes()
+	{
+		$this->db->select('word_id, word, type_sub, speech');
+		$this->db->from('words');
+		$this->db->where('speech', NULL);
+ 		$query = $this->db->get();
+ 		$result = $query->result();
+
+		echo '<h1>'.count($result).'</h1>';
+		echo '<pre>';
 		
+		foreach ($result as $word)
+		{
+			echo 'Updating: '.$word->word.'<br>';	
+		
+			$this->words_model->update_word($word->word_id, array('speech' => 'U'));
+		}
 	}
 
 }

@@ -156,6 +156,7 @@ class Api extends Oauth_Controller
 	function log_feedback_get()
 	{		
 		// TEST DATA
+/*
 		$chooser = array(
 			'one'	=> 'I had fun classy sexy depressing time',
 			'two'	=> 'hurt worrying frightening glad', 
@@ -164,17 +165,25 @@ class Api extends Oauth_Controller
 	
 		$log_data = array(
 			'feeling'		=> 'confusing',
-			'experience'	=> $chooser[$this->get('msg')],
+			'experience'	=> $chooser[$this->get('id')],
 			'word_count'	=> count(explode(' ', $log['experience'])),
 			'describe_1'	=> 'glad',
 			'describe_2'	=> 'uneasy',
 			'describe_3'	=> 'lonely'		
 		);
+*/
+		if ($log = $this->logs_model->get_log($this->get('id')))
+		{
+			$analysis = $this->emoome->analyze_log($log, TRUE);
 
-		
-		$analysis = $this->emoome->analyze_log($log_data);
+			echo '<pre>	';
+			print_r($analysis);
+		}
+		else
+		{
+			echo 'Nooo dice';
+		}
 
-		print_r($analysis);
 /*		
 		echo '<h1>Source</h1>';
 		echo $msg_show.' ('.$words_count_experience.' words)';
