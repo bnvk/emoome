@@ -4,8 +4,6 @@ class Thoughts_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-
-        $this->load->library('natural_language');        
     }
 
 	/* Thoughts */
@@ -19,7 +17,7 @@ class Thoughts_model extends CI_Model
 			'created_at'	=>  unix_to_mysql(now())
 		);
 
-		$this->db->insert('emoome_thoughts', $thought_data);
+		$this->db->insert('thoughts', $thought_data);
 
 		if ($thought_id = $this->db->insert_id())
 		{
@@ -39,7 +37,7 @@ class Thoughts_model extends CI_Model
 					'used'			=> 'B'
 				);
 
-				$this->db->insert('emoome_words_link_thoughts', $word_data);				
+				$this->db->insert('words_link_thoughts', $word_data);				
 			}
 			
 			return TRUE;
@@ -51,10 +49,10 @@ class Thoughts_model extends CI_Model
 	
 	function get_thoughts_category($category_id)
 	{
-		$this->db->select('emoome_words_link_thoughts.*, emoome_words.word, emoome_words.type');
-		$this->db->from('emoome_words_link_thoughts');
-		$this->db->join('emoome_words', 'emoome_words.word_id = emoome_words_link_thoughts.word_id');
- 		$this->db->or_where_in('emoome_words_link_thoughts.category_id', $category_id);
+		$this->db->select('words_link_thoughts.*, words.word, words.type');
+		$this->db->from('words_link_thoughts');
+		$this->db->join('words', 'words.word_id = words_link_thoughts.word_id');
+ 		$this->db->or_where_in('words_link_thoughts.category_id', $category_id);
  		$result = $this->db->get();
  		return $result->result();	
 	}

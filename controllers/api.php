@@ -9,6 +9,7 @@ class Api extends Oauth_Controller
     {
         parent::__construct();
        
+        $this->load->library('natural_language');       
         $this->load->library('emoome');
 
     	$this->form_validation->set_error_delimiters('', '');        
@@ -129,6 +130,9 @@ class Api extends Oauth_Controller
 				// Update Word Map
 				$word_map = $this->emoome->update_users_meta_map($this->oauth_user_id);
 	
+				// Analyze Log
+				// $this->emoome->analyze_log();
+	
 				// Log Count
 				$log_count = $this->logs_model->count_logs_user($this->uri->segment(4));
 				
@@ -147,80 +151,40 @@ class Api extends Oauth_Controller
 
         $this->response($message, 200);
 	}
+
 	
 	function log_feedback_get()
 	{		
 		// TEST DATA
-		$msg_experience = array(
+		$chooser = array(
 			'one'	=> 'I had fun classy sexy depressing time',
 			'two'	=> 'hurt worrying frightening glad', 
 			'three' => 'crying happy sad glad fucking water'
 		);
-
-		$msg_show = $msg_experience[$this->get('msg')];
 	
-	
-		// Values
-		$feeling				= $this->words_model->check_word('confusing');
-		$describe_1				= $this->words_model->check_word('glad');
-		$describe_2				= $this->words_model->check_word('uneasy');
-		$describe_3				= $this->words_model->check_word('lonely');
-		$words_experience		= explode(' ', $msg_show);
-		$words_desribe			= array($describe_1, $describe_2, $describe_3);
-		$words_count_experience = count($words_experience);
-		$words_count_total		= 4 + $words_count_experience;
-		$words_types			= config_item('emoome_word_types');
+		$log_data = array(
+			'feeling'		=> 'confusing',
+			'experience'	=> $chooser[$this->get('msg')],
+			'word_count'	=> count(explode(' ', $log['experience'])),
+			'describe_1'	=> 'glad',
+			'describe_2'	=> 'uneasy',
+			'describe_3'	=> 'lonely'		
+		);
+
 		
-		// Type
-		$type_count	= array('E' => 0, 'I' => 0, 'D' => 0, 'S' => 0, 'A' => 0, 'P' => 0, 'U' => 0);
-		$type_count[$feeling->type] = 1;
-		
-		
-		// Sentiment
-		$sentiment_feeling 		= $feeling->sentiment;
-		$sentiment_experience 	= 0;
-		$sentiment_describe 	= 0;
+		$analysis = $this->emoome->analyze_log($log_data);
 
-		// experience
-		foreach ($words_experience as $word)
-		{
-			$check_word				= $this->words_model->check_word(strtolower($word));
-			$sentiment_experience	= $check_word->sentiment + $sentiment_experience;
-
-			// Increment Type
-			$type_count[$check_word->type] = ($type_count[$check_word->type] + 1);
-		}
-
-
-		// Describe
-		foreach ($words_desribe as $describe)
-		{
-			$sentiment_describe 			= $describe->sentiment + $sentiment_describe;
-			$type_count[$describe->type] 	= ($type_count[$describe->type] + 1);
-		}
-
-		// Totals
-		$sentiment_total = $sentiment_feeling + $sentiment_experience + $sentiment_describe;
-		
+		print_r($analysis);
+/*		
 		echo '<h1>Source</h1>';
 		echo $msg_show.' ('.$words_count_experience.' words)';
 		echo '<h1>Type</h1>';
-
-		foreach ($type_count as $type => $count)
-		{
-			if ($count > 0 AND $type != 'U')
-			{
-				$percent = percent($count, $words_count_total);
-
-				echo $words_types[$type].': '.$percent.'<br>';
-			}
-		}
-
 		echo '<h1>Sentiment</h1>';
 		echo 'Feeling: '.$sentiment_feeling.'<br>';	
 		echo 'Experience: '.$sentiment_experience.'<br>';
 		echo 'Describe: '.$sentiment_describe.'<br>';
 		echo 'Total: '.$sentiment_total;
+*/
 	}
 
 

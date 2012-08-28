@@ -4,8 +4,6 @@ class Logs_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-
-        $this->load->library('natural_language');        
     }
  
  	// Logs

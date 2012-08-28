@@ -7,9 +7,7 @@ class Emoome_model extends CI_Model
     {
         parent::__construct();
         
-		$this->ci =& get_instance();        
-
-        $this->load->library('natural_language');        
+		$this->ci =& get_instance();
     }
 
 
