@@ -107,8 +107,8 @@ class Utilities extends MY_Controller
 
 	function add_words()
 	{
-		$this->lang->load('firstnames');
-		$words_array = $this->lang->line('firstnames');
+		$this->lang->load('clothing');
+		$words_array = $this->lang->line('clothing_actions');
 		$output = '';
 
 		if ($words_array)
@@ -116,7 +116,7 @@ class Utilities extends MY_Controller
 			foreach ($words_array as $word)
 			{
 				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
-				$add_word = $this->emoome_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
+				$add_word = $this->emoome_model->add_word($word, TRUE, 'A', 'CL', 'NP', 1);
 				$output .= $add_word.' '.$word.'<br>';
 			}
 		}
