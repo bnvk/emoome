@@ -16,8 +16,74 @@ class Analyze extends Oauth_Controller
 	}
 	
 
-	// Tools
-	function analyze_text_post()
+	function log_get()
+	{
+		
+		if ($log = $this->logs_model->get_log($this->get('id')))
+		{
+			$analysis = $this->emoome->analyze_log($log, TRUE);
+
+			echo '<pre>';
+			print_r($analysis);
+		}
+		else
+		{
+			echo 'Soz, no dice soldier!';
+		}		
+	}
+
+
+	function time_authd_get()
+	{
+		if (($this->get('start') != '') AND ($this->get('end') != ''))
+		{
+			// Set Range
+			$emotions = $this->logs_model->get_emotions_range_time($this->oauth_user_id, $this->get('start'), $this->get('end'));
+
+			if ($emotions)
+			{				
+	            $message = array('status' => 'success', 'message' => 'Yay we found some feelings', 'emotions' => $emotions);
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'You have not recorded any feelings during that time period');
+			}
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'One or more search parameters are missing');
+		}
+
+        $this->response($message, 200);
+	}
+
+
+	function date_authd_get()
+	{
+		if (($this->get('start') != '') AND ($this->get('end') != ''))
+		{
+			// Set Range
+			$emotions = $this->logs_model->get_emotions_range_date($this->oauth_user_id, $this->get('start'), $this->get('end'));
+	
+			if ($emotions)
+			{				
+	            $message = array('status' => 'success', 'message' => 'Yay we found some feelings', 'emotions' => $emotions);
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'You have not recorded any feelings during that time period');
+			}
+		}
+		else
+		{
+            $message = array('status' => 'error', 'message' => 'One or more search parameters are missing');
+		}
+
+        $this->response($message, 200);
+	}
+
+
+	function text_post()
 	{
 	   	$this->form_validation->set_rules('analyze_text', 'Text', 'required');
 

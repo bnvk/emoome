@@ -305,7 +305,7 @@ function logDescribe()
 			$.oauthAjax(
 			{
 				oauth 		: user_data,		
-				url			: base_url + 'api/emoome/log_feeling',
+				url			: base_url + 'api/emoome/logs/create_feeling',
 				type		: 'POST',
 				dataType	: 'json',
 				data		: log_data,

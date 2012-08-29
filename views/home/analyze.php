@@ -50,7 +50,7 @@ $(document).ready(function()
 
 				$.ajax(
 				{
-					url			: base_url + 'api/emoome/analyze_text',
+					url			: base_url + 'api/emoome/analyze/text',
 					type		: 'POST',
 					dataType	: 'json',
 					data		: analyze_data,

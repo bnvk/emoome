@@ -34,7 +34,7 @@ $(document).ready(function()
 		$.oauthAjax(
 		{
 			oauth 		: user_data,		
-			url			: base_url + 'api/emoome/get_nearby_feelings/lat/' + position.coords.latitude + '/lon/' + position.coords.longitude + '/distance/' + distance,
+			url			: base_url + 'api/emoome/logs/near/lat/' + position.coords.latitude + '/lon/' + position.coords.longitude + '/distance/' + distance,
 			type		: 'GET',
 			dataType	: 'json',
 		  	success		: function(result)

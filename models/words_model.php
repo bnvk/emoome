@@ -219,7 +219,7 @@ class Words_model extends CI_Model
 		}				
 		else
 		{
-			$this->add_word_taxonomy($user_id, $word_id, $word_total, $use);
+			$this->add_word_taxonomy($user_id, $word_id, $word_total, $used);
 		}    
     }
     
