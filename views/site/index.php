@@ -1,5 +1,80 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<title><?= $site_title ?></title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="title" content="<?= site_title($sub_title, $page_title, $site_title) ?>" />
+<meta name="description" content="<?= $site_description ?>" />
+<meta name="keywords" content="<?= $site_keywords ?>" />
+<meta name="author" content="Brennan Novak">
+
+<!-- OpenGraph (Facebook) http://ogp.me -->
+<meta property="og:title" content="<?= $site_title ?>"/>
+<meta property="og:type" content="website" />
+<meta property="og:image" content="<?= $site_assets ?>apple-touch-icon-114x114-precomposed.png"/>
+<meta property="og:url" content="<?= base_url() ?>"/>
+<meta property="og:site_name" content="<?= $site_title ?>"/>
+<meta property="og:description" content="<?= $site_description ?>">
+
+<link rel="stylesheet" media="screen" href="<?= $site_assets ?>css/site.css" type="text/css" />
+
+<!-- Apple Icons -->
+<link rel="apple-touch-icon-precomposed" href="<?= $site_assets ?>apple-touch-icon-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="<?= $site_assets ?>apple-touch-icon-57x57-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?= $site_assets ?>apple-touch-icon-72x72-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?= $site_assets ?>apple-touch-icon-114x114-precomposed.png" />
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="<?= $site_assets ?>favicon.ico" />
+<link rel="icon" type="image/png" href="<?= $site_assets ?>icon-32.png" />
+</head>
+<body>
+<header>
+	<div id="header">
+		<div id="header_not_logged" class="hide">
+			<div id="header_logo"></div>
+			<h1><a id="header_home" href="<?= base_url() ?>#">emo<span class="name_ome">ome</span></a></h1>
+			<ul id="header_links_public" class="header_links">
+				<li class="header_text">Have<br>Account</li>
+				<li><a href="<?= base_url() ?>#/login"><span class="header_icons icon_login"></span>Login</a></li>
+				<li class="header_text">Create<br>Account</li>
+				<li><a href="<?= base_url() ?>#/signup"><span class="header_icons icon_signup"></span>Signup</a></li>
+			</ul>
+			<div class="clear"></div>
+		</div>	
+		<div id="header_logged" class="hide">
+			<div id="header_logged_user">
+				<div id="header_logged_avatar"></div>
+				<h1 id="header_logged_name"></h1>
+				<p id="header_logged_count"></p>
+				<div class="clear"></div>
+			</div>
+			<ul id="header_links_logged" class="header_links">	
+				<li><a href="<?= base_url() ?>#/record/feeling"><span class="header_icons icon_record"></span>Record</a></li>	
+				<li><a href="<?= base_url() ?>#/visualize"><span class="header_icons icon_visualize"></span>Visualize</a></li>	
+				<li><a href="<?= base_url() ?>#/settings"><span class="header_icons icon_settings"></span>Settings</a></li>
+			</ul>
+		</div>
+		<div class="clear"></div>
+	</div>	
+</header>
+
 <!-- Where The Magic Happens -->
-<div id="application"></div>
+<div id="container"></div>
+
+<!-- Footer -->
+<footer>
+	<div class="clear"></div>
+	<div id="footer">
+		<p><a href="<?= base_url() ?>">Home</a> <a href="<?= base_url() ?>blog">Blog</a> <a href="<?= base_url() ?>privacy">Privacy</a> <a href="mailto:info@emoo.me">Contact</a></p>
+		<p>&copy;<?= date('Y').' '.$site_title ?></p>
+	</div>
+</footer>
+
 
 <!-- Public Views -->
 <script type="text/html" id="index">
@@ -148,6 +223,7 @@
 </script>
 
 
+
 <!-- Record Views -->
 <script type="text/html" id="record">
 	<div id="content_test" class="content_center text_center">
@@ -192,6 +268,7 @@
 </script>
 
 
+
 <!-- Visualize Views -->
 <script type="text/html" id="visualize">
 	<div id="visualize_waiting" class="content_center text_center">
@@ -203,6 +280,7 @@
 		</div>
 	</div>
 </script>
+
 
 
 <!-- Settings Views -->
@@ -243,11 +321,83 @@
 </script>
 
 
+<script type="text/javascript" src="<?= base_url() ?>js/jquery.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>js/social.core.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>application/modules/emoome/assets/js/emoome.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/underscore.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/views.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/router.js"></script>
 <script type="text/javascript">
-	var router = new ApplicationRouter($('#application'));
+//Global User Data:
+var user_data = {
+	"user_id":"<?= $logged_user_id ?>",
+	"username":"<?= $logged_username ?>",
+	"user_level_id":"<?= $logged_user_level_id ?>",
+	"name":"<?= $logged_name ?>",
+	"image":"<?= $logged_image ?>",
+	"location":"<?= $logged_location ?>",
+	"geo_enabled":"<?= $logged_geo_enabled ?>",
+	"geo_lat":"",
+	"geo_lon":"",
+	"language":"<?= $this->session->userdata('language') ?>",
+	"privacy":"<?= $logged_privacy ?>",	 
+	"consumer_key": "<?= $oauth_consumer_key ?>",
+	"consumer_secret": "<?= $oauth_consumer_secret ?>",
+	"token": "<?= $oauth_token ?>",
+	"token_secret": "<?= $oauth_token_secret ?>",
+	"source": "<?= $user_source ?>"
+}
+
+var base_url 		= '<?= base_url() ?>';
+var current_module	= jQuery.url.segment(1);
+var core_modules	= jQuery.parseJSON('<?= json_encode(config_item('core_modules')) ?>');
+var core_assets		= '<?= $dashboard_assets.'icons/' ?>';
+var site_assets		= '<?= $site_assets ?>';
+
+$(document).ready(function()
+{	
+	// Create Router
+	var router = new ApplicationRouter($('#container'));
 	Backbone.history.start();
+
+
+	// Hides Things
+	$('.error').hide();
+
+	// REFACTOR to use LIGHTBOX style
+	if ($('#content_message').html() != '') $('#content_message').notify({status:'success',message:$('#content_message').html()});
+
+	$('body').append('<div id="request_lightbox"><div id="lightbox_message">Blah blah blah I am cool!</div></div>');
+
+	// Language Hide
+	if (user_data.language != 'en' && user_data.language != '')
+	{
+		$('#container').html('<h1>Sorry!</h1><h3>We are not setup to handle non english languages at present.</h3><h3>We will let you know when we are.</h3>');
+	}
+	
+	// Render Logged In ToolBar
+	if (user_data.user_id != '')
+	{		
+		// Show Content
+		if (isNotLoggedUrl(window.location.href))
+		{		
+			window.location = base_url + 'record/feeling'; 
+		}
+		else
+		{
+			showWebLogged(user_data.name, user_data.image);
+		}
+	}
+	else
+	{
+		$('#header_not_logged').fadeIn('normal');	
+	}
+
+	
+});
 </script>
+<?php if (!$this->uri->segment(1)) echo $google_analytics; ?>
+</body>
+</html>
+

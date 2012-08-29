@@ -10,7 +10,7 @@ class Site extends Site_Controller
 
 	function index()
 	{		
-		$this->render();
+		$this->load->view('../modules/emoome/views/site/index', $this->data);
 	}
 
 }
