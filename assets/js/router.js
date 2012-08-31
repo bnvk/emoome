@@ -3,6 +3,8 @@ var ApplicationRouter = Backbone.Router.extend(
 	initialize: function(el)
 	{
 		this.el = el;
+		
+		console.log('initialize router');
 
 		// Public Views
 		this.indexView				= new ContentView('#index');
@@ -14,29 +16,36 @@ var ApplicationRouter = Backbone.Router.extend(
 
 		// Record Views
 		this.record					= new ContentView('#record');
-		this.recordFeeling			= new ContentView('#record_feeling');
-		this.recordExperience		= new ContentView('#record_experience');
-		this.recordDescribe			= new ContentView('#record_describe');		
-		this.recordThanks			= new ContentView('#record_thanks');		
-
+		this.recordFeeling			= new RecordFeelingView({ el: $('#container') });
+/*		
+		this.recordExperience		= new RecordFeelingView('#record_experience');
+		this.recordDescribe			= new RecordFeelingView('#record_describe');		
+		this.recordThanks			= new RecordFeelingView('#record_thanks');		
+*/
 		// Visualize Views
 		this.visualize				= new ContentView('#visualize');
 
 		// Settings Views
 		this.settings				= new ContentView('#settings');
-		
+		this.settingsNotifications	= new ContentView('#settings_notifications');
+		this.settingsAccount		= new ContentView('#settings_account');
+		this.settingsPassword		= new ContentView('#settings_password');				
 	},
 	routes: {
-		"" 					: "index",
-		"login" 			: "login",
-		"signup"			: "signup",
-		"forgot_password"	: "forgotPassword",
-		"logout"			: "logout",
-		"record"			: "record",
-		"record/:stage"		: "recordViews",
-		"visualize"			: "visualize",
-		"settings"			: "settings",
-		"*else"				: "notFound"
+		"" 						: "index",
+		"login" 				: "login",
+		"signup"				: "signup",
+		"forgot_password"		: "forgotPassword",
+		"logout"				: "logout",
+		"record"				: "record",
+		"record/:view"			: "recordViews",
+//		"record/experience"		: "recordExperience",
+		"visualize"				: "visualize",
+		"settings"				: "settings",
+		"settings/notifications": "settingsNotifications",
+		"settings/account"		: "settingsAccount",
+		"settings/password"		: "settingsPassword",
+		"*else"					: "notFound"
 	},
 	currentView: null,
 	switchView: function(view)
@@ -83,30 +92,26 @@ var ApplicationRouter = Backbone.Router.extend(
 	{
 		this.switchView(this.forgotPasswordView);		
 	},
-	logout: function()
-	{	
+	logout: function() {	
 		this.switchView(this.logoutView);
 	},
-	notFound: function()
-	{
+	notFound: function() {
 		this.switchView(this.notFoundView);
 	},
 	record: function()
 	{
 		this.switchView(this.record);	
 	},
-	recordViews: function(stage)
-	{
-		console.log('hiii yoa recordView');
-		console.log(stage);
-		if (stage == 'feeling') 
-			this.switchView(this.recordFeeling);
-		else if (stage == 'experience') 
-			this.switchView(this.recordExperience);
-		else if (stage == 'describe') 
-			this.switchView(this.recordDescribe);
-		else if (stage == 'thanks')
-			this.switchView(this.recordThanks);
+	recordViews: function(view)
+	{		
+		if (view == 'feeling') 
+			this.recordFeeling.viewFeeling();
+		else if (view == 'experience') 
+			this.recordFeeling.viewExperience();
+		else if (view == 'describe') 
+			this.recordFeeling.viewDescribe();
+		else if (view == 'thanks') 
+			this.recordFeeling.viewThanks();
 		else
 			this.switchView(this.notFoundView);
 	},
@@ -117,5 +122,17 @@ var ApplicationRouter = Backbone.Router.extend(
 	settings: function()
 	{
 		this.switchView(this.settings);
+	},
+	settingsNotifications: function()
+	{
+		this.switchView(this.settingsNotifications);
+	},
+	settingsAccount: function()
+	{
+		this.switchView(this.settingsAccount);
+	},
+	settingsPassword: function()
+	{
+		this.switchView(this.settingsPassword);
 	}
 });

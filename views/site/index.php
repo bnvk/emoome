@@ -35,30 +35,6 @@
 <body>
 <header>
 	<div id="header">
-		<div id="header_not_logged" class="hide">
-			<div id="header_logo"></div>
-			<h1><a id="header_home" href="<?= base_url() ?>#">emo<span class="name_ome">ome</span></a></h1>
-			<ul id="header_links_public" class="header_links">
-				<li class="header_text">Have<br>Account</li>
-				<li><a href="<?= base_url() ?>#/login"><span class="header_icons icon_login"></span>Login</a></li>
-				<li class="header_text">Create<br>Account</li>
-				<li><a href="<?= base_url() ?>#/signup"><span class="header_icons icon_signup"></span>Signup</a></li>
-			</ul>
-			<div class="clear"></div>
-		</div>	
-		<div id="header_logged" class="hide">
-			<div id="header_logged_user">
-				<div id="header_logged_avatar"></div>
-				<h1 id="header_logged_name"></h1>
-				<p id="header_logged_count"></p>
-				<div class="clear"></div>
-			</div>
-			<ul id="header_links_logged" class="header_links">	
-				<li><a href="<?= base_url() ?>#/record/feeling"><span class="header_icons icon_record"></span>Record</a></li>	
-				<li><a href="<?= base_url() ?>#/visualize"><span class="header_icons icon_visualize"></span>Visualize</a></li>	
-				<li><a href="<?= base_url() ?>#/settings"><span class="header_icons icon_settings"></span>Settings</a></li>
-			</ul>
-		</div>
 		<div class="clear"></div>
 	</div>	
 </header>
@@ -75,6 +51,37 @@
 	</div>
 </footer>
 
+
+<!-- Partials -->
+<script type="text/html" id="header_public">
+	<div id="header_not_logged">
+		<div id="header_logo"></div>
+		<h1><a id="header_home" href="<?= base_url() ?>#">emo<span class="name_ome">ome</span></a></h1>
+		<ul id="header_links_public" class="header_links">
+			<li class="header_text">Have<br>Account</li>
+			<li><a href="<?= base_url() ?>#/login"><span class="header_icons icon_login"></span>Login</a></li>
+			<li class="header_text">Create<br>Account</li>
+			<li><a href="<?= base_url() ?>#/signup"><span class="header_icons icon_signup"></span>Signup</a></li>
+		</ul>
+		<div class="clear"></div>
+	</div>	
+</script>
+
+<script type="text/html" id="header_user">
+	<div id="header_logged">
+		<div id="header_logged_user">
+			<div id="header_logged_avatar"><img src="<%= image %>"></div>
+			<h1 id="header_logged_name"><%= name %></h1>
+			<p id="header_logged_count"></p>
+			<div class="clear"></div>
+		</div>
+		<ul id="header_links_logged" class="header_links">	
+			<li><a href="<?= base_url() ?>#/record/feeling"><span class="header_icons icon_record"></span>Record</a></li>	
+			<li><a href="<?= base_url() ?>#/visualize"><span class="header_icons icon_visualize"></span>Visualize</a></li>	
+			<li><a href="<?= base_url() ?>#/settings"><span class="header_icons icon_settings"></span>Settings</a></li>
+		</ul>
+	</div>
+</script>
 
 <!-- Public Views -->
 <script type="text/html" id="index">
@@ -235,16 +242,16 @@
 <script type="text/template" id="record_feeling">
 	<div id="log_feeling_view" class="content_center text_center">
 		<h1>How do you feel right now?</h1>
-		<p><input type="text" name="log_feeling" id="log_val_feeling" placeholder="Good" value=""></p>
-		<p><a id="log_feel_next" class="button" href="#">Next</a></p>
+		<p><input type="text" name="log_feeling" id="log_feeling_value" placeholder="Good" value=""></p>
+		<p><button id="log_feel_next">Next</button></p>
 	</div>
 </script>
 
 <script type="text/html" id="record_experience">
 	<div id="log_experience_view" class="content_center text_center">
 		<h1>What is one thing you did today?</h1>
-		<p><textarea name="log_experience" id="log_val_experience" placeholder="Walked my pet dog"></textarea></p>
-		<p><a id="log_experience_next" href="#" class="button">Next</a></p>
+		<p><textarea name="log_experience" id="log_experience_value" placeholder="Walked my pet dog"></textarea></p>
+		<p><button id="log_experience_next">Next</button></p>
 	</div>
 </script>
 
@@ -252,10 +259,10 @@
 	<div id="log_describe_view" class="content_center text_center">
 		<h1>Describe in three words</h1>
 		<p id="log_describe_this"></p>
-		<p><input type="text" name="log_describe_1" id="log_val_describe_1" placeholder="Three" value=""></p>
-		<p><input type="text" name="log_describe_2" id="log_val_describe_2" placeholder="Separate" value=""></p>
-		<p><input type="text" name="log_describe_3" id="log_val_describe_3" placeholder="Words" value=""></p>
-		<p><a id="log_describe_next" class="button" href="#">Finish</a></p>
+		<p><input type="text" name="log_describe_1" id="log_describe_1_value" placeholder="Three" value=""></p>
+		<p><input type="text" name="log_describe_2" id="log_describe_2_value" placeholder="Separate" value=""></p>
+		<p><input type="text" name="log_describe_3" id="log_describe_3_value" placeholder="Words" value=""></p>
+		<p><button id="log_describe_next">Finish</button></p>
 	</div>
 </script>
 
@@ -320,12 +327,99 @@
 	</div>
 </script>
 
+<script type="text/html" id="settings_notifications">
+	<div id="content_notifications" class="content_left text_left">
+		<h1>Notifications</h1>
+		<form name="settings_notifications" id="settings_notifications" method="post">	
+		<p>	
+			<label>How Often</label><br>
+			<?= form_dropdown('notifications_frequency', config_item('notifications_frequency'), $notifications_frequency, 'id="notifications_frequency"') ?>
+		</p>
+		<p><input type="checkbox" class="nullify" name="notifications_mobile" value="<?= $notifications_mobile ?>"> &nbsp;Mobile (PUSH) Notifications</p>
+		<p><input type="checkbox" class="nullify" name="notifications_sms" value="<?= $notifications_sms ?>"> &nbsp;Text Messages</p>
+		<p><input type="checkbox" class="nullify" name="notifications_email" value="<?= $notifications_email ?>"> &nbsp;Email</p>
+		<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
+		</form>
+	</div>
+</script>
+
+<script type="text/html" id="settings_account">
+	<div id="content_account" class="content_left text_left">
+		<h1>Account Info</h1>
+		<form name="settings_account" id="settings_account" method="post">	
+		<p>	
+			<label>Name</label><br>
+			<input type="text" name="name" id="profile_name" placeholder="Your Name" value="<?= $this->session->userdata('name') ?>">
+		</p>
+		<p>
+			<label>Email</label><br>
+			<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<?= $this->session->userdata('email') ?>">
+		</p>
+		<p>
+			<label>Phone (for reminders)</label><br>
+			<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone_number') ?>">
+		</p>
+		<p>
+			<label>Language</lable><br>
+			<?= form_dropdown('language', config_item('languages'), $this->session->userdata('language')); ?>
+		</p>
+		<p>
+			<label>Timezone</lable><br>	
+			<select name="timezones" id="profile_timezone">
+				<option value=''>---select---</option>
+				<option value='UM10'>Hawaii Standard</option>
+				<option value='UM9'>Alaska Standard</option>
+				<option value='UM8'>Pacific Standard</option>
+				<option value='UM7'>Mountain Standard</option>
+				<option value='UM6'>Central Standard</option>
+				<option value='UM5'>Eastern Standard</option>
+				<option value='UTC'>Western European</option>
+				<option value='UP1'>Central European</option>
+				<option value='UP2'>Eastern European</option>
+				<option value='UP3'>Moscow Time</option>
+				<option value='UP8'>Australian Western / Beijing</option>
+				<option value='UP875'>Australian Central</option>
+				<option value='UP9'>Japan / Korea Standard</option>
+				<option value='UP95'>Australian Central</option>
+				<option value='UP10'>Australian Eastern</option>
+			</select>				
+		</p>
+		<p><input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"> &nbsp;Add Location</p>
+		<p>
+			<input type="submit" id="settings_account_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel">
+		</p>		
+		</form>	
+	</div>
+</script>
+
+<script type="text/html" id="settings_password">
+	<div id="content_password" class="content_left text_left">	
+		<h1>Change Password</h1>
+		<form name="settings_change_password" id="settings_change_password" method="post">
+		<p>
+			<label>Old Password</label><br>
+			<input type="password" name="old_password" value="">
+		</p>
+		<p>
+			<label>New Password</label><br>
+			<input type="password" name="new_password" value="">
+		</p>
+		<p>
+			<label>New Password Confirm</label><br>
+			<input type="password" name="new_password_confirm" value="">
+		</p>
+		<p><input type="submit" id="settings_password_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
+		</form>
+	</div>
+</script>
+
 
 <script type="text/javascript" src="<?= base_url() ?>js/jquery.js"></script>
-<script type="text/javascript" src="<?= base_url() ?>js/social.core.js"></script>
-<script type="text/javascript" src="<?= base_url() ?>application/modules/emoome/assets/js/emoome.js"></script>
-<script type="text/javascript" src="<?= base_url() ?>js/underscore.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/emoome.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/auth.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/plugins.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/models.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/views.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/router.js"></script>
 <script type="text/javascript">
@@ -350,32 +444,33 @@ var user_data = {
 }
 
 var base_url 		= '<?= base_url() ?>';
-var current_module	= jQuery.url.segment(1);
-var core_modules	= jQuery.parseJSON('<?= json_encode(config_item('core_modules')) ?>');
-var core_assets		= '<?= $dashboard_assets.'icons/' ?>';
 var site_assets		= '<?= $site_assets ?>';
 
 $(document).ready(function()
 {	
+	// Load Auth
+	var navigation = new NavigationView({ el: $('#header') });
+
 	// Create Router
 	var router = new ApplicationRouter($('#container'));
-	Backbone.history.start();
 
+	// History
+	Backbone.history.start();
 
 	// Hides Things
 	$('.error').hide();
 
-	// REFACTOR to use LIGHTBOX style
-	if ($('#content_message').html() != '') $('#content_message').notify({status:'success',message:$('#content_message').html()});
-
+	// Add Lightbox
 	$('body').append('<div id="request_lightbox"><div id="lightbox_message">Blah blah blah I am cool!</div></div>');
+
 
 	// Language Hide
 	if (user_data.language != 'en' && user_data.language != '')
 	{
 		$('#container').html('<h1>Sorry!</h1><h3>We are not setup to handle non english languages at present.</h3><h3>We will let you know when we are.</h3>');
 	}
-	
+
+
 	// Render Logged In ToolBar
 	if (user_data.user_id != '')
 	{		
@@ -386,7 +481,7 @@ $(document).ready(function()
 		}
 		else
 		{
-			showWebLogged(user_data.name, user_data.image);
+			//showWebLogged(user_data.name, user_data.image);
 		}
 	}
 	else

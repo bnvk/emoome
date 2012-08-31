@@ -1,3 +1,17 @@
+var NavigationView = Backbone.View.extend(
+{
+	initialize: function()
+	{
+		this.render();
+	},
+	render: function()
+	{
+		console.log('render NavigationView');
+        var template = _.template($("#header_user").html(), user_data);
+        this.$el.html(template);
+	}
+});
+
 var ContentView = Backbone.View.extend(
 {
 	/* Initialize with the template-id */
@@ -16,96 +30,71 @@ var ContentView = Backbone.View.extend(
 
 
 
-// VIEWS
-LogViews = Backbone.View.extend(
+
+// Views
+var RecordFeelingView = Backbone.View.extend(
 {
     initialize: function()
     {    
-        this.render();
+		this.render();
     },
     render: function()
     {
-    	/// Get Geo
-		if (navigator.geolocation)
-		{
-			navigator.geolocation.getCurrentPosition(showPosition, geoErrorHandler);	
-		}
-	
-		// Get Start Time
-		log_feeling_time.time_feeling = new Date().getTime();
-	
-		$('#log_feeling').delay(250).fadeIn('slow');  
-  
-  
-    	//Pass variables in using Underscore.js Template
-        var variables = { form_label: "^-- add a name or two or three :D" };
-        
-        // Compile the template using underscore
-        var template = _.template($("#log_feeling").html(), variables);
-        
-        // Load the compiled HTML into the Backbone "el"
-        this.$el.html(template);
+    	console.log('inside of RecordFeelingView');
     },
     events:
     {
-        "click #log_feel_next": "recordFeeling",
-        "click #log_experience_next": "recordExperience",
-        "click #log_describe_next": "recordDescribe"
+        "click #log_feel_next"			: "processFeeling",
+        "click #log_experience_next"	: "processExperience",
+        "click #log_describe_next"		: "processDescribe"
     },
-    validator: function(params, message)
+    viewFeeling: function()
+    {    
+    	// Update Model
+    	LogFeelingModel.startFeeling();
+    
+    	// Load View
+        var template = _.template($("#record_feeling").html(), user_data);
+        this.$el.html(template).hide().delay(250).fadeIn();
+    },
+    processFeeling: function()
     {
-		$.validator(
+    	console.log('inside recordFeeling');
+ 		$.validator(
 		{
 			elements :
 				[{
-					'selector' 	: '#log_val_feeling',
+					'selector' 	: '#log_feeling_value',
 					'rule'		: 'require', 
 					'field'		: 'Feeling'
 				}],
 			message : 'Enter a ',
 			success	: function()
-			{
-				return true;
-			},
+			{			
+				// Update Model
+    			LogFeelingModel.set({
+    				feeling			: $('#log_feeling_value').val(),
+    				time_feeling 	: getTimeSpent(LogFeelingModel.get('time_feeling')),
+    				time_experience : new Date().getTime()
+    			});
+		
+				// Update URL & View
+				Backbone.history.navigate('#/record/experience', true);		       
+		    },	
 			failed : function()
 			{
-				printUserMessage(message);
+				printUserMessage('Please enter how you feel right now');
 			}
 		});
     },
-    recordFeeling: function()
-    {
-    	console.log('inside recordFeeling');
-    
-    	var feeling_params = [{
-			'selector' 	: '#log_val_feeling',
-			'rule'		: 'require', 
-			'field'		: 'Feeling'
-		}];
-
-    	var valid = this.validator(feeling_params, 'Please enter how you feel right now');
-    
-    	console.log(valid);
-    	
-
-		// logFeelingComplete();
-		// Stamp Times
-		log_feeling_time.time_feeling	= getTimeSpent(log_feeling_time.time_feeling);
-		log_feeling_time.time_experience	= new Date().getTime();
-	
-		// jQT.goTo('#log_experience', 'slideleft');
-		var variables = { form_label: "^-- add a name or two or three :D" };
-
-        // Compile the template using underscore
-        var template = _.template($("#log_experience").html(), variables);
-
-        // Load the compiled HTML into the Backbone "el"
-        this.$el.html(template).delay(500).fadeIn()
-		
-		// FadeIn
-		//$('#log_experience_view').delay(500).fadeIn();
-    },
-    recordExperience: function()
+    viewExperience: function()
+    { 
+    	console.log(LogFeelingModel);
+       
+        var template = _.template($("#record_experience").html(), user_data);
+        this.$el.html(template).hide().delay(250).fadeIn();
+    },    
+    processExperience: function()
     {
 		$('#log_describe_this').html('"' + $('#log_val_experience').val() + '"');
 	
@@ -113,72 +102,75 @@ LogViews = Backbone.View.extend(
 		{
 			elements :
 				[{
-					'selector' 	: '#log_val_experience',
+					'selector' 	: '#log_experience_value',
 					'rule'		: 'require', 
 					'field'		: 'Experience'
 				}],
 			message : 'Enter a ',
 			success	: function()
 			{
-				//logExperienceComplete();
-				log_feeling_time.time_experience	= getTimeSpent(log_feeling_time.time_experience);
-				log_feeling_time.time_describe	= new Date().getTime();
+				// Update Model
+    			LogFeelingModel.set({
+    				experience		: $('#log_experience_value').val(),
+    				time_experience : getTimeSpent(LogFeelingModel.get('time_experience')),
+    				time_describe	: new Date().getTime()
+    			});
 
-				//jQT.goTo('#log_experience', 'slideleft');
-				$('#log_experience').fadeOut();
-				$('#log_describe').delay(500).fadeIn();
+				// Update URL & View
+				Backbone.history.navigate('#/record/describe', true);
 			},
 			failed : function()
 			{
 				printUserMessage('Please enter one thing you did today');
 			}
-		});	    
+		});
     },
-    recordDescribe: function()
+    viewDescribe: function()
+    {
+    	console.log(LogFeelingModel.attributes);
+
+        var template = _.template($("#record_describe").html(), user_data);
+        this.$el.html(template).hide().delay(250).fadeIn();	  	  
+    },
+    processDescribe: function()
     {
 		$.validator(
 		{
 			elements :
 				[{
-					'selector' 	: '#log_val_describe_1',
+					'selector' 	: '#log_describe_1_value',
 					'rule'		: 'require', 
 					'field'		: 'Describe 1'
 				},{
-					'selector' 	: '#log_val_describe_2',
+					'selector' 	: '#log_describe_2_value',
 					'rule'		: 'require',
 					'field'		: 'Describe 2'
 				},{
-					'selector' 	: '#log_val_describe_3',
+					'selector' 	: '#log_describe_3_value',
 					'rule'		: 'require',
 					'field'		: 'Describe 3'
 				}],
 			message : 'Enter a ',
 			success	: function()
-			{
-				log_feeling_time.time_describe = getTimeSpent(log_feeling_time.time_describe);
-			
-				var log_data = $('#log_data').serializeArray();
-				var log_time = 0;
-	
-				log_data.push({'name' : 'source', 'value' : user_data.source });
-				log_data.push({'name' : 'feeling', 'value' : $('#log_val_feeling').val() });
-				log_data.push({'name' : 'experience', 'value' : $('#log_val_experience').val() });
-				log_data.push({'name' : 'describe_1', 'value' : $('#log_val_describe_1').val() });
-				log_data.push({'name' : 'describe_2', 'value' : $('#log_val_describe_2').val() });
-				log_data.push({'name' : 'describe_3', 'value' : $('#log_val_describe_3').val() });
-				log_data.push({'name' : 'geo_lat', 'value' : user_data.geo_lat });
-				log_data.push({'name' : 'geo_lon', 'value' : user_data.geo_lon });
-	
-				
+			{				
 				// Time Data
+				var log_time = 0;
+
 				for (time in log_feeling_time)
 				{
 					log_time += log_feeling_time[time];
-					log_data.push({'name' : time, 'value' : log_feeling_time[time]});
 				}
+
+				// Update Model
+    			LogFeelingModel.set({
+    				time_total		: log_time,
+    				describe_1		: $('#log_describe_1_value').val(),
+    				describe_2		: $('#log_describe_2_value').val(),
+    				describe_3		: $('#log_describe_3_value').val()
+    			});				
 				
-				log_data.push({'name' : 'time_total', 'value' : log_time});
-	
+    			console.log(LogFeelingModel.attributes);
+				
 				// Save Data To API
 				$.oauthAjax(
 				{
@@ -186,7 +178,7 @@ LogViews = Backbone.View.extend(
 					url			: base_url + 'api/emoome/logs/create_feeling',
 					type		: 'POST',
 					dataType	: 'json',
-					data		: log_data,
+					data		: LogFeelingModel.attributes,
 					beforeSend	: requestMade('Saving your entry'),
 				  	success		: function(result)
 				  	{
@@ -202,16 +194,18 @@ LogViews = Backbone.View.extend(
 					  		$('#log_val_describe_2').val('');
 					  		$('#log_val_describe_3').val('');
 					  		$('#log_describe_this').html('');
-	
-							$('#log_describe').fadeOut();
-							
-							// Show Completion View
+								
+							// Thanks Data
 							var new_array = _.shuffle(messages.log_feeling_complete);
 							$('#log_completion_message').html(new_array[0]);
-							$('#log_thanks').delay(500).fadeIn();
+
+							// Update URL & View
+							Backbone.history.navigate('#/record/thanks', true); 
 						}
 				  	}			  			
 				});
+				
+				
 			},
 			failed : function()
 			{
