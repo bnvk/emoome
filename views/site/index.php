@@ -53,6 +53,12 @@
 
 
 <!-- Partials -->
+<script type="text/template" id="ligthbox_template">
+	<div id="request_lightbox">
+		<div id="lightbox_message"><%= lightbox_message %></div>
+	</div>
+</script>
+
 <script type="text/html" id="header_public">
 	<div id="header_not_logged">
 		<div id="header_logo"></div>
@@ -258,7 +264,7 @@
 <script type="text/html" id="record_describe">
 	<div id="log_describe_view" class="content_center text_center">
 		<h1>Describe in three words</h1>
-		<p id="log_describe_this"></p>
+		<p id="log_describe_this">"<%= describe_this %>"</p>
 		<p><input type="text" name="log_describe_1" id="log_describe_1_value" placeholder="Three" value=""></p>
 		<p><input type="text" name="log_describe_2" id="log_describe_2_value" placeholder="Separate" value=""></p>
 		<p><input type="text" name="log_describe_3" id="log_describe_3_value" placeholder="Words" value=""></p>
@@ -417,7 +423,7 @@
 <script type="text/javascript" src="<?= base_url() ?>js/jquery.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/emoome.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
-<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/auth.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>js/social.core.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/plugins.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/models.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/views.js"></script>
@@ -444,24 +450,17 @@ var user_data = {
 }
 
 var base_url 		= '<?= base_url() ?>';
-var site_assets		= '<?= $site_assets ?>';
 
 $(document).ready(function()
 {	
 	// Load Auth
-	var navigation = new NavigationView({ el: $('#header') });
+	var Navigation	= new NavigationView({ el: $('#header') });
 
 	// Create Router
-	var router = new ApplicationRouter($('#container'));
+	var Router		= new ApplicationRouter($('#container'));
 
 	// History
 	Backbone.history.start();
-
-	// Hides Things
-	$('.error').hide();
-
-	// Add Lightbox
-	$('body').append('<div id="request_lightbox"><div id="lightbox_message">Blah blah blah I am cool!</div></div>');
 
 
 	// Language Hide
@@ -478,10 +477,6 @@ $(document).ready(function()
 		if (isNotLoggedUrl(window.location.href))
 		{		
 			window.location = base_url + 'record/feeling'; 
-		}
-		else
-		{
-			//showWebLogged(user_data.name, user_data.image);
 		}
 	}
 	else

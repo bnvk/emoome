@@ -65,9 +65,9 @@ if (!window.console) window.console = { log: $.noop, group: $.noop, groupEnd: $.
 			if (oldBeforeSend) oldBeforeSend(xhr);
 		};
 	
-		$.ajax(settings);
+		jQuery.ajax(settings);
 	};
-})($);
+})(jQuery);
 
 
 
@@ -659,4 +659,3 @@ try {
     OAuth.correctTimestampFromSrc();
 } catch(e) {
 }
-

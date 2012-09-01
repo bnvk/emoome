@@ -3,8 +3,6 @@ var ApplicationRouter = Backbone.Router.extend(
 	initialize: function(el)
 	{
 		this.el = el;
-		
-		console.log('initialize router');
 
 		// Public Views
 		this.indexView				= new ContentView('#index');
@@ -17,11 +15,7 @@ var ApplicationRouter = Backbone.Router.extend(
 		// Record Views
 		this.record					= new ContentView('#record');
 		this.recordFeeling			= new RecordFeelingView({ el: $('#container') });
-/*		
-		this.recordExperience		= new RecordFeelingView('#record_experience');
-		this.recordDescribe			= new RecordFeelingView('#record_describe');		
-		this.recordThanks			= new RecordFeelingView('#record_thanks');		
-*/
+
 		// Visualize Views
 		this.visualize				= new ContentView('#visualize');
 
@@ -39,8 +33,8 @@ var ApplicationRouter = Backbone.Router.extend(
 		"logout"				: "logout",
 		"record"				: "record",
 		"record/:view"			: "recordViews",
-//		"record/experience"		: "recordExperience",
 		"visualize"				: "visualize",
+		"visualize/:view"		: "visualizeViews",
 		"settings"				: "settings",
 		"settings/notifications": "settingsNotifications",
 		"settings/account"		: "settingsAccount",
@@ -52,33 +46,22 @@ var ApplicationRouter = Backbone.Router.extend(
 	{
 		if (this.currentView)
 		{
-			// Detach the old view
-			this.currentView.remove();
+			this.currentView.remove();	// Detach the old view
 		}
 
-		// Move the view element into the DOM (replacing the old content)
-		this.el.html(view.el);
-
-		// Render view after it is in the DOM (styles are applied)
-		view.render();
-
+		this.el.html(view.el);			// Move the view element into the DOM (replacing the old content)
+		view.render();					// Render view after it is in the DOM (styles are applied)
 		this.currentView = view;		
 	},
-	/*
-	 * Change the active element in the topbar 
-	 */
-	setActiveEntry: function(url)
+	setActiveEntry: function(url)		// For Main Nav Links and Shit
 	{
 		// Unmark all entries
 		// $('li').removeClass('active');
-
-		// Mark active entry
 		// $("li a[href='" + url + "']").parents('li').addClass('active');
 	},
 	index: function()
 	{
 		this.switchView(this.indexView);
-		// this.setActiveEntry('#lorem');
 	},	
 	login: function()
 	{	
@@ -118,6 +101,10 @@ var ApplicationRouter = Backbone.Router.extend(
 	visualize: function()
 	{
 		this.switchView(this.visualize);
+	},
+	visualizeViews: function(view)
+	{
+		console.log('NEED TO WRITE VISUALIZE LOGIC FOR: ' + view);	
 	},
 	settings: function()
 	{

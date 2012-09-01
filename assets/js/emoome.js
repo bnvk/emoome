@@ -42,7 +42,6 @@ this._chain)}});j(["concat","join","slice"],function(a){var b=k[a];m.prototype[a
 	Copyright: Emoome, 2012
 	Contact: info@emoo.me
 */
-
 /* Global Values */
 var type_colors		= {"E":"#ff0000","I":"#142bd7","D":"#dcca07","S":"#0aa80e","A":"#ee9700","P":"#cf00ee","U":"#c3c3c3"}
 var word_types		= {"E":"Emotional","I":"Intellectual","D":"Descriptive","S":"Sensory","A":"Action","P":"Physical","U":"Undecided"};
@@ -75,33 +74,6 @@ var core_emotions	= {
 	"-11":"rage"
 }
 
-/* User Messages */
-var messages = {
-	"log_feeling_complete" : [
-		"Every entry helps us build your emotional map",
-		"We suggest logging 1-3 entries per day",
-		"Try logging entries at different times of the day",
-		"The best entries are when you feel something strongly",
-		"If something is hard to describe it is a good entry",
-		"The best entries are moments that seem important",
-		"Had an intense experience? Log an entry for later analysis"
-	],
-	"memory_quote" : [
-		"Memory is the scribe of the soul. ~Aristotle",
-		"It is a poor sort of memory that only works backwards. ~Lewis Carroll"
-	]
-}
-
-/* Data Objects */
-var log_feeling_time = {
-	time_feeling : '',
-	time_experience : '',
-	time_describe : ''
-}
-
-/* Pages */
-var pages_views	= new Array('content_index', 'content_login', 'content_signup');
-
 /* Device Size */
 var visualization_sizes = {
 	"mobile" : {
@@ -117,236 +89,6 @@ var visualization_sizes = {
 		"circle_strong_experiences" : 10
 	}
 } 
-
-/* General Functions */
-function requestMade(message)
-{	
-	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
-	$('#request_lightbox').delay(250).fadeIn();
-
-	// Adjust Height For Device
-	if (user_data.source == 'mobile')
-	{
-		var new_lightbox_height = $('body').height() + 150;	
-		var new_lightbox_scroll	= $(window).scrollTop() + 50;
-	}
-	else
-	{
-		var new_lightbox_height = $('body').height() + 100;
-		var new_lightbox_scroll = $(window).scrollTop() + 100;
-	}
-
-	$('#lightbox_message').css('top', new_lightbox_scroll);
-	$('#request_lightbox').height(new_lightbox_height);
-
-	return false;
-}
-
-function requestComplete(message, status)
-{
-	$('#lightbox_message').html(message);
-	
-	if (status == 'success')
-	{
-		$('#lightbox_message').addClass('lightbox_message_success');
-		$("#request_lightbox").delay(1500).fadeOut();
-	}
-	else
-	{
-		$('#lightbox_message').addClass('lightbox_message_error');
-		$("#request_lightbox").delay(2500).fadeOut();		
-	}
-	
-	return false;
-}
-
-function printUserMessage(message)
-{
-	$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
-	$('#request_lightbox').delay(250).fadeIn();
-	$("#request_lightbox").delay(1500).fadeOut();
-}
-
-
-/* Log - Feeling */
-function logFeelingStart()
-{
-	/// Get Geo
-	if (navigator.geolocation)
-	{
-		navigator.geolocation.getCurrentPosition(showPosition, geoErrorHandler);	
-	}
-
-	// Get Start Time
-	log_feeling_time.time_feeling = new Date().getTime();
-
-	$('#log_feeling').delay(250).fadeIn('slow');
-}
-
-
-function logFeeling()
-{
-	$.validator(
-	{
-		elements :
-			[{
-				'selector' 	: '#log_val_feeling',
-				'rule'		: 'require', 
-				'field'		: 'Feeling'
-			}],
-		message : 'Enter a ',
-		success	: function()
-		{
-			logFeelingComplete();
-		},
-		failed : function()
-		{
-			printUserMessage('Please enter how you feel right now');
-		}
-	});
-}
-
-function logFeelingComplete()
-{
-	// Stamp Times
-	log_feeling_time.time_feeling	= getTimeSpent(log_feeling_time.time_feeling);
-	log_feeling_time.time_experience	= new Date().getTime();
-
-	//jQT.goTo('#log_experience', 'slideleft');
-	$('#log_feeling').fadeOut();
-	$('#log_experience').delay(500).fadeIn();
-}
-
-function logExperience()
-{
-	// Set Experience
-	$('#log_describe_this').html('"' + $('#log_val_experience').val() + '"');
-
-	$.validator(
-	{
-		elements :
-			[{
-				'selector' 	: '#log_val_experience',
-				'rule'		: 'require', 
-				'field'		: 'Experience'
-			}],
-		message : 'Enter a ',
-		success	: function()
-		{
-			logExperienceComplete();
-		},
-		failed : function()
-		{
-			printUserMessage('Please enter one thing you did today');
-		}
-	});
-}
-
-function logExperienceComplete()
-{
-	// Get Start Time
-	log_feeling_time.time_experience	= getTimeSpent(log_feeling_time.time_experience);
-	log_feeling_time.time_describe	= new Date().getTime();
-
-	//jQT.goTo('#log_experience', 'slideleft');
-	$('#log_experience').fadeOut();
-	$('#log_describe').delay(500).fadeIn();
-
-}
-
-function logDescribe()
-{
-	$.validator(
-	{
-		elements :
-			[{
-				'selector' 	: '#log_val_describe_1',
-				'rule'		: 'require', 
-				'field'		: 'Describe 1'
-			},{
-				'selector' 	: '#log_val_describe_2',
-				'rule'		: 'require',
-				'field'		: 'Describe 2'
-			},{
-				'selector' 	: '#log_val_describe_3',
-				'rule'		: 'require',
-				'field'		: 'Describe 3'
-			}],
-		message : 'Enter a ',
-		success	: function()
-		{
-			log_feeling_time.time_describe = getTimeSpent(log_feeling_time.time_describe);
-		
-			var log_data = $('#log_data').serializeArray();
-			var log_time = 0;
-
-			log_data.push({'name' : 'source', 'value' : user_data.source });
-			log_data.push({'name' : 'feeling', 'value' : $('#log_val_feeling').val() });
-			log_data.push({'name' : 'experience', 'value' : $('#log_val_experience').val() });
-			log_data.push({'name' : 'describe_1', 'value' : $('#log_val_describe_1').val() });
-			log_data.push({'name' : 'describe_2', 'value' : $('#log_val_describe_2').val() });
-			log_data.push({'name' : 'describe_3', 'value' : $('#log_val_describe_3').val() });
-			log_data.push({'name' : 'geo_lat', 'value' : user_data.geo_lat });
-			log_data.push({'name' : 'geo_lon', 'value' : user_data.geo_lon });
-
-			
-			// Time Data
-			for (time in log_feeling_time)
-			{
-				log_time += log_feeling_time[time];
-				log_data.push({'name' : time, 'value' : log_feeling_time[time]});
-			}
-			
-			log_data.push({'name' : 'time_total', 'value' : log_time});
-
-			// Save Data To API
-			$.oauthAjax(
-			{
-				oauth 		: user_data,		
-				url			: base_url + 'api/emoome/logs/create_feeling',
-				type		: 'POST',
-				dataType	: 'json',
-				data		: log_data,
-				beforeSend	: requestMade('Saving your entry'),
-			  	success		: function(result)
-			  	{
-					// Close Loading
-		  			requestComplete(result.message, result.status);
-					
-					if (result.status == 'success')
-					{
-						// Clean Data & Completion
-				  		$('#log_val_feeling').val('');
-				  		$('#log_val_experience').val('');
-				  		$('#log_val_describe_1').val('');
-				  		$('#log_val_describe_2').val('');
-				  		$('#log_val_describe_3').val('');
-				  		$('#log_describe_this').html('');
-
-						$('#log_describe').fadeOut();
-						
-						// Show Completion View
-						var new_array = _.shuffle(messages.log_feeling_complete);
-						$('#log_completion_message').html(new_array[0]);
-						$('#log_thanks').delay(500).fadeIn();
-					}
-			  	}			  			
-			});
-		},
-		failed : function()
-		{
-			printUserMessage('Please enter three words to describe what you did today');
-		}
-	});
-}
-
-function logThanks()
-{
-	//jQT.goTo('#log_experience', 'slideleft');
-	$('#log_thanks').fadeOut();
-	logFeelingStart();
-}
-
 
 
 /* Utility Functions */
@@ -395,44 +137,11 @@ function geoErrorHandler(error)
 	}
 }
 
-
-function determineView()
-{
-	var current_url	= document.location.hash.replace('#!/','');
-
-	if (current_url.length != '') 
-	{		
-		var this_view = 'content_' + current_url;	
-
-		$.each(pages_views, function(key, view)
-		{	
-			if (view == this_view)
-			{
-				$('#' + view).delay(250).fadeIn();			
-			}
-			else
-			{
-				$('#' + view).hide();
-			}
-		});
-	}
-	else
-	{					
-		$.each(pages_views, function(key, view)
-		{	
-			$('#' + view).hide();
-		});
-		
-		$('#content_index').fadeIn('');
-	}
-}
-
-
 function showWebLogged(name, image)
 {
 	// Set User Data
-	$('#header_logged_avatar').html('<a href="' + base_url + 'record/feeling/"><img src="' + image + '" border="0"></a>');
-	$('#header_logged_name').html('<a href="' + base_url + 'record/feeling">' + name + '</a>');
+	$('#header_logged_avatar').html('<a href="' + base_url + '#/record/feeling/"><img src="' + image + '" border="0"></a>');
+	$('#header_logged_name').html('<a href="' + base_url + '#/record/feeling">' + name + '</a>');
 	
 	var entry_count = 175;
 	

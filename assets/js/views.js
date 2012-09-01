@@ -1,3 +1,64 @@
+// Lightbox
+var LightboxView = Backbone.View.extend(
+{
+	initialize: function()
+	{
+		this.render();
+	},
+	render: function()
+	{
+		var data = { lightbox_message: 'Yo dog, sup?' };
+        var template = _.template($("#ligthbox_template").html(), data);        
+        this.$el.append(template);
+	},
+	requestMade: function(message)
+	{	
+		$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
+		$('#request_lightbox').delay(250).fadeIn();
+	
+		// Adjust Height For Device
+		if (user_data.source == 'mobile')
+		{
+			var new_lightbox_height = $('body').height() + 150;	
+			var new_lightbox_scroll	= $(window).scrollTop() + 50;
+		}
+		else
+		{
+			var new_lightbox_height = $('body').height() + 100;
+			var new_lightbox_scroll = $(window).scrollTop() + 100;
+		}
+	
+		$('#lightbox_message').css('top', new_lightbox_scroll);
+		$('#request_lightbox').height(new_lightbox_height);	
+	},
+	requestComplete: function(message, status)
+	{
+		$('#lightbox_message').html(message);
+		
+		if (status == 'success')
+		{
+			$('#lightbox_message').addClass('lightbox_message_success');
+			$("#request_lightbox").delay(1500).fadeOut();
+		}
+		else
+		{
+			$('#lightbox_message').addClass('lightbox_message_error');
+			$("#request_lightbox").delay(2500).fadeOut();		
+		}
+	},
+	printUserMessage: function(message)
+	{
+		$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
+		$('#request_lightbox').delay(250).fadeIn();
+		$("#request_lightbox").delay(1500).fadeOut();
+	}	
+});
+
+var Lightbox = new LightboxView({ el: $('body') });
+
+
+
+// Header
 var NavigationView = Backbone.View.extend(
 {
 	initialize: function()
@@ -6,12 +67,14 @@ var NavigationView = Backbone.View.extend(
 	},
 	render: function()
 	{
-		console.log('render NavigationView');
         var template = _.template($("#header_user").html(), user_data);
         this.$el.html(template);
 	}
 });
 
+
+
+// Generic Content
 var ContentView = Backbone.View.extend(
 {
 	/* Initialize with the template-id */
@@ -30,18 +93,14 @@ var ContentView = Backbone.View.extend(
 
 
 
-
-// Views
+// Record Views
 var RecordFeelingView = Backbone.View.extend(
 {
     initialize: function()
     {    
 		this.render();
     },
-    render: function()
-    {
-    	console.log('inside of RecordFeelingView');
-    },
+    render: function(){},
     events:
     {
         "click #log_feel_next"			: "processFeeling",
@@ -49,17 +108,30 @@ var RecordFeelingView = Backbone.View.extend(
         "click #log_describe_next"		: "processDescribe"
     },
     viewFeeling: function()
-    {    
+    {
     	// Update Model
     	LogFeelingModel.startFeeling();
-    
+
+    	// GeoLocation
+	    if (navigator.geolocation)
+		{
+			function geoSuccess(position)
+			{
+				LogFeelingModel.set({
+					geo_lat : position.coords.latitude,
+					geo_lon : position.coords.longitude
+				});	
+			}
+			
+			navigator.geolocation.getCurrentPosition(geoSuccess);
+		} 
+
     	// Load View
-        var template = _.template($("#record_feeling").html(), user_data);
+        var template = _.template($("#record_feeling").html());
         this.$el.html(template).hide().delay(250).fadeIn();
     },
     processFeeling: function()
-    {
-    	console.log('inside recordFeeling');
+    {    
  		$.validator(
 		{
 			elements :
@@ -72,32 +144,24 @@ var RecordFeelingView = Backbone.View.extend(
 			success	: function()
 			{			
 				// Update Model
-    			LogFeelingModel.set({
-    				feeling			: $('#log_feeling_value').val(),
-    				time_feeling 	: getTimeSpent(LogFeelingModel.get('time_feeling')),
-    				time_experience : new Date().getTime()
-    			});
+    			LogFeelingModel.processFeeling();
 		
 				// Update URL & View
 				Backbone.history.navigate('#/record/experience', true);		       
 		    },	
 			failed : function()
 			{
-				printUserMessage('Please enter how you feel right now');
+				Lightbox.printUserMessage('Please enter how you feel right now');
 			}
 		});
     },
     viewExperience: function()
-    { 
-    	console.log(LogFeelingModel);
-       
+    {
         var template = _.template($("#record_experience").html(), user_data);
         this.$el.html(template).hide().delay(250).fadeIn();
-    },    
+    },
     processExperience: function()
-    {
-		$('#log_describe_this').html('"' + $('#log_val_experience').val() + '"');
-	
+    {	
 		$.validator(
 		{
 			elements :
@@ -110,26 +174,21 @@ var RecordFeelingView = Backbone.View.extend(
 			success	: function()
 			{
 				// Update Model
-    			LogFeelingModel.set({
-    				experience		: $('#log_experience_value').val(),
-    				time_experience : getTimeSpent(LogFeelingModel.get('time_experience')),
-    				time_describe	: new Date().getTime()
-    			});
+				LogFeelingModel.processExperience();
 
 				// Update URL & View
 				Backbone.history.navigate('#/record/describe', true);
 			},
 			failed : function()
 			{
-				printUserMessage('Please enter one thing you did today');
+				Lightbox.printUserMessage('Please enter one thing you did today');
 			}
 		});
     },
     viewDescribe: function()
     {
-    	console.log(LogFeelingModel.attributes);
-
-        var template = _.template($("#record_describe").html(), user_data);
+    	var view_data = { describe_this: LogFeelingModel.get('experience') };
+        var template = _.template($("#record_describe").html(), view_data);
         this.$el.html(template).hide().delay(250).fadeIn();	  	  
     },
     processDescribe: function()
@@ -152,69 +211,55 @@ var RecordFeelingView = Backbone.View.extend(
 				}],
 			message : 'Enter a ',
 			success	: function()
-			{				
-				// Time Data
-				var log_time = 0;
-
-				for (time in log_feeling_time)
-				{
-					log_time += log_feeling_time[time];
-				}
-
+			{
 				// Update Model
-    			LogFeelingModel.set({
-    				time_total		: log_time,
-    				describe_1		: $('#log_describe_1_value').val(),
-    				describe_2		: $('#log_describe_2_value').val(),
-    				describe_3		: $('#log_describe_3_value').val()
-    			});				
-				
-    			console.log(LogFeelingModel.attributes);
-				
-				// Save Data To API
+				LogFeelingModel.processDescribe();
+
+				// Save To API
 				$.oauthAjax(
 				{
 					oauth 		: user_data,		
 					url			: base_url + 'api/emoome/logs/create_feeling',
 					type		: 'POST',
 					dataType	: 'json',
-					data		: LogFeelingModel.attributes,
-					beforeSend	: requestMade('Saving your entry'),
+					data		: LogFeelingModel.returnData(),
+					beforeSend	: Lightbox.requestMade('Saving your entry'),
 				  	success		: function(result)
 				  	{
 						// Close Loading
-			  			requestComplete(result.message, result.status);
+			  			Lightbox.requestComplete(result.message, result.status);
 						
 						if (result.status == 'success')
 						{
-							// Clean Data & Completion
-					  		$('#log_val_feeling').val('');
-					  		$('#log_val_experience').val('');
-					  		$('#log_val_describe_1').val('');
-					  		$('#log_val_describe_2').val('');
-					  		$('#log_val_describe_3').val('');
-					  		$('#log_describe_this').html('');
-								
 							// Thanks Data
-							var new_array = _.shuffle(messages.log_feeling_complete);
-							$('#log_completion_message').html(new_array[0]);
+							$('#log_completion_message').html(_.shuffle(UIMessages.log_feeling_complete)[0]);
 
 							// Update URL & View
 							Backbone.history.navigate('#/record/thanks', true); 
 						}
 				  	}			  			
-				});
-				
-				
+				});				
 			},
 			failed : function()
 			{
-				printUserMessage('Please enter three words to describe what you did today');
+				Lightbox.printUserMessage('Please enter three words to describe what you did today');
 			}
 		});	    
     },
-    recordThanks: function()
+    viewThanks: function()
     {
-	    
+		this.clearInput();
+    	var view_data = { describe_this: LogFeelingModel.get('experience') };
+        var template = _.template($("#record_thanks").html(), view_data);
+        this.$el.html(template).hide().delay(250).fadeIn();			
+    },
+    clearInput: function()
+    {
+  		this.$('#log_val_feeling').val('');
+  		this.$('#log_val_experience').val('');
+  		this.$('#log_val_describe_1').val('');
+  		this.$('#log_val_describe_2').val('');
+  		this.$('#log_val_describe_3').val('');
+  		this.$('#log_describe_this').html('');
     }
 });
