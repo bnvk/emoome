@@ -85,6 +85,59 @@ class Logs extends Oauth_Controller
 	{
 		// Validation Rules
 	   	$this->form_validation->set_rules('feeling', 'Feeling', 'alpha_dash');
+
+		// Passes Validation
+	    if ($this->form_validation->run() == true)
+	    {	
+			$log_data = array(
+				'user_id'	=> $this->oauth_user_id,
+				'type'		=> 'feeling',
+				'geo_lat'	=> $this->input->post('geo_lat'),
+				'geo_lon'	=> $this->input->post('geo_lon'),
+				'time_1'	=> $this->input->post('time_feeling'),
+				'time_2'	=> 0,
+				'time_3'	=> 0,
+				'time_total'=> $this->input->post('time_feeling'),
+				'source'	=> $this->input->post('source')
+			);
+		
+			// Add Log
+			if ($log_id = $this->logs_model->add_log($log_data))
+			{
+				// Add Word
+				$feeling = $this->words_model->add_word_link($log_id, $this->oauth_user_id, $this->input->post('feeling'), 'F');		
+	
+				// Update Word Map
+				$word_map = $this->emoome->update_users_meta_map($this->oauth_user_id);
+	
+				// Analyze Log
+				// $this->emoome->analyze_log();
+	
+				// Log Count
+				$log_count = $this->logs_model->count_logs_user($this->uri->segment(4));
+				
+				// Message
+	            $message = array('status' => 'success', 'message' => 'Success logged a feeling', 'word_map' => $word_map, 'log_count' => $log_count);
+			}
+			else
+			{
+	            $message = array('status' => 'error', 'message' => 'Could not save log');
+			}
+		}
+		else
+		{
+	    	$message = array('status' => 'error', 'message' => validation_errors());		
+		}
+
+        $this->response($message, 200);
+	}
+
+
+	// Feeling
+	function create_experience_authd_post()
+	{
+		// Validation Rules
+	   	$this->form_validation->set_rules('feeling', 'Feeling', 'alpha_dash');
 	   	$this->form_validation->set_rules('experience', 'Something you did today', 'required');
 	   	$this->form_validation->set_rules('describe_1', '1st Describe', 'alpha_dash');
 	   	$this->form_validation->set_rules('describe_2', '2nd Describe', 'alpha_dash');
@@ -95,7 +148,7 @@ class Logs extends Oauth_Controller
 	    {	
 			$log_data = array(
 				'user_id'	=> $this->oauth_user_id,
-				'type'		=> 'feeling',
+				'type'		=> 'experience',
 				'geo_lat'	=> $this->input->post('geo_lat'),
 				'geo_lon'	=> $this->input->post('geo_lon'),
 				'time_1'	=> $this->input->post('time_feeling'),
@@ -125,7 +178,7 @@ class Logs extends Oauth_Controller
 				$log_count = $this->logs_model->count_logs_user($this->uri->segment(4));
 				
 				// Message
-	            $message = array('status' => 'success', 'message' => 'Success logged feeling', 'word_map' => $word_map, 'log_count' => $log_count);
+	            $message = array('status' => 'success', 'message' => 'Success logged an experience', 'word_map' => $word_map, 'log_count' => $log_count);
 			}
 			else
 			{

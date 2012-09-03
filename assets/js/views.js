@@ -7,7 +7,7 @@ var LightboxView = Backbone.View.extend(
 	},
 	render: function()
 	{
-		var data = { lightbox_message: 'Yo dog, sup?' };
+		var data     = { lightbox_message: 'Yo dog, sup?' };
         var template = _.template($("#ligthbox_template").html(), data);        
         this.$el.append(template);
 	},
@@ -66,9 +66,25 @@ var NavigationView = Backbone.View.extend(
 		this.render();
 	},
 	render: function()
+	{	
+		if (user_data.user_id != '')
+		{
+			this.renderLogged();
+		}
+		else
+		{
+			this.renderPublic();
+		}
+	},
+	renderPublic: function()
+	{
+        var template = _.template($("#header_public").html(), user_data);
+        this.$el.html(template);		
+	},
+	renderLogged: function()
 	{
         var template = _.template($("#header_user").html(), user_data);
-        this.$el.html(template);
+        this.$el.html(template);		
 	}
 });
 
@@ -103,9 +119,14 @@ var RecordFeelingView = Backbone.View.extend(
     render: function(){},
     events:
     {
-        "click #log_feel_next"			: "processFeeling",
-        "click #log_experience_next"	: "processExperience",
-        "click #log_describe_next"		: "processDescribe"
+    	"click #log_feeling_use_text"		: "viewFeelingText",
+    	"click #log_feeling_use_emoticons"	: "viewFeelingEmoticons",
+    	"click #log_feeling_use_audio"		: "viewFeelingAudio",
+    	"click a.log_save_feeling"			: "processFeeling",
+    	"click div.emoticon_item"			: "processFeelingEmoticons",
+        "click #log_feel_next"				: "processFeelingText",
+        "click #log_experience_next"		: "processExperience",
+        "click #log_describe_next"			: "processDescribe"
     },
     viewFeeling: function()
     {
@@ -117,20 +138,67 @@ var RecordFeelingView = Backbone.View.extend(
 		{
 			function geoSuccess(position)
 			{
-				LogFeelingModel.set({
-					geo_lat : position.coords.latitude,
-					geo_lon : position.coords.longitude
-				});	
+				LogFeelingModel.set({ geo_lat: position.coords.latitude, geo_lon: position.coords.longitude });	
 			}
-			
+
 			navigator.geolocation.getCurrentPosition(geoSuccess);
 		} 
 
     	// Load View
         var template = _.template($("#record_feeling").html());
         this.$el.html(template).hide().delay(250).fadeIn();
+
+
+		// Build Emoticons
+		var emoticons 		= '';
+		var emoticons_width	= 475;
+	
+		$.each(core_emotions, function(key, value)
+		{
+			emoticons += '<div class="emoticon_item"><img data-feeling="' + value + '" src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + value + '.png"><span>' + value + '</span></div>';
+			emoticons_width += 475;
+		});
+
+		$('#emoticons').html(emoticons).width(emoticons_width);
+
+		// Show User Prefered Log Type
+		this.viewFeelingText();
     },
-    processFeeling: function()
+    viewFeelingText: function()
+    {
+    	// Load View
+    	$('#emoticon_container').hide();
+    	$('#log_feeling_view').fadeIn();
+    	
+    	// Icon On
+        //$('#log_feeling_use_text').removeClass().addClass('');
+        
+        // Limit Keys
+		$('#log_feeling_value').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
+		{		
+			Lightbox.printUserMessage('Enter only a single word (no spaces or numbers)');
+		});
+
+    },
+    viewFeelingEmoticons: function()
+    {
+    	$('#log_feeling_view').hide();
+    	$('#emoticon_container').fadeIn();
+    	
+		// Hover Emoticon
+		$('.emoticon_item').live('mouseover', function()
+		{
+			$(this).css('background-color', '#d6d6d6');		
+		}).live('mouseleave', function()
+		{
+			$(this).css('background-color', '');
+		});
+    },
+    viewFeelingAudio: function()
+    {
+		console.log('use AUDIO gdammit');  
+    },
+    processFeelingText: function()
     {    
  		$.validator(
 		{
@@ -144,7 +212,7 @@ var RecordFeelingView = Backbone.View.extend(
 			success	: function()
 			{			
 				// Update Model
-    			LogFeelingModel.processFeeling();
+    			LogFeelingModel.processFeeling($('#log_feeling_value').val());
 		
 				// Update URL & View
 				Backbone.history.navigate('#/record/experience', true);		       
@@ -155,8 +223,48 @@ var RecordFeelingView = Backbone.View.extend(
 			}
 		});
     },
+    processFeelingEmoticons: function(e)
+    {
+		// Update Model
+		LogFeelingModel.processFeeling($(e.target).data('feeling'));
+
+		// Update URL & View
+		Backbone.history.navigate('#/record/experience', true);
+    },
+    processFeeling: function(e)
+    {
+	    e.preventDefault();
+
+		// Save To API
+		$.oauthAjax(
+		{
+			oauth 		: user_data,	
+			url			: base_url + 'api/emoome/logs/create_feeling',
+			type		: 'POST',
+			dataType	: 'json',
+			data		: LogFeelingModel.returnData(),
+			beforeSend	: Lightbox.requestMade('Saving your entry'),
+		  	success		: function(result)
+		  	{
+				// Close Loading
+	  			Lightbox.requestComplete(result.message, result.status);
+
+				// Is Saved
+				if (result.status == 'success')
+				{
+					// Thanks Data
+					$('#log_completion_message').html(_.shuffle(UIMessages.log_feeling_complete)[0]);
+
+					// Update URL & View
+					Backbone.history.navigate('#/record/thanks', true); 
+				}
+		  	}			  			
+		});		    
+    },       
     viewExperience: function()
     {
+    	console.log(LogFeelingModel.attributes);
+    
         var template = _.template($("#record_experience").html(), user_data);
         this.$el.html(template).hide().delay(250).fadeIn();
     },
@@ -187,10 +295,16 @@ var RecordFeelingView = Backbone.View.extend(
     },
     viewDescribe: function()
     {
-    	var view_data = { describe_this: LogFeelingModel.get('experience') };
-        var template = _.template($("#record_describe").html(), view_data);
-        this.$el.html(template).hide().delay(250).fadeIn();	  	  
-    },
+    	var view_data	= { describe_this: LogFeelingModel.get('experience') };
+        var template	= _.template($("#record_describe").html(), view_data);
+        this.$el.html(template).hide().delay(250).fadeIn();
+
+        // Limit Keys
+		$('#log_describe_1_value, #log_describe_2_value, #log_describe_3_value').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function()
+		{
+			Lightbox.printUserMessage('Enter only a single word (no spaces or numbers)');
+		});        	  	  
+    }, 
     processDescribe: function()
     {
 		$.validator(
@@ -218,8 +332,8 @@ var RecordFeelingView = Backbone.View.extend(
 				// Save To API
 				$.oauthAjax(
 				{
-					oauth 		: user_data,		
-					url			: base_url + 'api/emoome/logs/create_feeling',
+					oauth 		: user_data,	
+					url			: base_url + 'api/emoome/logs/create_experience',
 					type		: 'POST',
 					dataType	: 'json',
 					data		: LogFeelingModel.returnData(),
@@ -228,7 +342,8 @@ var RecordFeelingView = Backbone.View.extend(
 				  	{
 						// Close Loading
 			  			Lightbox.requestComplete(result.message, result.status);
-						
+
+						// Is Saved
 						if (result.status == 'success')
 						{
 							// Thanks Data
@@ -248,9 +363,14 @@ var RecordFeelingView = Backbone.View.extend(
     },
     viewThanks: function()
     {
+    	// Clear Data
 		this.clearInput();
-    	var view_data = { describe_this: LogFeelingModel.get('experience') };
-        var template = _.template($("#record_thanks").html(), view_data);
+
+    	// Prep Template
+    	var view_data	= { describe_this: LogFeelingModel.get('experience') };
+        var template	= _.template($("#record_thanks").html(), view_data);
+
+        // Render
         this.$el.html(template).hide().delay(250).fadeIn();			
     },
     clearInput: function()

@@ -18,57 +18,6 @@
 
 <input type="hidden" value="emotion_value" id="emotion_value">
 
-<style type="text/css">
-#emotion_picker {
-	text-align: center;
-			
-}
-
-#emoticon_container {
-	width: 100%;
-	height: 500px;
-	overflow: scroll;
-	margin: 0;
-}
-
-#emoticons {
-	height: 475px;
-}
-a.emoticon_item {
-	width: 475px;
-	height: 500px;
-	display: block;
-	float: left;
-	border-radius: 45px;
-	color: #999;
-	font-size: 18px;
-	text-align: center;
-}
-a.emoticon_item img {
-	margin-bottom: 5px;
-}
-a.emoticon_item:hover {
-	text-decoration: none;	
-}
-
-
-#emotion_weight {
-	text-align: center;
-	
-}
-
-input[type='range'] {
-	height: 30px;
-	-webkit-appearance: none;
-	padding-left: 5px; 
-	padding-right: 5px;
-	-webkit-border-radius: 15px;
-	background-color: #c3c3c3;
-	border: 1px solid #999;
-}
-
-
-</style>
 <script type="text/javascript">
 $(document).ready(function()
 {

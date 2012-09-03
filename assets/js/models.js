@@ -1,3 +1,27 @@
+// User Data
+var UserData = Backbone.Model.extend(
+{
+	defaults: {
+		user_id      : "",
+		username     : "",
+		user_level_id: "",
+		name         : "",
+		image        : "",
+		location     : "",
+		geo_enabled  : "",
+		geo_lat      : "",
+		geo_lon      : "",
+		language     : "",
+		privacy      : "",	 
+		consumer_key : "",
+		consumer_secret: "",
+		token        : "",
+		token_secret : "",
+		source       : "",
+		user_meta	 : {}
+	}
+});
+
 // UI Messages
 var UIMessages = Backbone.Model.extend({
 	log_feeling_complete : [
@@ -18,7 +42,6 @@ var UIMessages = Backbone.Model.extend({
 // Record Feeling
 var LogFeelingModel = Backbone.Model.extend({
     defaults: {
-        type			: 'feeling',
         source			: 'web',
         feeling			: '',
         experience		: '',
@@ -40,13 +63,13 @@ var LogFeelingModel = Backbone.Model.extend({
     {    
 		this.set({ time_feeling : new Date().getTime() });
     },
-    processFeeling: function()
-    {
+    processFeeling: function(feeling)
+    {    	
 	    var now_time = new Date().getTime();	
 		var time_feeling = now_time - this.get('time_feeling');    
     
 	 	this.set({
-			feeling 		: $('#log_feeling_value').val(),
+			feeling 		: feeling,
 			time_feeling 	: time_feeling,
 			time_experience : now_time,
 	 	});	 	   
@@ -57,6 +80,7 @@ var LogFeelingModel = Backbone.Model.extend({
 		var time_experience = now_time - this.get('time_experience');  
     
 		this.set({
+			type 			: 'experience',
 			experience		: $('#log_experience_value').val(),
 			time_experience : time_experience,
 			time_describe	: now_time

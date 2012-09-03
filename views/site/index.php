@@ -246,11 +246,25 @@
 </script>
 
 <script type="text/template" id="record_feeling">
+	<div class="left_control_container">
+		<div id="log_feeling_use_text" class="left_control_links control_link_text"></div>
+		<div id="log_feeling_use_emoticons" class="left_control_links control_link_emoticons"></div>
+		<div id="log_feeling_use_audio" class="left_control_links control_link_audio"></div>
+	</div>
+
+	<div class="right_control_container">
 	<div id="log_feeling_view" class="content_center text_center">
 		<h1>How do you feel right now?</h1>
 		<p><input type="text" name="log_feeling" id="log_feeling_value" placeholder="Good" value=""></p>
 		<p><button id="log_feel_next">Next</button></p>
+		<p><a href="#" class="log_save_feeling">Save</a></p>
 	</div>
+
+	<div id="emoticon_container">
+		<div id="emoticons"></div>
+	</div>
+	</div>
+
 </script>
 
 <script type="text/html" id="record_experience">
@@ -258,6 +272,7 @@
 		<h1>What is one thing you did today?</h1>
 		<p><textarea name="log_experience" id="log_experience_value" placeholder="Walked my pet dog"></textarea></p>
 		<p><button id="log_experience_next">Next</button></p>
+		<p><a href="#" class="log_save_feeling">Save</a></p>
 	</div>
 </script>
 
@@ -419,11 +434,10 @@
 	</div>
 </script>
 
-
 <script type="text/javascript" src="<?= base_url() ?>js/jquery.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/emoome.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
-<script type="text/javascript" src="<?= base_url() ?>js/social.core.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/auth.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/plugins.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/models.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/views.js"></script>

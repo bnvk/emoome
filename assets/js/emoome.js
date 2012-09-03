@@ -92,51 +92,6 @@ var visualization_sizes = {
 
 
 /* Utility Functions */
-function countElementsArray(item, array)
-{
-    var count = 0;
-	if (array !== undefined)
-	{
-    	$.each(array, function(i,v) { if (v === item) count++; });
-   	}
-
-    return count;
-}
-
-function getTimeSpent(start_time)
-{
-	now_time = new Date().getTime();	
-	return now_time - start_time;
-}
-
-	
-/* Geo Location */
-function showPosition(position)
-{	
-	user_data.geo_lat = position.coords.latitude;
-	user_data.geo_lon = position.coords.longitude;
-}
-
-// report errors to user
-function geoErrorHandler(error)
-{
-	switch (error.code)
-	{ 
-		case error.PERMISSION_DENIED:
-			alert("Maybe next time try enabling location as the more details you provide, the more meaning we can give you :)");
-		break;
-		case error.POSITION_UNAVAILABLE:
-			//alert("Dang, we could not get your position as this is not available right now");
-		break;
-		case error.TIMEOUT:
-			//alert("Attempt to get position timed out");
-		break;
-	default:
-			//alert("Sorry, an error occurred. Code: " + error.code + " Message: " + error.message);
-		break;	
-	}
-}
-
 function showWebLogged(name, image)
 {
 	// Set User Data
@@ -155,7 +110,7 @@ function showWebLogged(name, image)
 function showMobileLogged(name)
 {
 	// Set User Data
-	$('#header_logged_name').html('<a href="' + base_url + 'record/feeling">' + name + '</a>');		
+	$('#header_logged_name').html('<a href="' + base_url + '#/record/feeling">' + name + '</a>');		
 
 	// Show Header
 	$('#toolbar_public').hide();
@@ -316,8 +271,6 @@ $(document).ready(function()
 	// Login
 	$('#user_login').live('submit', function(e)
 	{	
-		console.log('here');
-	
 		e.preventDefault();
 		$.validator(
 		{
@@ -345,13 +298,13 @@ $(document).ready(function()
 					type		: 'POST',
 					dataType	: 'json',
 					data		: login_data,
-					beforeSend	: requestMade('Logging You In'),					
+					beforeSend	: Lightbox.requestMade('Logging You In'),					
 			  		success		: function(result)
 			  		{
 			  			console.log(result);
 			  					  		
 						// Close Loading
-			  			requestComplete(result.message, result.status);
+			  			Lightbox.requestComplete(result.message, result.status);
 	  			  		
 						if (result.status == 'success')
 						{							
@@ -401,11 +354,11 @@ $(document).ready(function()
 					type		: 'POST',
 					dataType	: 'json',
 					data		: signup_data,
-					beforeSend	: requestMade('Creating Account'),
+					beforeSend	: Lightbox.requestMade('Creating Account'),
 			  		success		: function(result)
 			  		{			  		
 						// Close Loading
-			  			requestComplete(result.message, result.status);	
+			  			Lightbox.requestComplete(result.message, result.status);	
 	
 						if (result.status == 'success')
 						{							
@@ -456,12 +409,12 @@ $(document).ready(function()
 					type		: 'POST',
 					dataType	: 'json',
 					data		: signup_data,
-					beforeSend	: requestMade('Creating Account'),
+					beforeSend	: Lightbox.requestMade('Creating Account'),
 			  		success		: function(result)
 			  		{
 						// Close Loading
-			  			requestComplete(result.message, result.status);	
-	
+			  			Lightbox.requestComplete(result.message, result.status);
+
 						if (result.status == 'success')
 						{							
 							$('[name=name]').val('');
@@ -475,17 +428,6 @@ $(document).ready(function()
 				});
 			}
 		});
-	});	
-	
-	// Hijack Spacebar in a few places...
-	$('#log_val_feeling').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function(key)
-	{		
-		printUserMessage('Enter only a single word (no spaces or numbers)');
-	});
-
-	$('#log_val_describe_1, #log_val_describe_2, #log_val_describe_3').jkey('space, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0', function()
-	{
-		printUserMessage('Enter only a single word (no spaces or numbers)');
 	});	
 
 });

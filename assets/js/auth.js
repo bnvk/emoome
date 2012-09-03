@@ -51,16 +51,17 @@ if (!window.console) window.console = { log: $.noop, group: $.noop, groupEnd: $.
 		}
 				
 		var message = {
-			method: settings.type || "GET",
-			action: settings.url,
-			parameters: parameters
+			method		: settings.type || "GET",
+			action		: settings.url,
+			parameters	: parameters
 		}
 		
 		OAuth.setTimestampAndNonce(message);
 		OAuth.SignatureMethod.sign(message, accessor);
 		
 		var oldBeforeSend = settings.beforeSend;
-		settings.beforeSend = function(xhr) {
+		settings.beforeSend = function(xhr)
+		{
 			xhr.setRequestHeader("Authorization", OAuth.getAuthorizationHeader("", message.parameters))
 			if (oldBeforeSend) oldBeforeSend(xhr);
 		};
