@@ -245,22 +245,30 @@ var RecordFeelingView = Backbone.View.extend(
         "click #log_describe_next"			: "processDescribe"
     },
     displayRecordType: function(type)
-    {	    
+    {	 
+    	// Update Type
+    	UserData.set({ default_feeling_type : type });
+
+    	// Loop Types   
 	    $.each(['text', 'emoticons', 'audio'], function(key, value)
 	    {		
 		    if (value == type)
 			{
+				// Show View
 				$('#record_feeling_' + value).fadeIn();
 			}
 			else
 			{
-				$('#record_feeling_' + value).hide(); 
+				// Hide Views
+				$('#record_feeling_' + value).hide();
 			}
+
+			$('#log_feeling_use_' + value).addClass('icon_small_' + value);
 	    });
 	    
 	    // Do Control Buttons
-	    $('div.left_control_links').removeClass('icon_small_text_on icon_small_emoticons_on icon_small_audio_on');
-	    $('#log_feeling_use_' + type).addClass('icon_small_' +  type + '_on');
+	    $('div.left_control_links').removeClass('icon_small_text_select icon_small_emoticons_select icon_small_audio_select');
+	    $('#log_feeling_use_' + type).removeClass('icon_small_' + type).addClass('icon_small_' +  type + '_select');
     },
     viewFeeling: function()
     {
@@ -285,7 +293,7 @@ var RecordFeelingView = Backbone.View.extend(
 
 		// Emoticons
 		var emoticons 		= '';
-		var emoticons_width	= 465;
+		var emoticons_width	= 65;
 	
 		$.each(core_emotions, function(key, value)
 		{
@@ -297,7 +305,12 @@ var RecordFeelingView = Backbone.View.extend(
 
 
 		// Show User Prefered Log Type
-		this.viewFeelingText();
+		if (UserData.get('default_feeling_type') == 'text')
+			this.viewFeelingText();
+		else if (UserData.get('default_feeling_type') == 'emoticons')
+			this.viewFeelingEmoticons();
+		else if (UserData.get('default_feeling_type') == 'audio')
+			this.viewFeelingAudio();
     },
     viewFeelingText: function()
     {

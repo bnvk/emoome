@@ -9,8 +9,6 @@ var UserData = Backbone.Model.extend(
 		image        	: "",
 		location     	: "",
 		geo_enabled  	: "",
-		geo_lat      	: "",
-		geo_lon      	: "",
 		language     	: "",
 		privacy      	: "",	 
 		consumer_key 	: "",
@@ -18,9 +16,17 @@ var UserData = Backbone.Model.extend(
 		token        	: "",
 		token_secret 	: "",
 		source       	: "",
-		user_meta	 	: {}
+		user_meta	 	: {},
+		notifications_frequency	: "daily",
+		notifications_sms		: "yes",
+		notifications_email		: "yes",
+		default_feeling_type	: "audio"
 	},
-    initialize: function() {}	
+    initialize: function() {},
+    updateData: function()
+    {
+	    
+    }	
 });
 
 // UI Messages

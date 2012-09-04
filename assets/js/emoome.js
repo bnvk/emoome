@@ -252,35 +252,6 @@ function renderSentimentHuman(sentiment, count)
 // Live Experiences
 $(document).ready(function()
 {
-	// Main Nav Buttons
-	$('.navigation_button').bind('click', function(e)
-	{	
-		var view = $(this).attr('href').split('#!/');
-		
-		// Is Index
-		if (view.length == 1)
-		{
-			e.preventDefault();
-		
-			history.pushState("", document.title, window.location.pathname + window.location.search);
-			$.each(pages_views, function(key, view)
-			{	
-				$('#' + view).hide();
-			});	
-	
-			$('#content_index').delay(250).fadeIn();			
-		}
-		else
-		{		
-			$.each(pages_views, function(key, view)
-			{	
-				$('#' + view).hide();
-			});
-	
-			$('#content_' + view[1]).delay(250).fadeIn();	
-		}
-	});
-
 	
 	// Signup
 	$("#user_signup_short").bind('submit', function(e)
