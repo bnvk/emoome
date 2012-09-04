@@ -2,24 +2,25 @@
 var UserData = Backbone.Model.extend(
 {
 	defaults: {
-		user_id      : "",
-		username     : "",
-		user_level_id: "",
-		name         : "",
-		image        : "",
-		location     : "",
-		geo_enabled  : "",
-		geo_lat      : "",
-		geo_lon      : "",
-		language     : "",
-		privacy      : "",	 
-		consumer_key : "",
-		consumer_secret: "",
-		token        : "",
-		token_secret : "",
-		source       : "",
-		user_meta	 : {}
-	}
+		user_id      	: "",
+		username     	: "",
+		user_level_id	: "",
+		name         	: "",
+		image        	: "",
+		location     	: "",
+		geo_enabled  	: "",
+		geo_lat      	: "",
+		geo_lon      	: "",
+		language     	: "",
+		privacy      	: "",	 
+		consumer_key 	: "",
+		consumer_secret	: "",
+		token        	: "",
+		token_secret 	: "",
+		source       	: "",
+		user_meta	 	: {}
+	},
+    initialize: function() {}	
 });
 
 // UI Messages
@@ -55,10 +56,7 @@ var LogFeelingModel = Backbone.Model.extend({
         geo_lat			: 0.00,
         geo_lon			: 0.00
     },
-    initialize: function()
-    {
-        console.log("initalize LogFeelingModel");
-    },
+    initialize: function() {},
     startFeeling: function()
     {    
 		this.set({ time_feeling : new Date().getTime() });
@@ -114,6 +112,7 @@ var LogFeelingModel = Backbone.Model.extend({
 });
 
 // Instantiate Models
+var UserData		= new UserData();
 var UIMessages		= new UIMessages();
 var LogFeelingModel = new LogFeelingModel();
 

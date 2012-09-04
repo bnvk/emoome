@@ -154,62 +154,58 @@
 </script>
 
 <script type="text/html" id="login">
-	<div id="content_login" class="content_left text_left">
-		<h1>Login</h1>
-		<form method="post" name="user_login" id="user_login">
-			<p>
-				<label>Email</label><br>
-				<input type="text" name="email" id="login_email" placeholder="you@email.com" autocorrect="off" value=""><br>
-				<span id="login_email_error"></span>
-			</p>
-			<p>
-				<label>Password</label><br>
-				<input type="password" name="password" id="login_password" placeholder="********" autocorrect="off" value=""><br>
-				<span id="login_password_error"></span>
-			</p>
-			<p>
-				<label>Remember</label> <?= form_checkbox('remember', '1', TRUE, 'id="login_remember"');?> 
-				<a href="<?= base_url() ?>#/forgot_password">Forgot password?</a>
-			</p>
-			<p>
-				<input type="submit" name="submit" value="Login">
-		  	</p>
-		</form>
-	</div>
+	<h1>Login</h1>
+	<form method="post" name="user_login" id="user_login">
+		<p>
+			<label>Email</label><br>
+			<input type="text" name="email" id="login_email" placeholder="you@email.com" autocorrect="off" value=""><br>
+			<span id="login_email_error"></span>
+		</p>
+		<p>
+			<label>Password</label><br>
+			<input type="password" name="password" id="login_password" placeholder="********" autocorrect="off" value=""><br>
+			<span id="login_password_error"></span>
+		</p>
+		<p>
+			<label>Remember</label> <?= form_checkbox('remember', '1', TRUE, 'id="login_remember"');?> 
+			<a href="<?= base_url() ?>#/forgot_password">Forgot password?</a>
+		</p>
+		<p>
+			<input type="submit" name="submit" id="button_login" value="Login">
+	  	</p>
+	</form>
 </script>
 
 <script type="text/html" id="signup">
-	<div id="content_signup" class="content_left text_left">
-		<h1>Signup</h1>
-		<form method="post" name="user_signup" id="user_signup">
-			<p>
-				<label>Name</label><br>
-				<input type="text" name="name" id="signup_name" placeholder="Joe Smith" autocorrect="off" value=""><br>
-				<span id="signup_name_error"></span>
-			</p>
-			<p>
-				<label>Email</label><br>
-				<input type="text" name="email" id="signup_email" placeholder="your@email.com" autocorrect="off" value=""><br>
-				<span id="signup_email_error"></span>
-			</p>
-			<p>
-				<label>Phone (optional for reminders)</label><br>
-				<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
-			</p>		
-			<p>
-				<label>Password</label><br>
-				<input type="password" name="password" id="signup_password" placeholder="********" autocorrect="off" value=""><br>
-				<span id="signup_password_error"></span>
-			</p>
-			<p>
-				<label>Language</lable><br>
-				<?= form_dropdown('language', config_item('languages'), 'en') ?>
-			</p>
-			<p>
-				<input type="submit" name="submit" value="Signup">
-			</p>
-		</form>
-	</div>
+	<h1>Signup</h1>
+	<form method="post" name="user_signup" id="user_signup">
+		<p>
+			<label>Name</label><br>
+			<input type="text" name="name" id="signup_name" placeholder="Joe Smith" autocorrect="off" value=""><br>
+			<span id="signup_name_error"></span>
+		</p>
+		<p>
+			<label>Email</label><br>
+			<input type="text" name="email" id="signup_email" placeholder="your@email.com" autocorrect="off" value=""><br>
+			<span id="signup_email_error"></span>
+		</p>
+		<p>
+			<label>Phone (optional for reminders)</label><br>
+			<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone') ?>">
+		</p>		
+		<p>
+			<label>Password</label><br>
+			<input type="password" name="password" id="signup_password" placeholder="********" autocorrect="off" value=""><br>
+			<span id="signup_password_error"></span>
+		</p>
+		<p>
+			<label>Language</lable><br>
+			<?= form_dropdown('language', config_item('languages'), 'en') ?>
+		</p>
+		<p>
+			<input type="submit" name="submit" id="button_signup" value="Signup">
+		</p>
+	</form>
 </script>
 
 <script type="text/html" id="logout">
@@ -247,24 +243,27 @@
 
 <script type="text/template" id="record_feeling">
 	<div class="left_control_container">
-		<div id="log_feeling_use_text" class="left_control_links control_link_text"></div>
-		<div id="log_feeling_use_emoticons" class="left_control_links control_link_emoticons"></div>
-		<div id="log_feeling_use_audio" class="left_control_links control_link_audio"></div>
+		<div id="log_feeling_use_text" class="left_control_links icon_small icon_small_text"></div>
+		<div id="log_feeling_use_emoticons" class="left_control_links icon_small icon_small_emoticons"></div>
+		<div id="log_feeling_use_audio" class="left_control_links icon_small icon_small_audio"></div>
 	</div>
-
 	<div class="right_control_container">
-	<div id="log_feeling_view" class="content_center text_center">
-		<h1>How do you feel right now?</h1>
-		<p><input type="text" name="log_feeling" id="log_feeling_value" placeholder="Good" value=""></p>
-		<p><button id="log_feel_next">Next</button></p>
-		<p><a href="#" class="log_save_feeling">Save</a></p>
+		<!-- Text -->
+		<div id="record_feeling_text" class="content_center text_center">
+			<h1>How do you feel right now?</h1>
+			<p><input type="text" name="log_feeling" id="log_feeling_value" placeholder="Good" value=""></p>
+			<p><button id="log_feel_next">Next</button></p>
+			<p><a href="#" class="log_save_feeling">Finish</a></p>
+		</div>
+		<!--  Emoticons -->
+		<div id="record_feeling_emoticons">
+			<div id="emoticons"></div>
+		</div>
+		<!-- Audio -->
+		<div id="record_feeling_audio">
+			<h2>Record / Stop</h2>
+		</div>		
 	</div>
-
-	<div id="emoticon_container">
-		<div id="emoticons"></div>
-	</div>
-	</div>
-
 </script>
 
 <script type="text/html" id="record_experience">
@@ -272,7 +271,7 @@
 		<h1>What is one thing you did today?</h1>
 		<p><textarea name="log_experience" id="log_experience_value" placeholder="Walked my pet dog"></textarea></p>
 		<p><button id="log_experience_next">Next</button></p>
-		<p><a href="#" class="log_save_feeling">Save</a></p>
+		<p><a href="#" class="log_save_feeling">Finish</a></p>
 	</div>
 </script>
 
@@ -318,30 +317,26 @@
 		<h1>Settings</h1>
 		<?php endif; ?>
 		<p>
-			<a id="button_notifications" class="list_button" href="<?= base_url() ?>#/settings/notifications">
-				<span class="list_icon list_icon_notifications"></span>
-				Notifications
+			<a class="list_button" href="<?= base_url() ?>#/settings/notifications">
+				<span class="icon_small icon_small_notifications_on"></span> Notifications
 			    <br class="clear">
 			</a>
 		</p>
 		<p>
-			<a id="button_account" class="list_button" href="<?= base_url() ?>#/settings/account">
-				<span class="list_icon list_icon_account"></span>		
-				Account Info
+			<a class="list_button" href="<?= base_url() ?>#/settings/account">
+				<span class="icon_small icon_small_account_on"></span> Account Info
 		 	    <br class="clear">
 			</a>
 		</p>
 		<p>
-			<a id="button_password" class="list_button" href="<?= base_url() ?>#/settings/password">
-				<span class="list_icon list_icon_password"></span>		
-				Password
+			<a class="list_button" href="<?= base_url() ?>#/settings/password">
+				<span class="icon_small icon_small_password_on"></span>	Password
 		  		<br class="clear">
 			</a>
 		</p>
 		<p>
-			<a class="list_button" href="<?= base_url() ?>#/logout">
-				<span class="list_icon list_icon_login"></span>		
-				Logout
+			<a id="settings_button_logout" class="list_button" href="<?= base_url() ?>#/settings/logout">
+				<span class="icon_small icon_small_login_on"></span> Logout
 		  		<br class="clear">
 			</a>
 		</p>
@@ -349,9 +344,8 @@
 </script>
 
 <script type="text/html" id="settings_notifications">
-	<div id="content_notifications" class="content_left text_left">
-		<h1>Notifications</h1>
-		<form name="settings_notifications" id="settings_notifications" method="post">	
+	<h1>Notifications</h1>
+	<form name="settings_notifications" id="settings_notifications" method="post">	
 		<p>	
 			<label>How Often</label><br>
 			<?= form_dropdown('notifications_frequency', config_item('notifications_frequency'), $notifications_frequency, 'id="notifications_frequency"') ?>
@@ -359,15 +353,13 @@
 		<p><input type="checkbox" class="nullify" name="notifications_mobile" value="<?= $notifications_mobile ?>"> &nbsp;Mobile (PUSH) Notifications</p>
 		<p><input type="checkbox" class="nullify" name="notifications_sms" value="<?= $notifications_sms ?>"> &nbsp;Text Messages</p>
 		<p><input type="checkbox" class="nullify" name="notifications_email" value="<?= $notifications_email ?>"> &nbsp;Email</p>
-		<p><input type="submit" id="settings_notifications_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
-		</form>
-	</div>
+		<p><input type="submit" id="settings_button_notifications" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel"></p>			
+	</form>
 </script>
 
 <script type="text/html" id="settings_account">
-	<div id="content_account" class="content_left text_left">
-		<h1>Account Info</h1>
-		<form name="settings_account" id="settings_account" method="post">	
+	<h1>Account Info</h1>
+	<form name="settings_account" id="settings_account" method="post">	
 		<p>	
 			<label>Name</label><br>
 			<input type="text" name="name" id="profile_name" placeholder="Your Name" value="<?= $this->session->userdata('name') ?>">
@@ -386,7 +378,7 @@
 		</p>
 		<p>
 			<label>Timezone</lable><br>	
-			<select name="timezones" id="profile_timezone">
+			<select name="time_zone" id="time_zone">
 				<option value=''>---select---</option>
 				<option value='UM10'>Hawaii Standard</option>
 				<option value='UM9'>Alaska Standard</option>
@@ -407,16 +399,14 @@
 		</p>
 		<p><input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"> &nbsp;Add Location</p>
 		<p>
-			<input type="submit" id="settings_account_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel">
+			<input type="submit" id="settings_button_account" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel">
 		</p>		
-		</form>	
-	</div>
+	</form>	
 </script>
 
 <script type="text/html" id="settings_password">
-	<div id="content_password" class="content_left text_left">	
-		<h1>Change Password</h1>
-		<form name="settings_change_password" id="settings_change_password" method="post">
+	<h1>Change Password</h1>
+	<form name="settings_change_password" id="settings_change_password" method="post">
 		<p>
 			<label>Old Password</label><br>
 			<input type="password" name="old_password" value="">
@@ -429,14 +419,12 @@
 			<label>New Password Confirm</label><br>
 			<input type="password" name="new_password_confirm" value="">
 		</p>
-		<p><input type="submit" id="settings_password_button" class="center" value="Save"> &nbsp;&nbsp; <input type="submit" class="center cancel_button" value="Cancel"></p>			
-		</form>
-	</div>
+		<p><input type="submit" id="settings_button_password" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel"></p>			
+	</form>
 </script>
 
 <script type="text/javascript" src="<?= base_url() ?>js/jquery.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/emoome.js"></script>
-<script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/auth.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/plugins.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/models.js"></script>
@@ -466,9 +454,10 @@ var user_data = {
 var base_url 		= '<?= base_url() ?>';
 
 $(document).ready(function()
-{	
-	// Load Auth
+{
+	// Instantiate Navigation
 	var Navigation	= new NavigationView({ el: $('#header') });
+
 
 	// Create Router
 	var Router		= new ApplicationRouter($('#container'));
@@ -489,15 +478,10 @@ $(document).ready(function()
 	{		
 		// Show Content
 		if (isNotLoggedUrl(window.location.href))
-		{		
-			window.location = base_url + 'record/feeling'; 
+		{
+			Backbone.history.navigate('#/record/feeling', true);
 		}
 	}
-	else
-	{
-		$('#header_not_logged').fadeIn('normal');	
-	}
-
 	
 });
 </script>

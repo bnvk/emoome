@@ -18,12 +18,11 @@ var ApplicationRouter = Backbone.Router.extend(
 
 		// Visualize Views
 		this.visualize				= new ContentView('#visualize');
+		this.visualizeViews			= new VisualizeView({ el: $('#container')});
 
 		// Settings Views
 		this.settings				= new ContentView('#settings');
-		this.settingsNotifications	= new ContentView('#settings_notifications');
-		this.settingsAccount		= new ContentView('#settings_account');
-		this.settingsPassword		= new ContentView('#settings_password');				
+		this.settingsViews			= new SettingsView({ el: $('#container')});
 	},
 	routes: {
 		"" 						: "index",
@@ -36,10 +35,7 @@ var ApplicationRouter = Backbone.Router.extend(
 		"visualize"				: "visualize",
 		"visualize/:view"		: "visualizeViews",
 		"settings"				: "settings",
-		"settings/notifications": "settingsNotifications",
-		"settings/account"		: "settingsAccount",
-		"settings/password"		: "settingsPassword",
-		"*else"					: "notFound"
+		"settings/:view"		: "settingsViews"
 	},
 	currentView: null,
 	switchView: function(view)
@@ -51,13 +47,29 @@ var ApplicationRouter = Backbone.Router.extend(
 
 		this.el.html(view.el);			// Move the view element into the DOM (replacing the old content)
 		view.render();					// Render view after it is in the DOM (styles are applied)
-		this.currentView = view;		
+		this.currentView = view;
 	},
-	setActiveEntry: function(url)		// For Main Nav Links and Shit
+	setActiveNav: function(url)		// For Main Nav Links and Shit
 	{
 		// Unmark all entries
 		// $('li').removeClass('active');
 		// $("li a[href='" + url + "']").parents('li').addClass('active');
+			    
+	    $.each(['record', 'visualize', 'settings'], function(key, value)
+	    {		
+		    if (value == type)
+			{
+				$('#record_feeling_' + value).fadeIn();
+			}
+			else
+			{
+				$('#record_feeling_' + value).hide(); 
+			}
+	    });
+
+	    // Do Control Buttons
+	    $('div.left_control_links').removeClass('icon_small_text_on icon_small_emoticons_on icon_small_audio_on');
+	    $('#log_feeling_use_' + type).addClass('icon_small_' +  type + '_on');
 	},
 	index: function()
 	{
@@ -75,8 +87,10 @@ var ApplicationRouter = Backbone.Router.extend(
 	{
 		this.switchView(this.forgotPasswordView);		
 	},
-	logout: function() {	
-		this.switchView(this.logoutView);
+	logout: function()
+	{
+		Navigation.renderPublic();	  	
+	    this.switchView(this.logoutView);
 	},
 	notFound: function() {
 		this.switchView(this.notFoundView);
@@ -108,18 +122,19 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	settings: function()
 	{
-		this.switchView(this.settings);
+		this.switchView(this.settings);			
 	},
-	settingsNotifications: function()
-	{
-		this.switchView(this.settingsNotifications);
-	},
-	settingsAccount: function()
-	{
-		this.switchView(this.settingsAccount);
-	},
-	settingsPassword: function()
-	{
-		this.switchView(this.settingsPassword);
+	settingsViews: function(view)
+	{	
+		if (view == 'notifications') 
+			this.settingsViews.viewNotifications();
+		else if (view == 'account') 
+			this.settingsViews.viewAccount();
+		else if (view == 'password') 
+			this.settingsViews.viewPassword();
+		else if (view == 'logout')
+			this.settingsViews.processLogout();
+		else
+			this.switchView(this.notFoundView);
 	}
 });
