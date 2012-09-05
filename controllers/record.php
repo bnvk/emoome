@@ -14,20 +14,11 @@ class Record extends Site_Controller
 	
 	function index()
 	{
-		//if ($this->session->userdata('user_level_id') == 4) redirect('record/feeling');
-		//redirect('record/feeling');
+		if ($this->session->userdata('user_level_id') == 4) redirect('#/record/feeling');
 		$this->data['page_title'] 	= 'Record';
-		
 		$this->render();
 	}
 
-	function feeling()
-	{
-		$this->data['page_title'] 	= 'Record A Feeling';
-		
-		$this->render();
-	}
-	
 	function emoticons()
 	{
 		$this->data['page_title']	= 'Record A Feeling';

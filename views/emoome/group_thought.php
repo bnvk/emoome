@@ -121,6 +121,81 @@ span.word_count {
 //<![CDATA[
 $(document).ready(function()
 {
+	/* Thought Demo Stuff for Hackday */
+	function logThoughtStart()
+	{
+		/// Get Geo
+		if (navigator.geolocation)
+		{
+			navigator.geolocation.getCurrentPosition(showPosition, geoErrorHandler);	
+		}
+	
+		$('#log_thought').delay(250).fadeIn('slow');
+	}
+	
+	
+	function logThought()
+	{
+		$.validator(
+		{
+			elements :
+				[{
+					'selector' 	: '#log_val_thought',
+					'rule'		: 'require', 
+					'field'		: 'Thought'
+				}],
+			message : 'Enter a ',
+			success	: function()
+			{			
+				var log_data = $('#log_data').serializeArray();
+				log_data.push({'name' : 'category_id', 'value' : 9 });
+				log_data.push({'name' : 'source', 'value' : user_data.source });
+				log_data.push({'name' : 'log_thought', 'value' : $('#log_val_thought').val() });
+	
+				console.log(log_data);
+	
+				// Save Data To API
+				$.oauthAjax(
+				{
+					oauth 		: user_data,		
+					url			: base_url + 'api/emoome/log_thought',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: log_data,
+					beforeSend	: requestMade('Saving your entry'),
+				  	success		: function(result)
+				  	{
+						// Close Loading
+			  			requestComplete(result.message, result.status);
+						
+						if (result.status == 'success')
+						{
+							// Clean Data & Completion
+					  		$('#log_val_thought').val('');
+	
+							$('#log_thought').fadeOut();
+							
+							// Show Completion View
+							$('#log_completion_message').html('Great, thanks for logging your thought');
+							$('#log_thanks').delay(500).fadeIn();
+						}
+				  	}			  			
+				});
+			},
+			failed : function()
+			{
+				printUserMessage('Please enter your thought');
+			}
+		});
+	}
+	
+	function logThoughtThanks()
+	{
+		//jQT.goTo('#log_experience', 'slideleft');
+		$('#log_thanks').fadeOut();
+		logThoughtStart();
+	}
+
 
 	$('#slideshow') 
 	.before('<div id="nav">') 

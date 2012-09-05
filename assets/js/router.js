@@ -3,6 +3,9 @@ var ApplicationRouter = Backbone.Router.extend(
 	initialize: function(el)
 	{
 		this.el = el;
+		
+		// Instantiate Navigation
+		this.Navigation				= new NavigationView({ el: $('#header') });
 
 		// Public Views
 		this.indexView				= new ContentView('#index');
@@ -30,6 +33,7 @@ var ApplicationRouter = Backbone.Router.extend(
 		"signup"				: "signup",
 		"forgot_password"		: "forgotPassword",
 		"logout"				: "logout",
+		"logged/:destination"	: "logged",
 		"record"				: "record",
 		"record/:view"			: "recordViews",
 		"visualize"				: "visualize",
@@ -50,11 +54,7 @@ var ApplicationRouter = Backbone.Router.extend(
 		this.currentView = view;
 	},
 	setActiveNav: function(url)		// For Main Nav Links and Shit
-	{
-		// Unmark all entries
-		// $('li').removeClass('active');
-		// $("li a[href='" + url + "']").parents('li').addClass('active');
-			    
+	{			    
 	    $.each(['record', 'visualize', 'settings'], function(key, value)
 	    {		
 		    if (value == type)
@@ -89,7 +89,7 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	logout: function()
 	{
-		Navigation.renderPublic();	  	
+		this.Navigation.renderPublic();	  	
 	    this.switchView(this.logoutView);
 	},
 	notFound: function() {
@@ -138,3 +138,5 @@ var ApplicationRouter = Backbone.Router.extend(
 			this.switchView(this.notFoundView);
 	}
 });
+
+

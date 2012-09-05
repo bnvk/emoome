@@ -128,7 +128,7 @@
 					<?= form_dropdown('language', config_item('languages'), 'en') ?>
 				</p>
 				<p>
-					<input type="submit" name="submit" value="Signup">
+					<input type="submit" name="submit" id="button_signup_short" value="Signup">
 				</p>
 			</form>
 		</div>
@@ -458,36 +458,25 @@ var user_data = {
 	"source": "<?= $user_source ?>"
 }
 
-var base_url 		= '<?= base_url() ?>';
+var base_url = '<?= base_url() ?>';
 
 $(document).ready(function()
 {
-	// Instantiate Navigation
-	var Navigation	= new NavigationView({ el: $('#header') });
-
-
 	// Create Router
-	var Router		= new ApplicationRouter($('#container'));
+	var Router = new ApplicationRouter($('#container'));
 
 	// History
 	Backbone.history.start();
 
+	// Model
+	UserData.set({ logged : 'yes' });
+	UserData.set(user_data);
+	
 
 	// Language Hide
 	if (user_data.language != 'en' && user_data.language != '')
 	{
 		$('#container').html('<h1>Sorry!</h1><h3>We are not setup to handle non english languages at present.</h3><h3>We will let you know when we are.</h3>');
-	}
-
-
-	// Render Logged In ToolBar
-	if (user_data.user_id != '')
-	{		
-		// Show Content
-		if (isNotLoggedUrl(window.location.href))
-		{
-			Backbone.history.navigate('#/record/feeling', true);
-		}
 	}
 	
 });

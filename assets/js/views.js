@@ -38,19 +38,19 @@ var LightboxView = Backbone.View.extend(
 		if (status == 'success')
 		{
 			$('#lightbox_message').addClass('lightbox_message_success');
-			$("#request_lightbox").delay(1500).fadeOut();
+			$("#request_lightbox").delay(150).fadeOut();
 		}
 		else
 		{
 			$('#lightbox_message').addClass('lightbox_message_error');
-			$("#request_lightbox").delay(2500).fadeOut();		
+			$("#request_lightbox").delay(2000).fadeOut();		
 		}
 	},
 	printUserMessage: function(message)
 	{
 		$('#lightbox_message').removeClass('lightbox_message_success lightbox_message_error').addClass('lightbox_message_normal').html(message);
 		$('#request_lightbox').delay(250).fadeIn();
-		$("#request_lightbox").delay(1500).fadeOut();
+		$("#request_lightbox").delay(1000).fadeOut();
 	},
 	closeFast: function()
 	{
@@ -111,8 +111,9 @@ var ContentView = Backbone.View.extend(
 	},
     events:
     {
-    	"click #button_login" 		: "processLogin",
-    	"click #button_signup" 		: "processSignup"
+    	"click #button_login" 			: "processLogin",
+    	"click #button_signup"			: "processSignup",
+    	"click #button_signup_short" 	: "processSignupShort"
     },	
 	processLogin: function(e)
 	{
@@ -154,7 +155,12 @@ var ContentView = Backbone.View.extend(
 							$('[name=email]').val('');
 							$('[name=password]').val('');
 							
+							// Update Model
+							UserData.set({ logged: 'yes' });
+							UserData.set(result.user);
+							
 							// Update Header
+							var Navigation = new NavigationView({ el: $('#header') });
 							Navigation.renderLogged();
 
 							// Update URL & View
@@ -210,7 +216,12 @@ var ContentView = Backbone.View.extend(
 							$('[name=email]').val('');
 							$('[name=password]').val('');
 
+							// Update Model
+							UserData.set({ logged: 'yes' });
+							UserData.set(result.user);
+							
 							// Update Header
+							var Navigation = new NavigationView({ el: $('#header') });
 							Navigation.renderLogged();
 
 							// Update URL & View
@@ -220,6 +231,67 @@ var ContentView = Backbone.View.extend(
 				});
 			}
 		});		
+	},
+	processSignupShort: function(e)
+	{
+		e.preventDefault();	
+		$.validator(
+		{
+			elements :		
+				[{
+					'selector' 	: '#signup_name_short', 
+					'rule'		: 'require', 
+					'field'		: 'Enter your name',
+					'action'	: 'label'					
+				},{
+					'selector' 	: '#signup_email_short', 
+					'rule'		: 'email', 
+					'field'		: 'Please enter a valid email',
+					'action'	: 'label'							
+				},{
+					'selector' 	: '#signup_password_short',
+					'rule'		: 'require', 
+					'field'		: 'Please enter a password',
+					'action'	: 'label'					
+				}],
+			message : '',
+			success	: function()
+			{					
+				var signup_data = $('#user_signup_short').serializeArray();
+				signup_data.push({'name':'session','value':'1'},{'name':'password_confirm','value':$('#signup_password_short').val()});
+				$.ajax(
+				{
+					url			: base_url + 'api/users/signup',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: signup_data,
+					beforeSend	: Lightbox.requestMade('Creating Account'),
+			  		success		: function(result)
+			  		{
+						// Close Loading
+			  			Lightbox.requestComplete(result.message, result.status);
+
+						if (result.status == 'success')
+						{							
+							$('[name=name]').val('');
+							$('[name=email]').val('');
+							$('[name=password]').val('');
+
+							// Update Model
+							UserData.set({ logged: 'yes' });
+							UserData.set(result.user);
+							
+							// Update Header
+							var Navigation = new NavigationView({ el: $('#header') });
+							Navigation.renderLogged();
+
+							// Update URL & View
+							Backbone.history.navigate('#/record/feeling', true); 
+						}
+				 	}
+				});
+			}
+		});
 	}
 });
 
