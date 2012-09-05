@@ -469,9 +469,11 @@ $(document).ready(function()
 	Backbone.history.start();
 
 	// Model
-	UserData.set({ logged : 'yes' });
-	UserData.set(user_data);
-	
+	if (user_data.user_id != '')
+	{
+		UserData.set({ logged : 'yes' });
+		UserData.set(user_data);
+	}
 
 	// Language Hide
 	if (user_data.language != 'en' && user_data.language != '')

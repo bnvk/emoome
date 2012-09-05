@@ -19,23 +19,9 @@ class Record extends Site_Controller
 		$this->render();
 	}
 
-	function emoticons()
-	{
-		$this->data['page_title']	= 'Record A Feeling';
-	
-		$this->render();
-	}
-
 	function memory()
 	{
 		$this->data['page_title']	= 'Memory Builder';
-		
-		$this->render();
-	}
-	
-	function goal()
-	{
-		$this->data['page_title']	= 'Goal Mapper';
 		
 		$this->render();
 	}

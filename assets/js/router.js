@@ -16,15 +16,15 @@ var ApplicationRouter = Backbone.Router.extend(
 		this.notFoundView			= new ContentView('#not_found');
 
 		// Record Views
-		this.record					= new ContentView('#record');
+		this.recordIndex			= new ContentView('#record');
 		this.recordFeeling			= new RecordFeelingView({ el: $('#container') });
 
 		// Visualize Views
-		this.visualize				= new ContentView('#visualize');
+		this.visualizeIndex			= new ContentView('#visualize');
 		this.visualizeViews			= new VisualizeView({ el: $('#container')});
 
 		// Settings Views
-		this.settings				= new ContentView('#settings');
+		this.settingsIndex			= new ContentView('#settings');
 		this.settingsViews			= new SettingsView({ el: $('#container')});
 	},
 	routes: {
@@ -34,11 +34,11 @@ var ApplicationRouter = Backbone.Router.extend(
 		"forgot_password"		: "forgotPassword",
 		"logout"				: "logout",
 		"logged/:destination"	: "logged",
-		"record"				: "record",
+		"record"				: "recordViews",
 		"record/:view"			: "recordViews",
-		"visualize"				: "visualize",
+		"visualize"				: "visualizeViews",
 		"visualize/:view"		: "visualizeViews",
-		"settings"				: "settings",
+		"settings"				: "settingsViews",
 		"settings/:view"		: "settingsViews"
 	},
 	currentView: null,
@@ -95,13 +95,15 @@ var ApplicationRouter = Backbone.Router.extend(
 	notFound: function() {
 		this.switchView(this.notFoundView);
 	},
-	record: function()
-	{
-		this.switchView(this.record);	
-	},
 	recordViews: function(view)
-	{		
-		if (view == 'feeling') 
+	{
+		// Is Logged
+		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
+		
+		// View
+		if (view == undefined)
+			this.switchView(this.recordIndex);
+		else if (view == 'feeling') 
 			this.recordFeeling.viewFeeling();
 		else if (view == 'experience') 
 			this.recordFeeling.viewExperience();
@@ -112,21 +114,28 @@ var ApplicationRouter = Backbone.Router.extend(
 		else
 			this.switchView(this.notFoundView);
 	},
-	visualize: function()
-	{
-		this.switchView(this.visualize);
-	},
 	visualizeViews: function(view)
 	{
+		// Is Logged
+		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
+
 		console.log('NEED TO WRITE VISUALIZE LOGIC FOR: ' + view);	
-	},
-	settings: function()
-	{
-		this.switchView(this.settings);			
+		
+		// View
+		if (view == undefined)	
+			this.switchView(this.visualizeIndex);
+		else
+			this.switchView(this.notFoundView);	
 	},
 	settingsViews: function(view)
 	{	
-		if (view == 'notifications') 
+		// Is Logged
+		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
+
+		// View
+		if (view == undefined)	
+			this.switchView(this.settingsIndex);
+		else if (view == 'notifications') 
 			this.settingsViews.viewNotifications();
 		else if (view == 'account') 
 			this.settingsViews.viewAccount();
