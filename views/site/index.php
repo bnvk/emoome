@@ -125,7 +125,17 @@
 				</p>
 				<p>
 					<label>Language</lable><br>
-					<?= form_dropdown('language', config_item('languages'), 'en') ?>
+					<select name="language" id="">
+						<option value="" selected="selected">--select--</option>
+						<option value="en">English</option>
+						<option value="fr">French</option>
+						<option value="de">German</option>
+						<option value="es">Spanish</option>
+						<option value="it">Italian</option>
+						<option value="ru">Russian</option>
+						<option value="cn">Chinese</option>
+						<option value="ot">Other</option>
+					</select>					
 				</p>
 				<p>
 					<input type="submit" name="submit" id="button_signup_short" value="Signup">
@@ -475,7 +485,7 @@ $(document).ready(function()
 		UserData.set(user_data);
 	}
 
-	// Language Hide
+	// Bad Language Hide
 	if (user_data.language != 'en' && user_data.language != '')
 	{
 		$('#container').html('<h1>Sorry!</h1><h3>We are not setup to handle non english languages at present.</h3><h3>We will let you know when we are.</h3>');
