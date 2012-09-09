@@ -1,31 +1,3 @@
-// User Data
-var UserData = Backbone.Model.extend(
-{
-	defaults: {
-		logged			: 'no',
-		user_id      	: "",
-		username     	: "",
-		user_level_id	: "",
-		name         	: "",
-		image        	: "",
-		location     	: "",
-		geo_enabled  	: "",
-		language     	: "",
-		privacy      	: "",	 
-		consumer_key 	: "",
-		consumer_secret	: "",
-		token        	: "",
-		token_secret 	: "",
-		source       	: "",
-		user_meta	 	: {},
-		notifications_frequency	: "daily",
-		notifications_sms		: "yes",
-		notifications_email		: "yes",
-		default_feeling_type	: "text"
-	},
-    initialize: function() {}
-});
-
 // UI Messages
 var UIMessages = Backbone.Model.extend({
 	log_feeling_complete : [
@@ -115,7 +87,6 @@ var LogFeelingModel = Backbone.Model.extend({
 });
 
 // Instantiate Models
-var UserData		= new UserData();
 var UIMessages		= new UIMessages();
 var LogFeelingModel = new LogFeelingModel();
 

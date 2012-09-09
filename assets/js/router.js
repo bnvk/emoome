@@ -73,14 +73,17 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	index: function()
 	{
+		if (UserData.get('logged') == 'yes') Backbone.history.navigate('#/record/feeling', true);	
 		this.switchView(this.indexView);
 	},	
 	login: function()
-	{	
+	{
+		if (UserData.get('logged') == 'yes') Backbone.history.navigate('#/record/feeling', true); 	
 		this.switchView(this.loginView);
 	},
 	signup: function()
 	{
+		if (UserData.get('logged') == 'yes') Backbone.history.navigate('#/record/feeling', true); 	
 		this.switchView(this.signupView);
 	},
 	forgotPassword: function()
@@ -89,7 +92,8 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	logout: function()
 	{
-		this.Navigation.renderPublic();	  	
+		UserData.set({ logged: 'no', user_id: '', username: '', name: '' });
+		this.Navigation.renderPublic(); 	
 	    this.switchView(this.logoutView);
 	},
 	notFound: function() {
@@ -97,7 +101,6 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	recordViews: function(view)
 	{
-		// Is Logged
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
 		
 		// View
@@ -116,7 +119,6 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	visualizeViews: function(view)
 	{
-		// Is Logged
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
 
 		console.log('NEED TO WRITE VISUALIZE LOGIC FOR: ' + view);	
@@ -129,7 +131,6 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	settingsViews: function(view)
 	{	
-		// Is Logged
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
 
 		// View

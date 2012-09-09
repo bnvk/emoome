@@ -449,6 +449,37 @@
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/router.js"></script>
 <script type="text/javascript">
 //Global User Data:
+var UserData = Backbone.Model.extend(
+{
+	defaults: {
+		logged			: '<?= $logged_is ?>',
+		user_id      	: "<?= $logged_user_id ?>",
+		username     	: "<?= $logged_username ?>",
+		user_level_id	: "<?= $logged_user_level_id ?>",
+		name         	: "<?= $logged_name ?>",
+		image        	: "<?= $logged_image ?>",
+		location     	: "<?= $logged_location ?>",
+		geo_enabled  	: "<?= $logged_geo_enabled ?>",
+		language     	: "",
+		privacy      	: "<?= $logged_privacy ?>",	 
+		consumer_key 	: "<?= $oauth_consumer_key ?>",
+		consumer_secret	: "<?= $oauth_consumer_secret ?>",
+		token        	: "<?= $oauth_token ?>",
+		token_secret 	: "<?= $oauth_token_secret ?>",
+		source       	: "",
+		user_meta	 	: {},
+		notifications_frequency	: "daily",
+		notifications_sms		: "yes",
+		notifications_email		: "yes",
+		default_feeling_type	: "text"
+	},
+    initialize: function() {}
+});
+
+// Instantiate Models
+var UserData = new UserData();
+
+// Old Shiz
 var user_data = {
 	"user_id":"<?= $logged_user_id ?>",
 	"username":"<?= $logged_username ?>",
@@ -466,7 +497,8 @@ var user_data = {
 	"token": "<?= $oauth_token ?>",
 	"token_secret": "<?= $oauth_token_secret ?>",
 	"source": "<?= $user_source ?>"
-}
+};
+
 
 var base_url = '<?= base_url() ?>';
 
@@ -477,13 +509,6 @@ $(document).ready(function()
 
 	// History
 	Backbone.history.start();
-
-	// Model
-	if (user_data.user_id != '')
-	{
-		UserData.set({ logged : 'yes' });
-		UserData.set(user_data);
-	}
 
 	// Bad Language Hide
 	if (user_data.language != 'en' && user_data.language != '')
