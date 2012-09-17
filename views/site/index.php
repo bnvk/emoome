@@ -59,7 +59,7 @@
 	</div>
 </script>
 
-<script type="text/html" id="header_public">
+<script type="text/template" id="header_public">
 	<div id="header_not_logged">
 		<div id="header_logo"></div>
 		<h1><a id="header_home" href="<?= base_url() ?>#">emo<span class="name_ome">ome</span></a></h1>
@@ -73,7 +73,7 @@
 	</div>	
 </script>
 
-<script type="text/html" id="header_user">
+<script type="text/template" id="header_user">
 	<div id="header_logged">
 		<div id="header_logged_user">
 			<div id="header_logged_avatar"><img src="<%= image %>"></div>
@@ -90,7 +90,7 @@
 </script>
 
 <!-- Public Views -->
-<script type="text/html" id="index">
+<script type="text/template" id="index">
 	<div id="content_index">
 		<div id="index_content_1" class="index_content">
 			<h2>record your experiences & feelings</h2>
@@ -138,7 +138,7 @@
 					</select>					
 				</p>
 				<p>
-					<input type="submit" name="submit" id="button_signup_short" value="Signup">
+					<input type="button" name="submit" id="button_signup_short" value="Signup">
 				</p>
 			</form>
 		</div>
@@ -163,7 +163,7 @@
 	</div>
 </script>
 
-<script type="text/html" id="login">
+<script type="text/template" id="login">
 	<h1>Login</h1>
 	<form method="post" name="user_login" id="user_login">
 		<p>
@@ -181,12 +181,12 @@
 			<a href="<?= base_url() ?>#/forgot_password">Forgot password?</a>
 		</p>
 		<p>
-			<input type="submit" name="submit" id="button_login" value="Login">
+			<input type="button" name="submit" id="button_login" value="Login">
 	  	</p>
 	</form>
 </script>
 
-<script type="text/html" id="signup">
+<script type="text/template" id="signup">
 	<h1>Signup</h1>
 	<form method="post" name="user_signup" id="user_signup">
 		<p>
@@ -213,30 +213,30 @@
 			<?= form_dropdown('language', config_item('languages'), 'en') ?>
 		</p>
 		<p>
-			<input type="submit" name="submit" id="button_signup" value="Signup">
+			<input type="button" name="submit" id="button_signup" value="Signup">
 		</p>
 	</form>
 </script>
 
-<script type="text/html" id="logout">
+<script type="text/template" id="logout">
 		<h1>Thanks :)</h1>
 		<h3>You are now logged out</h3>
 </script>
 
-<script type="text/html" id="forgot_password">
+<script type="text/template" id="forgot_password">
 	<h1>Forgot Password</h1>
 	<p>Please enter your email address</p>
-	<form method="post" name="user_forgot_password" id="user_forgot_password" action="<?= base_url()."api/users/password_forgot"; ?>">
+	<form name="user_forgot_password" id="user_forgot_password">
 		<p>
 			<input type="text" name="email" id="forgot_email" placeholder="you@email.com" value="">
 		  	<span id="forgot_email_error"></span>
 		</p>
 		<p id="email_error"></p>
-		<p><input type="submit" name="submit" value="Retrieve" /></p>
+		<p><input type="button" name="submit" id="button_forgot_password" value="Reset Password" /></p>
 	</form>
 </script>
 
-<script type="text/html" id="not_found">
+<script type="text/template" id="not_found">
 	<h1>Ooops</h1>
 	<p>Sorry Broski, we could not find that page</p>
 </script>
@@ -244,7 +244,7 @@
 
 
 <!-- Record Views -->
-<script type="text/html" id="record">
+<script type="text/template" id="record">
 	<div id="content_test" class="content_center text_center">
 		<p><a id="button_cat_feeling" class="list_button" href="<?= base_url() ?>#/record/feeling"><span class="list_icon list_icon_profile"></span>How You Feel</a></p>
 		<p><a id="button_cat_memory" class="list_button" href="<?= base_url() ?>#/record/thought"><span class="list_icon list_icon_brain"></span>Group Thought</a></p>
@@ -276,7 +276,7 @@
 	</div>
 </script>
 
-<script type="text/html" id="record_experience">
+<script type="text/template" id="record_experience">
 	<div id="log_experience_view" class="content_center text_center">
 		<h1>What is one thing you did today?</h1>
 		<p><textarea name="log_experience" id="log_experience_value" placeholder="Walked my pet dog"></textarea></p>
@@ -285,7 +285,7 @@
 	</div>
 </script>
 
-<script type="text/html" id="record_describe">
+<script type="text/template" id="record_describe">
 	<div id="log_describe_view" class="content_center text_center">
 		<h1>Describe in three words</h1>
 		<p id="log_describe_this">"<%= describe_this %>"</p>
@@ -296,7 +296,7 @@
 	</div>
 </script>
 
-<script type="text/html" id="record_thanks">
+<script type="text/template" id="record_thanks">
 	<div id="log_thanks_view" class="content_center text_center">
 		<h1>Thanks :)</h1>
 		<h3 id="log_completion_message"></h3>
@@ -307,7 +307,7 @@
 
 
 <!-- Visualize Views -->
-<script type="text/html" id="visualize">
+<script type="text/template" id="visualize">
 	<div id="visualize_waiting" class="content_center text_center">
 		<h1>We are computing your emotions</h1>
 		<div id="logs_needed">
@@ -321,7 +321,7 @@
 
 
 <!-- Settings Views -->
-<script type="text/html" id="settings">
+<script type="text/template" id="settings">
 	<div id="content_menu" class="content_center text_center">
 		<?php if (!$this->agent->is_mobile()): ?>
 		<h1>Settings</h1>
@@ -353,9 +353,9 @@
 	</div>
 </script>
 
-<script type="text/html" id="settings_notifications">
+<script type="text/template" id="settings_notifications">
 	<h1>Notifications</h1>
-	<form name="settings_notifications" id="settings_notifications" method="post">	
+	<form name="settings_notifications" id="settings_notifications">	
 		<p>	
 			<label>How Often</label><br>
 			<select name="notifications_frequency" id="notifications_frequency">
@@ -374,9 +374,9 @@
 	</form>
 </script>
 
-<script type="text/html" id="settings_account">
+<script type="text/template" id="settings_account">
 	<h1>Account Info</h1>
-	<form name="settings_account" id="settings_account" method="post">	
+	<form name="settings_account" id="settings_account">	
 		<p>	
 			<label>Name</label><br>
 			<input type="text" name="name" id="profile_name" placeholder="Your Name" value="<?= $this->session->userdata('name') ?>">
@@ -416,14 +416,14 @@
 		</p>
 		<p><input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"> &nbsp;Add Location</p>
 		<p>
-			<input type="submit" id="settings_button_account" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel">
+			<input type="button" id="settings_button_account" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel">
 		</p>		
 	</form>	
 </script>
 
-<script type="text/html" id="settings_password">
+<script type="text/template" id="settings_password">
 	<h1>Change Password</h1>
-	<form name="settings_change_password" id="settings_change_password" method="post">
+	<form name="settings_change_password" id="settings_change_password">
 		<p>
 			<label>Old Password</label><br>
 			<input type="password" name="old_password" value="">

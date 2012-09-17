@@ -108,16 +108,47 @@ var ContentView = Backbone.View.extend(
 		var template = $(this.view).html();
 		$(this.el).html(template).hide().delay(250).fadeIn();
 		return this;
-	},
+	}
+});
+	
+	
+// Record Views
+var AuthView = Backbone.View.extend(
+{
+    initialize: function()
+    {    
+		this.render();
+    },
+    render: function(){},
     events:
     {
-    	"click #button_login" 			: "processLogin",
-    	"click #button_signup"			: "processSignup",
-    	"click #button_signup_short" 	: "processSignupShort"
-    },	
-	processLogin: function(e)
+    	"click #button_login" 				: "processLogin",
+    	"click #button_signup"				: "processSignup",
+    	"click #button_signup_short" 		: "processSignupShort",
+    	"click #button_forgot_password" 	: "processForgotPassword"
+    },
+    viewLogin: function()
+    {
+    	// Load View
+        var template = _.template($("#login").html());
+        this.$el.html(template).hide().delay(250).fadeIn();	    
+    },
+    viewSignup: function()
+    {
+    	// Load View
+        var template = _.template($("#signup").html());
+        this.$el.html(template).hide().delay(250).fadeIn();	    
+    },
+    viewForgotPassword: function()
+    {
+    	// Load View
+        var template = _.template($("#forgot_password").html());
+        this.$el.html(template).hide().delay(250).fadeIn();
+    },
+	processLogin: function()
 	{
-		e.preventDefault();
+		console.log('here processLogin');
+	
 		$.validator(
 		{
 			elements :
@@ -137,7 +168,6 @@ var ContentView = Backbone.View.extend(
 			{
 				var login_data = $('#user_login').serializeArray();
 				login_data.push({'name':'session','value':'1'});
-			
 				$.ajax(
 				{
 					url			: base_url + 'api/users/login',
@@ -168,12 +198,19 @@ var ContentView = Backbone.View.extend(
 						}
 				 	}
 				});
+			},
+			failed: function(data)
+			{
+				console.log(data);
+				
 			}
+			
+			
+			
 		});		
 	},
-	processSignup: function(e)
+	processSignup: function()
 	{
-		e.preventDefault();	
 		$.validator(
 		{
 			elements :		
@@ -292,6 +329,40 @@ var ContentView = Backbone.View.extend(
 				});
 			}
 		});
+	},
+	processForgotPassword: function()
+	{
+		$.validator(
+		{
+			elements :		
+				[{
+					'selector' 	: '#forgot_email', 
+					'rule'		: 'email', 
+					'field'		: 'Please enter a valid email',
+					'action'	: 'label'							
+				}],
+			message : '',
+			success	: function()
+			{
+				$.ajax(
+				{
+					url			: base_url + 'api/users/password_forgot',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: $('#user_forgot_password').serializeArray(),
+					beforeSend	: Lightbox.requestMade('Resetting Password'),
+			  		success		: function(result)
+			  		{
+						// Close Loading
+			  			Lightbox.requestComplete(result.message, result.status);			  			
+
+						// Update URL & View
+						Backbone.history.navigate('#/login', true); 
+			  		}
+			  	});
+			
+			}
+		});		
 	}
 });
 

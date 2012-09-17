@@ -9,9 +9,12 @@ var ApplicationRouter = Backbone.Router.extend(
 
 		// Public Views
 		this.indexView				= new ContentView('#index');
+		this.authView				= new AuthView({ el: $('#container') });
+/*		
 		this.loginView				= new ContentView('#login');
 		this.signupView				= new ContentView('#signup');
 		this.forgotPasswordView		= new ContentView('#forgot_password');
+*/
 		this.logoutView				= new ContentView('#logout');
 		this.notFoundView			= new ContentView('#not_found');
 
@@ -79,20 +82,23 @@ var ApplicationRouter = Backbone.Router.extend(
 	login: function()
 	{
 		if (UserData.get('logged') == 'yes') Backbone.history.navigate('#/record/feeling', true); 	
-		this.switchView(this.loginView);
+		this.authView.viewLogin();
+		//this.switchView(this.loginView);
 	},
 	signup: function()
 	{
 		if (UserData.get('logged') == 'yes') Backbone.history.navigate('#/record/feeling', true); 	
-		this.switchView(this.signupView);
+		this.authView.viewSignup();
+//		this.switchView(this.signupView);
 	},
 	forgotPassword: function()
 	{
-		this.switchView(this.forgotPasswordView);		
+		this.authView.viewForgotPassword();
+//		this.switchView(this.forgotPasswordView);
 	},
 	logout: function()
 	{
-		UserData.set({ logged: 'no', user_id: '', username: '', name: '' });
+		UserData.set({ logged: 'no', user_id: '', username: '', name: '', user_level_id	: '', name : '', image : '', location : '', geo_enabled : '', language : '', privacy : '', consumer_key : '', consumer_secret : '', token : '', token_secret : '' });
 		this.Navigation.renderPublic(); 	
 	    this.switchView(this.logoutView);
 	},
