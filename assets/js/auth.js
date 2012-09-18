@@ -23,11 +23,11 @@
 (function($)
 {
 	$.oauthAjax = function(settings)
-	{
-		var oauth_consumer_key 		= settings.oauth.consumer_key;
-		var oauth_consumer_secret 	= settings.oauth.consumer_secret;
-		var oauth_token				= settings.oauth.token;
-		var oauth_token_secret 		= settings.oauth.token_secret;		
+	{	
+		var oauth_consumer_key 		= settings.oauth.get('consumer_key');
+		var oauth_consumer_secret 	= settings.oauth.get('consumer_secret');
+		var oauth_token				= settings.oauth.get('token');
+		var oauth_token_secret 		= settings.oauth.get('token_secret');		
 
 		var accessor = { 
 			consumerSecret	: oauth_consumer_secret,

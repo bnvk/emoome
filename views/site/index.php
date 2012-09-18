@@ -169,12 +169,12 @@
 		<p>
 			<label>Email</label><br>
 			<input type="text" name="email" id="login_email" placeholder="you@email.com" autocorrect="off" value=""><br>
-			<span id="login_email_error"></span>
+			<span id="login_email_error"></span>			
 		</p>
 		<p>
 			<label>Password</label><br>
 			<input type="password" name="password" id="login_password" placeholder="********" autocorrect="off" value=""><br>
-			<span id="login_password_error"></span>
+			<span id="login_password_error"></span>			
 		</p>
 		<p>
 			<label>Remember</label> <?= form_checkbox('remember', '1', TRUE, 'id="login_remember"');?> 
@@ -238,7 +238,7 @@
 
 <script type="text/template" id="not_found">
 	<h1>Ooops</h1>
-	<p>Sorry Broski, we could not find that page</p>
+	<p>Apologies, but we could not find what you were looking for</p>
 </script>
 
 
@@ -255,7 +255,7 @@
 	<div class="left_control_container">
 		<div id="log_feeling_use_text" class="left_control_links icon_small icon_small_text"></div>
 		<div id="log_feeling_use_emoticons" class="left_control_links icon_small icon_small_emoticons"></div>
-		<div id="log_feeling_use_audio" class="left_control_links icon_small icon_small_audio"></div>
+		<!-- <div id="log_feeling_use_audio" class="left_control_links icon_small icon_small_audio"></div> -->
 	</div>
 	<div class="right_control_container">
 		<!-- Text -->
@@ -318,6 +318,46 @@
 	</div>
 </script>
 
+<script type="text/template" id="visualize_index">
+
+	<h1 id="visualize_title" class="hide">Visualize : Your Language</h1>
+	<div id="visualize_language" class="hide">
+	
+		<div id="visualize_last_five">
+			<h3>Last Five Entries</h3>
+			<div id="last_five"></div>
+		</div>
+	
+		<div id="visualize_all_time">
+			<h3>All Entries</h3>
+			<div id="all_time"></div>
+		</div>
+	
+		<div class="clear"></div>
+		<p id="your_language_map" ><a class="button" href="#/visualize/map">Your Language Map</a></p>
+	
+	</div>
+
+
+	<div id="visualize_common" class="hide">
+		<h2>Common Words & Feelings</h2>
+		<div class="common_words">
+			<div class="common_words_count"></div>
+			<div class="common_words_words"></div>
+			<div class="clear"></div>
+		</div>
+		<div class="common_words_line"></div>
+	</div>
+
+
+	<div id="visualize_experiences" class="hide">
+		<h2>Strong Experiences</h2>
+		<div id="strong_experiences"></div>
+	</div>
+
+
+</script>
+
 
 
 <!-- Settings Views -->
@@ -370,7 +410,7 @@
 		</p>
 		<p><input type="checkbox" class="nullify" name="notifications_sms" value=""> &nbsp;Text Messages</p>
 		<p><input type="checkbox" class="nullify" name="notifications_email" value=""> &nbsp;Email</p>
-		<p><input type="submit" id="settings_button_notifications" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel"></p>			
+		<p><input type="button" id="settings_button_notifications" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel"></p>			
 	</form>
 </script>
 
@@ -379,23 +419,35 @@
 	<form name="settings_account" id="settings_account">	
 		<p>	
 			<label>Name</label><br>
-			<input type="text" name="name" id="profile_name" placeholder="Your Name" value="<?= $this->session->userdata('name') ?>">
+			<input type="text" name="name" id="profile_name" placeholder="Your Name" value="<%= name %>">
+			<span id="profile_name_error"></span>
 		</p>
 		<p>
 			<label>Email</label><br>
-			<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<?= $this->session->userdata('email') ?>">
+			<input type="email" name="email" id="profile_email" placeholder="you@email.com" value="<%= email %>">
+			<span id="profile_email_error"></span>
 		</p>
 		<p>
 			<label>Phone (for reminders)</label><br>
-			<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<?= $this->session->userdata('phone_number') ?>">
+			<input type="text" name="phone_number" id="profile_phone" placeholder="503-111-2222" value="<%= phone_number %>">
 		</p>
 		<p>
 			<label>Language</lable><br>
-			<?= form_dropdown('language', config_item('languages'), $this->session->userdata('language')); ?>
+			<select name="language" id="profile_language">
+				<option value="">--select--</option>
+				<option value="en" selected="selected">English</option>
+				<option value="fr">French</option>
+				<option value="de">German</option>
+				<option value="es">Spanish</option>
+				<option value="it">Italian</option>
+				<option value="ru">Russian</option>
+				<option value="cn">Chinese</option>
+				<option value="ot">Other</option>
+			</select>			
 		</p>
 		<p>
 			<label>Timezone</lable><br>	
-			<select name="time_zone" id="time_zone">
+			<select name="time_zone" id="profile_time_zone">
 				<option value=''>---select---</option>
 				<option value='UM10'>Hawaii Standard</option>
 				<option value='UM9'>Alaska Standard</option>
@@ -416,7 +468,7 @@
 		</p>
 		<p><input type="checkbox" name="geo_enabled" id="profile_geo_enabled" value="" title="Add Location to Logs"> &nbsp;Add Location</p>
 		<p>
-			<input type="button" id="settings_button_account" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel">
+			<input type="button" id="settings_button_account" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel">
 		</p>		
 	</form>	
 </script>
@@ -426,17 +478,20 @@
 	<form name="settings_change_password" id="settings_change_password">
 		<p>
 			<label>Old Password</label><br>
-			<input type="password" name="old_password" value="">
+			<input type="password" id="old_password" name="old_password" value="">
+			<span id="old_password_error"></span>
 		</p>
 		<p>
 			<label>New Password</label><br>
-			<input type="password" name="new_password" value="">
+			<input type="password" id="new_password" name="new_password" value="">
+			<span id="new_password_error"></span>
 		</p>
 		<p>
 			<label>New Password Confirm</label><br>
-			<input type="password" name="new_password_confirm" value="">
+			<input type="password" id="new_password_confirm" name="new_password_confirm" value="">
+			<span id="new_password_confirm_error"></span>			
 		</p>
-		<p><input type="submit" id="settings_button_password" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel"></p>			
+		<p><input type="button" id="settings_button_password" class="center" value="Save"> &nbsp;&nbsp; <input type="button" class="center settings_button_cancel" value="Cancel"></p>			
 	</form>
 </script>
 
@@ -447,6 +502,9 @@
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/models.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/views.js"></script>
 <script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/router.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/raphael.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/g.raphael.js"></script>
+<script type="text/javascript" src="<?= module_assets_url('emoome') ?>js/g.pie.js"></script>
 <script type="text/javascript">
 //Global User Data:
 var UserData = Backbone.Model.extend(
@@ -457,16 +515,18 @@ var UserData = Backbone.Model.extend(
 		username     	: "<?= $logged_username ?>",
 		user_level_id	: "<?= $logged_user_level_id ?>",
 		name         	: "<?= $logged_name ?>",
+		email        	: "<?= $logged_email ?>",
+		phone_number    : "<?= $logged_phone_number ?>",
 		image        	: "<?= $logged_image ?>",
 		location     	: "<?= $logged_location ?>",
 		geo_enabled  	: "<?= $logged_geo_enabled ?>",
-		language     	: "",
+		language     	: "<?= $this->session->userdata('language') ?>",
 		privacy      	: "<?= $logged_privacy ?>",	 
 		consumer_key 	: "<?= $oauth_consumer_key ?>",
 		consumer_secret	: "<?= $oauth_consumer_secret ?>",
 		token        	: "<?= $oauth_token ?>",
 		token_secret 	: "<?= $oauth_token_secret ?>",
-		source       	: "",
+		source       	: "<?= $user_source ?>",
 		user_meta	 	: {},
 		notifications_frequency	: "daily",
 		notifications_sms		: "yes",
@@ -478,28 +538,6 @@ var UserData = Backbone.Model.extend(
 
 // Instantiate Models
 var UserData = new UserData();
-
-// Old Shiz
-var user_data = {
-	"user_id":"<?= $logged_user_id ?>",
-	"username":"<?= $logged_username ?>",
-	"user_level_id":"<?= $logged_user_level_id ?>",
-	"name":"<?= $logged_name ?>",
-	"image":"<?= $logged_image ?>",
-	"location":"<?= $logged_location ?>",
-	"geo_enabled":"<?= $logged_geo_enabled ?>",
-	"geo_lat":"",
-	"geo_lon":"",
-	"language":"<?= $this->session->userdata('language') ?>",
-	"privacy":"<?= $logged_privacy ?>",	 
-	"consumer_key": "<?= $oauth_consumer_key ?>",
-	"consumer_secret": "<?= $oauth_consumer_secret ?>",
-	"token": "<?= $oauth_token ?>",
-	"token_secret": "<?= $oauth_token_secret ?>",
-	"source": "<?= $user_source ?>"
-};
-
-
 var base_url = '<?= base_url() ?>';
 
 $(document).ready(function()
@@ -511,11 +549,12 @@ $(document).ready(function()
 	Backbone.history.start();
 
 	// Bad Language Hide
-	if (user_data.language != 'en' && user_data.language != '')
+	/*
+	if (UserData.get('language') != 'en' && UserData.get('language') != '')
 	{
 		$('#container').html('<h1>Sorry!</h1><h3>We are not setup to handle non english languages at present.</h3><h3>We will let you know when we are.</h3>');
 	}
-	
+	*/
 });
 </script>
 <?php if (!$this->uri->segment(1)) echo $google_analytics; ?>

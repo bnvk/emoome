@@ -86,7 +86,20 @@ var LogFeelingModel = Backbone.Model.extend({
     }
 });
 
+
+// Vizualize Dashboard
+var VisualizeModel = Backbone.Model.extend({
+    defaults: {
+		word_map	: {},
+		last_five	: {},
+		words		: {},
+		logs_raw	: {}   
+    }
+});
+
+
 // Instantiate Models
 var UIMessages		= new UIMessages();
 var LogFeelingModel = new LogFeelingModel();
+var VisualizeModel	= new VisualizeModel();
 

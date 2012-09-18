@@ -10,11 +10,6 @@ var ApplicationRouter = Backbone.Router.extend(
 		// Public Views
 		this.indexView				= new ContentView('#index');
 		this.authView				= new AuthView({ el: $('#container') });
-/*		
-		this.loginView				= new ContentView('#login');
-		this.signupView				= new ContentView('#signup');
-		this.forgotPasswordView		= new ContentView('#forgot_password');
-*/
 		this.logoutView				= new ContentView('#logout');
 		this.notFoundView			= new ContentView('#not_found');
 
@@ -89,12 +84,10 @@ var ApplicationRouter = Backbone.Router.extend(
 	{
 		if (UserData.get('logged') == 'yes') Backbone.history.navigate('#/record/feeling', true); 	
 		this.authView.viewSignup();
-//		this.switchView(this.signupView);
 	},
 	forgotPassword: function()
 	{
 		this.authView.viewForgotPassword();
-//		this.switchView(this.forgotPasswordView);
 	},
 	logout: function()
 	{
@@ -127,7 +120,56 @@ var ApplicationRouter = Backbone.Router.extend(
 	{
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
 
-		console.log('NEED TO WRITE VISUALIZE LOGIC FOR: ' + view);	
+		var logs_count	= VisualizeModel.get('logs_raw').length;
+
+		// Display Title
+		if (logs_count > 5 && UserData.get('source') != 'mobile')
+		{
+			$('#visualize_title').fadeIn();
+		}
+	
+		// Display Visualizations by log_count
+		if (logs_count < 5)
+		{
+			$('#logs_needed_count').html(5 - logs_count);
+			$('#visualize_waiting').fadeIn('slow');
+		}
+		else if (logs_count < 10)
+		{
+			$('#visualize_language').fadeIn();
+	
+			//doWordTypes();
+			this.visualizeViews.doLastFive();
+		}
+		else if (logs_count < 15)
+		{		
+			$('#visualize_language').fadeIn();
+	
+			//doWordTypes();
+			this.visualizeViews.doLastFive();
+			this.visualizeViews.doAllTime();
+			visualizeViews.doCommonLanguage();
+	
+			if (UserData.get('source') != 'mobile')
+			{
+				$('#your_language_map').fadeIn();
+			}
+		}
+		else
+		{
+			$('#visualize_language').fadeIn();
+	
+			//doWordTypes();
+			this.visualizeViews.doLastFive();
+			this.visualizeViews.doAllTime();
+			this.visualizeViews.doCommonLanguage();
+			this.visualizeViews.doStrongExperiences();
+	
+			if (UserData.get('source') != 'mobile')
+			{
+				$('#your_language_map').fadeIn();
+			}
+		}
 		
 		// View
 		if (view == undefined)	

@@ -17,7 +17,7 @@ var LightboxView = Backbone.View.extend(
 		$('#request_lightbox').delay(250).fadeIn();
 	
 		// Adjust Height For Device
-		if (user_data.source == 'mobile')
+		if (UserData.get('source') == 'mobile')
 		{
 			var new_lightbox_height = $('body').height() + 150;	
 			var new_lightbox_scroll	= $(window).scrollTop() + 50;
@@ -71,7 +71,7 @@ var NavigationView = Backbone.View.extend(
 	},
 	render: function()
 	{	
-		if (user_data.user_id != '')
+		if (UserData.get('user_id') != '')
 		{
 			this.renderLogged();
 		}
@@ -82,12 +82,12 @@ var NavigationView = Backbone.View.extend(
 	},
 	renderPublic: function()
 	{
-        var template = _.template($("#header_public").html(), user_data);
+        var template = _.template($("#header_public").html(), UserData.attributes);
         this.$el.html(template);		
 	},
 	renderLogged: function()
 	{
-        var template = _.template($("#header_user").html(), user_data);
+        var template = _.template($("#header_user").html(), UserData.attributes);
         this.$el.html(template);		
 	}	
 });
@@ -521,38 +521,52 @@ var RecordFeelingView = Backbone.View.extend(
     processFeeling: function(e)
     {
 	    e.preventDefault();
-
-		// Save To API
-		$.oauthAjax(
+		$.validator(
 		{
-			oauth 		: user_data,	
-			url			: base_url + 'api/emoome/logs/create_feeling',
-			type		: 'POST',
-			dataType	: 'json',
-			data		: LogFeelingModel.returnData(),
-			beforeSend	: Lightbox.requestMade('Saving your feeling'),
-		  	success		: function(result)
-		  	{
-				// Close Loading
-	  			Lightbox.requestComplete(result.message, result.status);
-
-				// Is Saved
-				if (result.status == 'success')
+			elements :
+				[{
+					'selector' 	: '#log_feeling_value',
+					'rule'		: 'require', 
+					'field'		: 'Experience'
+				}],
+			message : 'Enter a ',
+			success	: function()
+			{
+				// Save To API
+				$.oauthAjax(
 				{
-					// Thanks Data
-					$('#log_completion_message').html(_.shuffle(UIMessages.log_feeling_complete)[0]);
-
-					// Update URL & View
-					Backbone.history.navigate('#/record/thanks', true); 
-				}
-		  	}			  			
-		});		    
-    },       
+					oauth 		: UserData,	
+					url			: base_url + 'api/emoome/logs/create_feeling',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: LogFeelingModel.returnData(),
+					beforeSend	: Lightbox.requestMade('Saving your feeling'),
+				  	success		: function(result)
+				  	{
+						// Close Loading
+			  			Lightbox.requestComplete(result.message, result.status);
+		
+						// Is Saved
+						if (result.status == 'success')
+						{
+							// Thanks Data
+							$('#log_completion_message').html(_.shuffle(UIMessages.log_feeling_complete)[0]);
+		
+							// Update URL & View
+							Backbone.history.navigate('#/record/thanks', true); 
+						}
+				  	}			  			
+				});
+			},
+			failed : function()
+			{
+				Lightbox.printUserMessage('Please enter how you feel right now');
+			}			
+		});	    
+    },  
     viewExperience: function()
-    {
-    	console.log(LogFeelingModel.attributes);
-    
-        var template = _.template($("#record_experience").html(), user_data);
+    {    
+        var template = _.template($("#record_experience").html());
         this.$el.html(template).hide().delay(250).fadeIn();
     },
     processExperience: function()
@@ -619,7 +633,7 @@ var RecordFeelingView = Backbone.View.extend(
 				// Save To API
 				$.oauthAjax(
 				{
-					oauth 		: user_data,	
+					oauth 		: UserData,	
 					url			: base_url + 'api/emoome/logs/create_experience',
 					type		: 'POST',
 					dataType	: 'json',
@@ -633,9 +647,6 @@ var RecordFeelingView = Backbone.View.extend(
 						// Is Saved
 						if (result.status == 'success')
 						{
-							// Thanks Data
-							$('#log_completion_message').html(_.shuffle(UIMessages.log_feeling_complete)[0]);
-
 							// Update URL & View
 							Backbone.history.navigate('#/record/thanks', true); 
 						}
@@ -653,8 +664,8 @@ var RecordFeelingView = Backbone.View.extend(
     	// Clear Data
 		this.clearInput();
 
-    	// Prep Template
-    	var view_data	= { describe_this: LogFeelingModel.get('experience') };
+    	// Prep Template    	    	
+    	var view_data	= { describe_this: _.shuffle(UIMessages.log_feeling_complete)[0] };
         var template	= _.template($("#record_thanks").html(), view_data);
 
         // Render
@@ -677,12 +688,126 @@ var VisualizeView = Backbone.View.extend(
 {
 	initialize: function()
 	{
-		this.render();
+		this.render();		
 	},
 	render: function()
 	{
 		console.log('VisualizeView');
-	}
+
+    	// Prep Template
+    	var view_data	= { };
+        var template	= _.template($("#visualize_index").html(), view_data);
+        this.$el.html(template).hide().delay(250).fadeIn();	
+
+		$.oauthAjax(
+		{
+			oauth 		: UserData,	
+			url			: base_url + 'api/emoome/analyze/me',
+			type		: 'GET',
+			dataType	: 'json',
+		  	success		: function(result)
+		  	{
+		  		console.log(result);
+
+				// Is Saved
+				if (result.status == 'success')
+				{
+
+					// Update URL & View
+					VisualizeModel.set(result.data);
+					
+					var logs_count	= VisualizeModel.get('logs_raw').length;
+					var logs		= new Array();
+					var total		= 0;
+					var largest		= 0;
+					var percents	= '';
+
+				}
+		  	}			  			
+		});
+	
+	},
+	doLastFive: function()
+	{
+		// Detect Mood
+		//var feeling = renderSentimentHuman(last_five.sentiment, 20);
+		//$('#last_five_feeling').html(feeling);
+	
+		// Create Pie Chart
+		var types 			= VisualizeModel.get('last_five').types;		
+		var types_colors	= new Array();
+		var word_values		= new Array();
+		var word_percents	= new Array();
+	
+		// Build Data Values
+		for (var type in types)
+		{			
+			if (type != 'U')
+			{
+				word_values.push(types[type]);			
+				word_percents.push("%% " + word_types[type]);
+				types_colors.push(type_colors[type]);
+			}
+		}
+		
+		this.renderPieChart("last_five", word_values, word_percents, types_colors);
+	},
+	doAllTime: function()
+	{	
+		// Create Pie Chart
+		var types 			= word_map;		
+		var types_colors	= new Array();
+		var word_values		= new Array();
+		var word_percents	= new Array();
+	
+		// Build Data Values
+		for (var type in types)
+		{			
+			if (type[0] != 'U')
+			{
+				console.log(type[0]);
+			
+				word_values.push(types[type]);			
+				word_percents.push("%% " + type);
+				types_colors.push(type_colors[type[0]]);
+			}
+		}
+	
+		this.renderPieChart("all_time", word_values, word_percents, types_colors);
+	},
+	renderPieChart: function(element, word_values, word_percents, types_colors)
+	{
+	    var r = Raphael(element, 575, 375);
+	    pie = r.piechart(175, 175, 150, word_values,
+	    { 
+	    	colors 	 : types_colors,
+	    	legend	 : word_percents,
+	    	'stroke-width': 1, 'stroke': '#c3c3c3',
+	    	legendpos: "east"
+	    }).attr({"font": "24px 'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-family": "'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-size": 24, "font-weight": 100, "letter-spacing": 2});
+
+	    pie.hover(function()
+	    {	    
+	        this.sector.stop();
+	        this.sector.scale(1.1, 1.1, this.cx, this.cy);
+	
+	        if (this.label) {
+	            this.label[0].stop();
+	            this.label[0].attr({ r : 15 });
+	        }
+	    }, function() 
+	    {	    
+	        this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 1000, "bounce");
+	
+	        if (this.label)
+	        {
+	            this.label[0].animate({ r : 10 }, 750, "bounce");
+	        }
+	    });		
+	
+		return true;	
+	}			
+	
 });
 
 
@@ -703,24 +828,30 @@ var SettingsView = Backbone.View.extend(
     },
     viewNotifications: function()
     {
-    	console.log('inside viewNotifications');
-
     	// Prep Template
     	var view_data	= { describe_this: LogFeelingModel.get('experience') };
         var template	= _.template($("#settings_notifications").html(), view_data);
         this.$el.html(template).hide().delay(250).fadeIn();	    
     },
-    processNotifications: function(e)
+    viewAccount: function()
+    {    
+        var template = _.template($("#settings_account").html(), UserData.attributes);
+        this.$el.html(template).hide().delay(250).fadeIn();		    
+    },
+    viewPassword: function()
     {
-    	e.preventDefault(); 
-    	console.log('inside processNotifications');
+        var template	= _.template($("#settings_password").html());
+        this.$el.html(template).hide().delay(250).fadeIn();		    
+    },    
+    processNotifications: function()
+    {
 		var notifications_data = $('#settings_notifications').serializeArray();
 		notifications_data.push({'name':'module','value':'notifications'});		
 
 		$.oauthAjax(
 		{
-			oauth 		: user_data,
-			url			: base_url + 'api/users/details/id/' + user_data.user_id,
+			oauth 		: UserData,
+			url			: base_url + 'api/users/details/id/' + UserData.get('user_id'),
 			type		: 'POST',
 			dataType	: 'json',
 			data		: notifications_data,
@@ -731,62 +862,93 @@ var SettingsView = Backbone.View.extend(
 		 	}
 		});
     },
-    viewAccount: function()
+    processAccount: function()
     {
-    	console.log('inside viewAccount');
-    
-        var template	= _.template($("#settings_account").html());
-        this.$el.html(template).hide().delay(250).fadeIn();		    
-    },
-    processAccount: function(e)
-    {
-    	e.preventDefault();
-    	console.log('inside processAccount');
-		var account_data = $('#settings_account').serializeArray();
-		account_data.push({'name':'session','value':1});		
-		
-		$.oauthAjax(
+		$.validator(
 		{
-			oauth 		: user_data,
-			url			: base_url + 'api/users/modify/id/' + user_data.user_id,
-			type		: 'POST',
-			dataType	: 'json',
-			data		: account_data,
-			beforeSend	: Lightbox.requestMade('Saving account changes'),			
-	  		success		: function(result)
-	  		{
-		  		Lightbox.requestComplete(result.message, result.status);
-		 	}
-		});    	
-    },    
-    viewPassword: function()
-    {
-    	console.log('inside viewPassword');
+			elements :		
+				[{
+					'selector' 	: '#profile_name', 
+					'rule'		: 'require', 
+					'field'		: 'Name is required',
+					'action'	: 'label'							
+				},{
+					'selector' 	: '#profile_email', 
+					'rule'		: 'email', 
+					'field'		: 'Email is required',
+					'action'	: 'label'							
+				}],
+			message : '',
+			success	: function()
+			{    	
+				var account_data = $('#settings_account').serializeArray();
+				account_data.push({'name':'session','value':1});		
+				
+				$.oauthAjax(
+				{
+					oauth 		: UserData,
+					url			: base_url + 'api/users/modify/id/' + UserData.get('user_id'),
+					type		: 'POST',
+					dataType	: 'json',
+					data		: account_data,
+					beforeSend	: Lightbox.requestMade('Saving account changes'),			
+			  		success		: function(result)
+			  		{
+				  		Lightbox.requestComplete(result.message, result.status);
 
-        var template	= _.template($("#settings_password").html());
-        this.$el.html(template).hide().delay(250).fadeIn();		    
+						UserData.set(result.user);
+				 	}
+				});    	
+			}
+		});
     },
-    processPassword: function(e)
+    processPassword: function()
     {
-    	console.log('inside processPassword');
-		e.preventDefault();
-		$.oauthAjax(
+		$.validator(
 		{
-			oauth 		: user_data,
-			url			: base_url + 'api/users/password',
-			type		: 'POST',
-			dataType	: 'json',
-			data		: $('#settings_change_password').serializeArray(),
-			beforeSend	: Lightbox.requestMade('Changing your password'),
-	  		success		: function(result)
-	  		{
-				// Close Loading
-		  		Lightbox.requestComplete(result.message, result.status);
-			
-			 	$('[name=old_password]').val('');
-			 	$('[name=new_password]').val('');
-			 	$('[name=new_password_confirm]').val('');
-		 	}
+			elements :		
+				[{
+					'selector' 	: '#old_password', 
+					'rule'		: 'required', 
+					'field'		: 'Old Password is required',
+					'action'	: 'label'							
+				},{
+					'selector' 	: '#new_password', 
+					'rule'		: 'required', 
+					'field'		: 'New Password is required',
+					'action'	: 'label'							
+				},{
+					'selector' 	: '#new_password_confirm', 
+					'rule'		: 'confirm', 
+					'field'		: 'Needs to match New Password',
+					'action'	: 'label'					
+				}],
+			message : '',
+			success	: function()
+			{
+				$.oauthAjax(
+				{
+					oauth 		: UserData,
+					url			: base_url + 'api/users/password',
+					type		: 'POST',
+					dataType	: 'json',
+					data		: $('#settings_change_password').serializeArray(),
+					beforeSend	: Lightbox.requestMade('Changing your password'),
+			  		success		: function(result)
+			  		{
+						// Close Loading
+				  		Lightbox.requestComplete(result.message, result.status);
+					
+					 	$('#old_password').val('');
+					 	$('#new_password').val('');
+					 	$('#new_password_confirm').val('');
+				 	}
+				});
+			},
+			failed: function(error)
+			{
+				console.log(error);
+			}
 		});
     },    
     processLogout: function()
@@ -794,7 +956,7 @@ var SettingsView = Backbone.View.extend(
 		// Save To API
 		$.oauthAjax(
 		{
-			oauth 		: user_data,
+			oauth 		: UserData,
 			url			: base_url + 'api/users/logout',
 			type		: 'GET',
 			dataType	: 'json',
