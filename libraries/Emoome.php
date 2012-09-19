@@ -58,10 +58,67 @@ class Emoome
 
 
 	/* Analyze Logs */
-	function analyze_logs()
+	function analyze_logs($logs, $words_link, $details=FALSE)
 	{
+		$analysis				= array();
+		$words					= array();
+		$word_used				= config_item('emoome_word_used');
+		$word_type				= config_item('emoome_word_types');
+		$word_type_sub			= config_item('emoome_word_types_sub');
+		$word_type_count		= config_item('emoome_word_types_count');
+		$word_type_sub_count	= config_item('emoome_word_types_sub_count');
+		$sentiment				= 0;
+		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 
 		
+
+		// Analyze Words
+		foreach ($words_link as $word)
+		{
+			// Type
+			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
+
+			// Type Sub
+			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1;
+			
+			// Sentiment
+			$sentiment += $word->sentiment * $sentiment_normalize[$word->used];
+			
+			// Words
+			if (array_key_exists($word->word, $words))
+			{
+				$words[$word->word] = $words[$word->word] + 1;			
+			}
+			else
+			{
+				$words[$word->word] = 1;
+			}
+			
+		}
 		
+		// Output Type		
+		foreach (array_filter($word_type_count) as $type => $count)
+		{
+		    $type    = $word_type[$type];
+		    $percent = $count; //percent($count, count($words_link));
+		    $analysis['language'][$type] = $percent;
+		}
+		
+		// Output Type Sub
+		foreach (array_filter($word_type_sub_count) as $type_sub => $count)
+		{
+		    $type_sub_word = $word_type_sub[$type_sub];
+		    $analysis['topics'][$type_sub_word] = $word_type_sub_count[$type_sub];
+		}		
+
+		// Output Sentiment
+		$analysis['sentiment']	= $sentiment;
+		
+		// Output Words
+		$analysis['words'] = $words;		
+
+
+		return $analysis;
+
 	}
 	
 	
@@ -78,7 +135,7 @@ class Emoome
 		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 
 
 		// Experience
-		// To be factored out
+		// To be refactored later using words_link
 		$experience_words = $this->ci->words_model->get_words_words(explode(' ', $log->experience));
 		
 		// Analyze Experience
@@ -98,7 +155,7 @@ class Emoome
 		foreach ($log->words as $word)
 		{
 			// Type
-			$word_type_count[$word->type] = $word_type_count[$word->type] + 2;
+			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
 
 			// Type Sub
 			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1;
@@ -109,12 +166,12 @@ class Emoome
 			// Words
 			$words[$word->word] = $word_used[$word->used];
 		}
-		
-		// Output Type		
+
+		// Output Type
 		foreach (array_filter($word_type_count) as $type => $count)
 		{
 		    $type    = $word_type[$type];
-		    $percent = percent($count, 4 + count($experience_words));
+		    $percent = $count; //percent($count, 4 + count($experience_words));
 		    $analysis['language'][$type] = $percent;
 		}
 		

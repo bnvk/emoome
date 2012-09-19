@@ -147,6 +147,30 @@ class Analyze extends Oauth_Controller
 			echo 'Soz, no dice soldier!';
 		}		
 	}
+	
+	function last_five_logs_get()
+	{
+		$last_five_logs = $this->logs_model->get_logs_user(1, 5);
+
+		$logs_ids = array();
+
+		foreach ($last_five_logs as $log)
+		{
+			$logs_ids[] = $log->log_id;	
+		}
+
+		// Words
+		$user_words_link = $this->words_model->get_words_links($logs_ids);
+
+		// Analyze
+		$last_five_analyze = $this->emoome->analyze_logs($last_five_logs, $user_words_link);
+
+		echo '<pre>';
+		//print_r($logs_ids);
+		print_r($last_five_analyze);
+
+
+	}
 
 
 	function time_authd_get()

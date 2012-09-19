@@ -39,15 +39,21 @@ class Logs_model extends CI_Model
 		
 	}
 	
-	function get_logs_user($user_id)
+	function get_logs_user($user_id, $limit=FALSE)
 	{
 		$this->db->select('*');
 		$this->db->from('logs');
 		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
 		$this->db->order_by('logs.created_date', 'desc');
 		$this->db->where('user_id', $user_id);
- 		$result = $this->db->get();
- 		return $result->result();	
+		
+		if ($limit)
+		{
+			$this->db->limit($limit);
+		}
+		
+ 		$logs = $this->db->get()->result();
+ 		return $logs;	
 	}
 
     function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
