@@ -130,8 +130,9 @@ var ApplicationRouter = Backbone.Router.extend(
 				// Is Saved
 				if (result.status == 'success')
 				{
-					// Update URL & View
+					// Update Model & View
 					VisualizeModel.set(result);
+					VisualizeModel.set({ data : 'updated' });
 					
 					console.log(VisualizeModel.attributes);
 
@@ -139,13 +140,13 @@ var ApplicationRouter = Backbone.Router.extend(
 					var total		= 0;
 					var largest		= 0;
 					var percents	= '';
-			
+
 					// Display Title
 					if (VisualizeModel.get('logs_count') > 5 && UserData.get('source') != 'mobile')
 					{
 						$('#visualize_title').fadeIn();
 					}
-				
+
 					// Less or More than 5
 					if (VisualizeModel.get('logs_count') < 5)
 					{
@@ -171,7 +172,6 @@ var ApplicationRouter = Backbone.Router.extend(
 						VisualizeViews.renderCommonWords();
 					}
 
-
 					// More Than 15
 					if (VisualizeModel.get('logs_count') > 15)
 					{						
@@ -180,7 +180,6 @@ var ApplicationRouter = Backbone.Router.extend(
 				}
 		  	}			  			
 		});		
-
 	},
 	settingsViews: function(view)
 	{	

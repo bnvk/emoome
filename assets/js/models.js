@@ -168,10 +168,10 @@ var LogFeelingModel = Backbone.Model.extend({
 // Vizualize Dashboard
 var VisualizeModel = Backbone.Model.extend({
     defaults: {
-		word_map	: {},
-		last_five	: {},
-		words		: {},
-		logs_raw	: {}   
+		last_five			: {},
+		all_time			: {},
+		strong_experiences	: {},
+		data				: 'empty'   
     }
 });
 

@@ -43,7 +43,7 @@ class Analyze extends Oauth_Controller
 				}
 			}
 	
-			// Analyze
+			// Analyze Five
 			$last_five = $this->emoome->analyze_logs($last_five_logs, $this->words_model->get_words_links($logs_ids));
 	
 	
@@ -73,28 +73,9 @@ class Analyze extends Oauth_Controller
 	
 			// COMMON WORDS
 			$common_count		= 0;
-			$common_words		= array();
 			$common_words_count = array();
 			$log_word_types		= array();
-			
-			foreach ($common_words as $count => $words)
-			{
-				if ($common_count <= 7)
-				{
-					$common_count++; 
-				
-					// Was in DIV
-					$count;
-		
-					$word_count = count($words); $i = 1; $comma = ', ';
-					
-					foreach ($words as $word)
-					{
-						$i++; if ($i > $word_count) $comma = ' '; 
-						echo $word.$comma;
-					}
-				}
-			}
+	
 	
 			// Words Link Sort
 			foreach ($words_link as $link)
@@ -119,40 +100,24 @@ class Analyze extends Oauth_Controller
 					$common_words_count[$link->word] =  1;
 				}
 			}
+
+			arsort($common_words_count);
 			
-			// Common Word Count Array (words)
-			foreach ($common_words_count as $word => $count)
-			{
-				if ($count > 1)
-				{	
-					// Word Count is KEY 	
-					if (array_key_exists($count, $common_words))
-					{
-						$common_words[$count][] = $word;
-					}
-					else
-					{
-						$common_words[$count] = array($word); 
-					}
-				}
-			}
-	
-			// Sort Words
-			krsort($common_words);
-			
-			
+		
 			// STRONG EXPERIENCES
 			$experience_count	= 0;
 			$strong_experiences	= array();
 	
+			// Loop through Logs
 			foreach ($user_logs as $log)
 			{
-				// Limit Experiences Shown
+				// Limit # of Experiences to most recent
 				if ($experience_count <= 10)
 				{
 					$log_types	= $log_word_types[$log->log_id];
 					$type_count = array_count_values($log_types);
 	
+					// Check Type count of different Types
 					foreach ($type_count as $count_key => $count_value)
 					{
 						if (($count_value > 2) AND ($count_key != 'U'))
@@ -170,8 +135,8 @@ class Analyze extends Oauth_Controller
 						}
 					}	
 				}
-			}		
-			
+			}
+
 
 			// OUTPUT DATA
 			$message = array(
@@ -181,9 +146,9 @@ class Analyze extends Oauth_Controller
 				'last_five'				=> $last_five,
 				'all_time'				=> array(
 					'language' 			=> $all_time_json,
-					'language_total'	=> array_sum($all_time_json)
+					'language_total'	=> array_sum($all_time_json),
+					'words'				=> $common_words_count
 				),
-				'common_words'			=> $common_words,			
 				'strong_experiences'	=> $strong_experiences
 			);
 		}

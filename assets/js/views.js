@@ -420,12 +420,11 @@ var RecordFeelingView = Backbone.View.extend(
         var template = _.template($("#record_feeling").html());
         this.$el.html(template).hide().delay(250).fadeIn();
 
-
 		// Emoticons
 		var emoticons 		= '';
-		var emoticons_width	= 65;
+		var emoticons_width	= 65;	
 	
-		$.each(core_emotions, function(key, value)
+		$.each(EmoomeValues.core_emotions, function(key, value)
 		{
 			emoticons += '<div class="emoticon_item"><img data-feeling="' + value + '" src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + value + '.png"><span>' + value + '</span></div>';
 			emoticons_width += 465;
@@ -761,22 +760,33 @@ var VisualizeView = Backbone.View.extend(
 	{
 		$visualize_common_words = $('#visualize_common_words');
 
-		var word_count		= 0;
-		var common_words	= VisualizeModel.get('common_words');
+		var word_count_row	= 0;
+		var common_words	= VisualizeModel.get('all_time').words;
 
-		$.each(common_words, function(count, word_array)
+		$.each(common_words, function(word, count)
 		{
-			if (word_count < 8)
+			console.log(word);
+		
+			if (word_count_row < 10)
 			{
-				// Create HTML Row
-				$visualize_common_words.append('<div class="common_words">\
-					<div class="common_words_count">' + count + '</div>\
-					<div class="common_words_words">' + word_array.join(', ') + '</div>\
-					<div class="clear"></div>\
-				</div>\
-				<div class="common_words_line"></div>');
-
-				word_count++;
+				if ($('#word_count_' +  count).length)
+				{
+				
+				
+					$('#word_count_' + count + '_words').append(', ' + word);
+				}
+				else
+				{
+					// Create HTML Row
+					$visualize_common_words.append('<div id="word_count_' + count + '" class="common_words">\
+						<div class="common_words_count">' + count + '</div>\
+						<div id="word_count_' + count + '_words" class="common_words_words">' + word + '</div>\
+						<div class="clear"></div>\
+					</div>\
+					<div class="common_words_line"></div>');
+	
+					word_count_row++;
+				}
 			}
 		});
 
