@@ -58,6 +58,13 @@ class Emoome
 
 
 	/* Analyze Logs */
+	function analyze_logs()
+	{
+		
+		
+	}
+	
+	
 	function analyze_log($log, $details=FALSE)
 	{
 		$analysis				= array();
@@ -71,6 +78,7 @@ class Emoome
 		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 
 
 		// Experience
+		// To be factored out
 		$experience_words = $this->ci->words_model->get_words_words(explode(' ', $log->experience));
 		
 		// Analyze Experience

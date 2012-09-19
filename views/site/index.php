@@ -320,7 +320,7 @@
 
 <script type="text/template" id="visualize_index">
 
-	<h1 id="visualize_title" class="hide">Visualize : Your Language</h1>
+	<h1 id="visualize_title">Visualize : Your Language</h1>
 	<div id="visualize_language" class="hide">
 	
 		<div id="visualize_last_five">
@@ -547,6 +547,7 @@ $(document).ready(function()
 
 	// History
 	Backbone.history.start();
+
 
 	// Bad Language Hide
 	/*

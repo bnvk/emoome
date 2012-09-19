@@ -129,26 +129,21 @@ var AuthView = Backbone.View.extend(
     },
     viewLogin: function()
     {
-    	// Load View
         var template = _.template($("#login").html());
         this.$el.html(template).hide().delay(250).fadeIn();	    
     },
     viewSignup: function()
     {
-    	// Load View
         var template = _.template($("#signup").html());
         this.$el.html(template).hide().delay(250).fadeIn();	    
     },
     viewForgotPassword: function()
     {
-    	// Load View
         var template = _.template($("#forgot_password").html());
         this.$el.html(template).hide().delay(250).fadeIn();
     },
 	processLogin: function()
-	{
-		console.log('here processLogin');
-	
+	{	
 		$.validator(
 		{
 			elements :
@@ -198,15 +193,7 @@ var AuthView = Backbone.View.extend(
 						}
 				 	}
 				});
-			},
-			failed: function(data)
-			{
-				console.log(data);
-				
 			}
-			
-			
-			
 		});		
 	},
 	processSignup: function()
@@ -408,7 +395,7 @@ var RecordFeelingView = Backbone.View.extend(
 
 			$('#log_feeling_use_' + value).addClass('icon_small_' + value);
 	    });
-	    
+
 	    // Do Control Buttons
 	    $('div.left_control_links').removeClass('icon_small_text_select icon_small_emoticons_select icon_small_audio_select');
 	    $('#log_feeling_use_' + type).removeClass('icon_small_' + type).addClass('icon_small_' +  type + '_select');
@@ -692,47 +679,12 @@ var VisualizeView = Backbone.View.extend(
 	},
 	render: function()
 	{
-		console.log('VisualizeView');
-
-    	// Prep Template
-    	var view_data	= { };
+    	var view_data	= {};
         var template	= _.template($("#visualize_index").html(), view_data);
-        this.$el.html(template).hide().delay(250).fadeIn();	
-
-		$.oauthAjax(
-		{
-			oauth 		: UserData,	
-			url			: base_url + 'api/emoome/analyze/me',
-			type		: 'GET',
-			dataType	: 'json',
-		  	success		: function(result)
-		  	{
-		  		console.log(result);
-
-				// Is Saved
-				if (result.status == 'success')
-				{
-
-					// Update URL & View
-					VisualizeModel.set(result.data);
-					
-					var logs_count	= VisualizeModel.get('logs_raw').length;
-					var logs		= new Array();
-					var total		= 0;
-					var largest		= 0;
-					var percents	= '';
-
-				}
-		  	}			  			
-		});
-	
+        this.$el.html(template).hide().delay(250).fadeIn();		
 	},
 	doLastFive: function()
-	{
-		// Detect Mood
-		//var feeling = renderSentimentHuman(last_five.sentiment, 20);
-		//$('#last_five_feeling').html(feeling);
-	
+	{	
 		// Create Pie Chart
 		var types 			= VisualizeModel.get('last_five').types;		
 		var types_colors	= new Array();
@@ -755,7 +707,7 @@ var VisualizeView = Backbone.View.extend(
 	doAllTime: function()
 	{	
 		// Create Pie Chart
-		var types 			= word_map;		
+		var types 			= VisualizeModel.get('word_map');		
 		var types_colors	= new Array();
 		var word_values		= new Array();
 		var word_percents	= new Array();
@@ -765,8 +717,7 @@ var VisualizeView = Backbone.View.extend(
 		{			
 			if (type[0] != 'U')
 			{
-				console.log(type[0]);
-			
+				//console.log(type[0]);
 				word_values.push(types[type]);			
 				word_percents.push("%% " + type);
 				types_colors.push(type_colors[type[0]]);
@@ -806,7 +757,63 @@ var VisualizeView = Backbone.View.extend(
 	    });		
 	
 		return true;	
-	}			
+	},
+	renderCommonLanguage: function()
+	{
+		$('#visualize_common').delay(750).fadeIn();
+	},
+	renderStrongExperiences: function()
+	{		
+		// Make Strong Experiences
+		$strong_experiences	= $('#strong_experiences');
+		
+		var experience_count=0;
+		
+		// Loop Logs	
+		for (var log in VisualizeModel.get('logs_raw'))
+		{
+			// Limit Experiences Shown
+			if (experience_count < 10)
+			{
+				var log_id = logs_raw[log].log_id;		
+				
+				if (log_id !== undefined)
+				{		
+					for (var type in word_types)
+					{		
+						// Dont Show Undecided
+						if (type != 'U')
+						{
+							var type_count 	= countElementsArray(type, words[log_id]);
+			
+							if (type_count > 2)
+							{
+								var color	= type_colors[type];
+								var size	= type_count * visualization_sizes[user_data.source].circle_strong_experiences;
+								var svg_size= 8 * visualization_sizes[user_data.source].circle_strong_experiences;
+								var position= svg_size / 2;
+			
+								$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_experience">"' + logs_raw[log].experience + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+			
+							    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), svg_size, svg_size);
+								paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+							
+								experience_count++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		$('#visualize_experiences').delay(1000).fadeIn();
+		
+		// Show Experience Link (if not Mobile)
+		if (UserData.get('source') != 'mobile')
+		{
+			$('#your_experiences').fadeIn();
+		}				
+	}	
 	
 });
 

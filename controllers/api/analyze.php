@@ -15,14 +15,14 @@ class Analyze extends Oauth_Controller
     	$this->form_validation->set_error_delimiters('', '');        
 	}
 
-	function me_authd_get()
+	function me_get()
 	{
-		$person				= $this->social_auth->get_user('user_id', $this->oauth_user_id);
-		$person_meta		= $this->social_auth->get_user_meta($this->oauth_user_id);
-		$log_count			= $this->logs_model->count_logs_user($this->oauth_user_id);
-		$user_logs			= $this->logs_model->get_logs_user($this->oauth_user_id);
-		$words_link			= $this->words_model->get_words_links_user($this->oauth_user_id);
-		$last_five			= $this->emoome_model->get_user_most_recent($this->oauth_user_id, 5);
+		$person				= $this->social_auth->get_user('user_id', 1);
+		$person_meta		= $this->social_auth->get_user_meta(1);
+		$log_count			= $this->logs_model->count_logs_user(1);
+		$user_logs			= $this->logs_model->get_logs_user(1);
+		$words_link			= $this->words_model->get_words_links_user(1);
+		$last_five			= $this->emoome_model->get_user_most_recent(1, 5);
 
 		$word_map			= '';
 		$common_words		= array();
@@ -46,7 +46,34 @@ class Analyze extends Oauth_Controller
 			$word_map = json_encode(array());
 		}
 
-		// Check Popular Words & Strong Logs
+
+
+
+		// Common Words
+		$common_count=0;
+		
+		foreach ($common_words as $count => $words)
+		{
+			if ($common_count <= 7)
+			{
+				$common_count++; 
+			
+				// Was in DIV
+				$count;
+	
+				$word_count = count($words); $i = 1; $comma = ', ';
+				
+				foreach ($words as $word)
+				{
+					$i++; if ($i > $word_count) $comma = ' '; 
+					echo $word.$comma;
+				}
+			}
+		}
+
+		
+
+		// Strong Experiences
 		foreach ($words_link as $link)
 		{
 			// Build Word Types
@@ -89,18 +116,19 @@ class Analyze extends Oauth_Controller
 		// Sort Words
 		krsort($common_words);
 
-		$dashboard = array(
+		// Output Data
+		$message = array(
+			'status' 		=> 'success', 
+			'message' 		=> 'Yay found your logs', 
 			'word_map' 		=> $word_map,
-			'word_map'		=> $word_map,
-			'last_five'		=> json_encode($last_five),
+			'last_five'		=> $last_five,
 			'common_words'	=> $common_words,
-			'logs'			=> json_encode($user_logs),
-			'word_links'	=> json_encode($log_word_types)
 		);
-		
-		$message = array('status' => 'success', 'message' => 'Yay found your logs', 'data' => $dashboard);
 
-        $this->response($message, 200);
+		echo '<pre>';
+		print_r($message);
+
+        //$this->response($message, 200);
 	}
 	
 

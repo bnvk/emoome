@@ -55,18 +55,17 @@
 		
 		OAuth.setTimestampAndNonce(message);
 		OAuth.SignatureMethod.sign(message, accessor);
-		
+
 		var oldBeforeSend = settings.beforeSend;
 		settings.beforeSend = function(xhr)
 		{
 			xhr.setRequestHeader("Authorization", OAuth.getAuthorizationHeader("", message.parameters))
 			if (oldBeforeSend) oldBeforeSend(xhr);
 		};
-	
+
 		jQuery.ajax(settings);
 	};
 })(jQuery);
-
 
 
 /* Contents of sha1.js 

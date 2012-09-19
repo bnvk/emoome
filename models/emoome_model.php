@@ -83,11 +83,12 @@ class Emoome_model extends CI_Model
 		$this->db->order_by('logs.created_date', 'desc');
 		$this->db->where('logs.user_id', $user_id);
 		$this->db->limit($limit);
- 		$result 	= $this->db->get();
- 		$logs		= $result->result();
- 		$log_ids 	= array();
-	 	$types		= config_item('emoome_word_types_count');
- 	 	$sentiment	= 0;
+ 		$result 		= $this->db->get();
+ 		$logs			= $result->result();
+ 		$log_ids 		= array();
+	 	$types			= config_item('emoome_word_types');
+	 	$types_count	= config_item('emoome_word_types_count');
+ 	 	$sentiment		= 0;
 
  		if ($logs)
  		{
@@ -110,13 +111,16 @@ class Emoome_model extends CI_Model
 	 		{
 	 			$this_words = array();
 	 			$this_feeling	= '';
-	 		
+
+	 			// Loop Words
 	 			foreach ($words as $word)
 	 			{
 		 			if ($log->log_id == $word->log_id)
-		 			{			 			
+		 			{		
 			 			// Type
-			 			$types[$word->type] = $types[$word->type] + 1;
+			 			$this_type = $types[$word->type];
+			 			
+			 			$types[$word->type] = $types_count[$word->type] + 1;
 			 			
 			 			// Sentiment
 			 			$sentiment = ($sentiment + $word->sentiment);

@@ -17,10 +17,6 @@ var ApplicationRouter = Backbone.Router.extend(
 		this.recordIndex			= new ContentView('#record');
 		this.recordFeeling			= new RecordFeelingView({ el: $('#container') });
 
-		// Visualize Views
-		this.visualizeIndex			= new ContentView('#visualize');
-		this.visualizeViews			= new VisualizeView({ el: $('#container')});
-
 		// Settings Views
 		this.settingsIndex			= new ContentView('#settings');
 		this.settingsViews			= new SettingsView({ el: $('#container')});
@@ -118,64 +114,99 @@ var ApplicationRouter = Backbone.Router.extend(
 	},
 	visualizeViews: function(view)
 	{
-		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true); 
+		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true);
 
-		var logs_count	= VisualizeModel.get('logs_raw').length;
+		// Visualize Views
+		VisualizeIndex = new ContentView('#visualize');
 
-		// Display Title
-		if (logs_count > 5 && UserData.get('source') != 'mobile')
+		$.oauthAjax(
 		{
-			$('#visualize_title').fadeIn();
-		}
-	
-		// Display Visualizations by log_count
-		if (logs_count < 5)
-		{
-			$('#logs_needed_count').html(5 - logs_count);
-			$('#visualize_waiting').fadeIn('slow');
-		}
-		else if (logs_count < 10)
-		{
-			$('#visualize_language').fadeIn();
-	
-			//doWordTypes();
-			this.visualizeViews.doLastFive();
-		}
-		else if (logs_count < 15)
-		{		
-			$('#visualize_language').fadeIn();
-	
-			//doWordTypes();
-			this.visualizeViews.doLastFive();
-			this.visualizeViews.doAllTime();
-			visualizeViews.doCommonLanguage();
-	
-			if (UserData.get('source') != 'mobile')
-			{
-				$('#your_language_map').fadeIn();
-			}
-		}
-		else
-		{
-			$('#visualize_language').fadeIn();
-	
-			//doWordTypes();
-			this.visualizeViews.doLastFive();
-			this.visualizeViews.doAllTime();
-			this.visualizeViews.doCommonLanguage();
-			this.visualizeViews.doStrongExperiences();
-	
-			if (UserData.get('source') != 'mobile')
-			{
-				$('#your_language_map').fadeIn();
-			}
-		}
+			oauth 		: UserData,	
+			url			: base_url + 'api/emoome/analyze/me',
+			type		: 'GET',
+			dataType	: 'json',
+		  	success		: function(result)
+		  	{
+		  		// Instantiate Views
+				VisualizeViews = new VisualizeView({ el: $('#container')});
+
+				// Is Saved
+				if (result.status == 'success')
+				{
+					// Update URL & View
+					VisualizeModel.set(result);
+					
+					console.log(VisualizeModel.attributes);
+
+
+					var logs_count	= VisualizeModel.get('logs_raw').length;
+					var logs		= new Array();
+					var total		= 0;
+					var largest		= 0;
+					var percents	= '';
+										
+			
+					// Display Title
+					if (logs_count > 5 && UserData.get('source') != 'mobile')
+					{
+						$('#visualize_title').fadeIn();
+					}
+				
+					// Display Visualizations by log_count
+					if (logs_count < 5)
+					{
+						$('#logs_needed_count').html(5 - logs_count);
+						$('#visualize_waiting').fadeIn('slow');
+					}
+					else if (logs_count < 10)
+					{
+						$('#visualize_language').fadeIn();
+				
+						//doWordTypes();
+						VisualizeViews.doLastFive();
+					}
+					else if (logs_count < 15)
+					{		
+						$('#visualize_language').fadeIn();
+				
+						//doWordTypes();
+						VisualizeViews.doLastFive();
+						VisualizeViews.doAllTime();
+						VisualizeViews.renderCommonLanguage();
+				
+						if (UserData.get('source') != 'mobile')
+						{
+							$('#your_language_map').fadeIn();
+						}
+					}
+					else
+					{
+						$('#visualize_language').fadeIn();
+				
+						//doWordTypes();
+						VisualizeViews.doLastFive();
+						VisualizeViews.doAllTime();
+						VisualizeViews.renderCommonLanguage();
+						VisualizeViews.renderStrongExperiences();
+				
+						if (UserData.get('source') != 'mobile')
+						{
+							$('#your_language_map').fadeIn();
+						}
+					}						
+					
+				}
+		  	}			  			
+		});
+		
 		
 		// View
+/*
 		if (view == undefined)	
-			this.switchView(this.visualizeIndex);
+			this.switchView(VisualizeIndex);
 		else
 			this.switchView(this.notFoundView);	
+*/
 	},
 	settingsViews: function(view)
 	{	
