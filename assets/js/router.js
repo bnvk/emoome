@@ -30,8 +30,8 @@ var ApplicationRouter = Backbone.Router.extend(
 		"logged/:destination"	: "logged",
 		"record"				: "recordViews",
 		"record/:view"			: "recordViews",
-		"visualize"				: "visualizeViews",
-		"visualize/:view"		: "visualizeViews",
+		"visualize"				: "visualize",
+		"visualize/language"	: "visualizeLanguage",
 		"settings"				: "settingsViews",
 		"settings/:view"		: "settingsViews"
 	},
@@ -112,74 +112,70 @@ var ApplicationRouter = Backbone.Router.extend(
 		else
 			this.switchView(this.notFoundView);
 	},
-	visualizeViews: function(view)
+	visualize: function(view)
 	{
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true);
 
-		$.oauthAjax(
+		// Get / Render Visualize
+		if (VisualizeModel.get('data') != 'updated')
 		{
-			oauth 		: UserData,	
-			url			: base_url + 'api/emoome/analyze/me',
-			type		: 'GET',
-			dataType	: 'json',
-		  	success		: function(result)
-		  	{
-		  		// Instantiate Views
-				VisualizeViews = new VisualizeView({ el: $('#container')});
-
-				// Is Saved
-				if (result.status == 'success')
-				{
-					// Update Model & View
-					VisualizeModel.set(result);
-					VisualizeModel.set({ data : 'updated' });
-					
-					console.log(VisualizeModel.attributes);
-
-					var logs		= new Array();
-					var total		= 0;
-					var largest		= 0;
-					var percents	= '';
-
-					// Display Title
-					if (VisualizeModel.get('logs_count') > 5 && UserData.get('source') != 'mobile')
+			$.oauthAjax(
+			{
+				oauth 		: UserData,	
+				url			: base_url + 'api/emoome/analyze/me',
+				type		: 'GET',
+				dataType	: 'json',
+			  	success		: function(result)
+			  	{
+					// Is Saved
+					if (result.status == 'success')
 					{
-						$('#visualize_title').fadeIn();
+						// Update Model
+						VisualizeModel.set(result);
+						VisualizeModel.set({ data : 'updated' });
+	
+						// Render View
+						VisualizeViews = new VisualizeView({ el: $('#container')});
 					}
+			  	}			  			
+			});
+		}
+		else
+		{
+			VisualizeViews = new VisualizeView({ el: $('#container')});			
+		}	
+	},
+	visualizeLanguage: function()
+	{
+		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true);
 
-					// Less or More than 5
-					if (VisualizeModel.get('logs_count') < 5)
-					{
-						$('#logs_needed_count').html(5 - VisualizeModel.get('logs_count'));
-						$('#visualize_waiting').fadeIn('slow');
-					}
-					else
-					{
-						$('#visualize_language').fadeIn();
-						VisualizeViews.renderLastFive();
-					}
+		// Instantiate Views
+		VisualizeLanguage = new VisualizeLanguageView({ el: $('#container')});
 
-					// More Than 10
-					if (VisualizeModel.get('logs_count') > 10)
-					{
-						// Show Language Map Link
-						if (UserData.get('source') != 'mobile')
-						{
-							$('#your_language_map').fadeIn();
-						}
-					
-						VisualizeViews.renderAllTime();
-						VisualizeViews.renderCommonWords();
-					}
-
-					// More Than 15
-					if (VisualizeModel.get('logs_count') > 15)
-					{						
-						VisualizeViews.renderStrongExperiences();
-					}
-				}
-		  	}			  			
-		});		
+		// Get / Render Visualize Language		
+		if (VisualizeLanguageModel.get('data') != 'updated')
+		{		
+			$.oauthAjax(
+			{
+				oauth 		: UserData,
+				url			: base_url + 'api/emoome/logs/user/id/' + UserData.get('user_id'),
+				type		: 'GET',
+				dataType	: 'json',
+			  	success		: function(result)
+			  	{	
+					// Update Model
+					VisualizeLanguageModel.set(result);
+					VisualizeLanguageModel.set({ data : 'updated' });
+		
+					// Render View
+					VisualizeLanguage.renderLanguage();
+			  	}
+			});
+		}
+		else
+		{				
+			VisualizeLanguage.renderLanguage();
+		}
 	},
 	settingsViews: function(view)
 	{	

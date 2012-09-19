@@ -347,7 +347,6 @@ var AuthView = Backbone.View.extend(
 						Backbone.history.navigate('#/login', true); 
 			  		}
 			  	});
-			
 			}
 		});		
 	}
@@ -680,7 +679,44 @@ var VisualizeView = Backbone.View.extend(
 	{
     	var view_data	= {};
         var template	= _.template($("#visualize").html(), view_data);
-        this.$el.html(template).hide().delay(250).fadeIn();		
+        this.$el.html(template).hide().delay(250).fadeIn();
+        
+		// Display Title
+		if (VisualizeModel.get('logs_count') > 5 && UserData.get('source') != 'mobile')
+		{
+			$('#visualize_title').fadeIn();
+		}
+
+		// Less or More than 5
+		if (VisualizeModel.get('logs_count') < 5)
+		{
+			$('#logs_needed_count').html(5 - VisualizeModel.get('logs_count'));
+			$('#visualize_waiting').fadeIn('slow');
+		}
+		else
+		{
+			$('#visualize_summary').fadeIn();
+			this.renderLastFive();
+		}
+
+		// More Than 10
+		if (VisualizeModel.get('logs_count') > 10)
+		{
+			// Show Language Map Link
+			if (UserData.get('source') != 'mobile')
+			{
+				$('#your_language_map').fadeIn();
+			}
+		
+			this.renderAllTime();
+			this.renderCommonWords();
+		}
+
+		// More Than 15
+		if (VisualizeModel.get('logs_count') > 15)
+		{						
+			this.renderStrongExperiences();
+		}
 	},
 	renderLastFive: function()
 	{	
@@ -764,15 +800,12 @@ var VisualizeView = Backbone.View.extend(
 		var common_words	= VisualizeModel.get('all_time').words;
 
 		$.each(common_words, function(word, count)
-		{
-			console.log(word);
-		
+		{		
 			if (word_count_row < 10)
 			{
 				if ($('#word_count_' +  count).length)
-				{
-				
-				
+				{		
+					// Add Word To Row		
 					$('#word_count_' + count + '_words').append(', ' + word);
 				}
 				else
@@ -812,7 +845,141 @@ var VisualizeView = Backbone.View.extend(
 		});
 
 		$('#visualize_experiences').delay(1000).fadeIn();				
-	}	
+	}
+});
+
+var VisualizeLanguageView = Backbone.View.extend(
+{
+	initialize: function()
+	{
+		this.render();		
+	},
+	render: function()
+	{	
+        var template = _.template($("#visualize_language").html());
+        this.$el.html(template).hide().delay(250).fadeIn();		
+	},
+	renderLanguage: function()
+	{	
+		var circle_x 	= 0;
+		var circle_y	= 0;
+		var circle_size	= 10;
+		var height		= 40;
+		var logs		= {}
+		var words		= {}
+		var canvas_width= 0;
+		var color_height= {};
+		var logs_data	= VisualizeLanguageModel.get('logs');
+		var words_data	= VisualizeLanguageModel.get('words')
+
+		// Group Words By Logs
+		for (link in words_data)
+		{
+			if (words[words_data[link].log_id] === undefined)
+			{			
+				words[words_data[link].log_id] = new Array(words_data[link].type);  								
+			}
+			else
+			{
+				words[words_data[link].log_id].push(words_data[link].type);
+			}
+		}
+
+		// Group Logs
+		for (log in logs_data)
+		{
+			logs[logs_data[log].log_id] = {
+				"created_date": logs_data[log].created_date,
+				"experience": logs_data[log].experience
+			};
+		}
+
+		// Do Color Key
+  		for (color in EmoomeValues.type_colors)
+  		{
+  			// Dont Show Undecided
+  			if (color != 'U')
+  			{
+  				var color_swatch = '<div class="type_swatch"><div class="color_swatch" style="background:' + EmoomeValues.type_colors[color] + '"></div>' + color + '</div>';
+  				$('#user_word_colors').append(color_swatch);
+  			}
+  		}	  		
+  		
+  		// Do Color Height
+  		for (type in EmoomeValues.word_types)
+  		{	
+			color_height[type] = height;
+			height = height + 100;
+		}
+		
+		$word_map_container = $('#user_word_map');
+		var set_width = 80 -125;
+
+		// Loop Groups of Types			
+  		$.each(words, function(log_id, value)
+  		{	  		
+  			circle_x = circle_x + 40;			
+
+			if (log_id !== 'undefined')
+			{
+				// Make Container
+				set_width = set_width + 80;
+				
+				if (jQuery.inArray('U', value) < 0)
+				{
+					$word_map_container.append('<div class="word_map_column" data-experience="' + logs[log_id].experience + '" data-created_date="' + logs[log_id].created_date + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
+	
+					// Make Paper
+				    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
+					
+		  			// Do 4 Types
+					for (type in EmoomeValues.word_types)
+					{					
+						if (type != 'U')
+						{	
+							var this_type	= EmoomeValues.word_types[type];
+							var color 		= EmoomeValues.type_colors[this_type];
+							var circle_y	= color_height[type];
+							var size 		= circle_size * countElementsArray(type, value);
+							
+							if (size > 0)
+							{
+								//console.log(log_id + ' type: ' + type + ' color: ' + color + ' size: ' + size + ' circle_x: ' + circle_x + ' circle_y: ' + circle_y);						
+								paper.circle(40, circle_y, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);				        
+							}
+						}
+					}					
+				}
+			}
+  		});
+
+  		// Size Containers
+  		var new_width = $('#user_word_map').width() + 180;
+  		$('#user_word_map').width(new_width);
+
+		// Do ToolTips
+		$('.word_map_column').qtip({
+			content: {
+				text: function(api) {
+					return $(this).data('experience') + ' <span>' + mysqlDateParser($(this).data('created_date')).date('short') + '</span>';
+				}
+			},
+			position: {
+				my: 'top left',
+				target: 'mouse',
+				viewport: $(window), // Keep it on-screen at all times if possible
+				adjust: {
+					x: 10,  y: 10
+				}
+			},
+			hide: {
+				fixed: true // Helps to prevent the tooltip from hiding ocassionally when tracking!-
+			},
+			style: {
+				classes: 'ui-tooltip-tipsy'
+			}				
+		});		
+	}
 });
 
 
@@ -949,10 +1116,6 @@ var SettingsView = Backbone.View.extend(
 					 	$('#new_password_confirm').val('');
 				 	}
 				});
-			},
-			failed: function(error)
-			{
-				console.log(error);
 			}
 		});
     },    

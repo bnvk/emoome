@@ -168,9 +168,21 @@ var LogFeelingModel = Backbone.Model.extend({
 // Vizualize Dashboard
 var VisualizeModel = Backbone.Model.extend({
     defaults: {
+    	status				: 'error',
+    	message				: 'No data loaded yet',
 		last_five			: {},
 		all_time			: {},
 		strong_experiences	: {},
+		data				: 'empty'   
+    }
+});
+
+var VisualizeLanguageModel = Backbone.Model.extend({
+    defaults: {
+    	status				: 'error',
+    	message				: 'No data loaded yet',
+		logs				: {},
+		words				: {},
 		data				: 'empty'   
     }
 });
@@ -181,4 +193,5 @@ var EmoomeValues	= new EmoomeValues();
 var UIMessages		= new UIMessages();
 var LogFeelingModel = new LogFeelingModel();
 var VisualizeModel	= new VisualizeModel();
+var VisualizeLanguageModel = new VisualizeLanguageModel();
 

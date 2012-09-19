@@ -308,7 +308,6 @@
 
 <!-- Visualize Views -->
 <script type="text/template" id="visualize">
-
 	<div id="visualize_waiting" class="content_center text_center hide">
 		<h1>We are computing your emotions</h1>
 		<div id="logs_needed">
@@ -317,39 +316,34 @@
 			<p>More feelings before you can visualize</p>
 		</div>
 	</div>
-
-
-	<h1 id="visualize_title">Your Language</h1>
-	<div id="visualize_language" class="hide">
-	
+	<div id="visualize_summary" class="hide">
 		<div id="visualize_last_five">
-			<h3>Last Five Entries</h3>
+			<h2>Last Five Entries</h2>
 			<div id="last_five"></div>
 		</div>
-	
 		<div id="visualize_all_time">
-			<h3>All Entries</h3>
+			<h2>All Entries</h2>
 			<div id="all_time"></div>
 		</div>
-	
 		<div class="clear"></div>
-		<p id="your_language_map" class="hide"><a class="button" href="#/visualize/map">Your Language Map</a></p>
-	
+		<p id="your_language_map" class="hide"><a href="#/visualize/language" class="button">Your Language Map</a></p>
 	</div>
-
-
 	<div id="visualize_common" class="hide">
 		<h2>Common Words & Feelings</h2>
 		<div id="visualize_common_words"></div>
 	</div>
-
-
 	<div id="visualize_experiences" class="hide">
 		<h2>Strong Experiences</h2>
 		<div id="strong_experiences"></div>
 	</div>
+</script>
 
-
+<script type="text/template" id="visualize_language">
+	<h1>Language Map</h1>	
+	<div id="user_word_container">
+		<div id="user_word_map"><div id="user_word_colors"></div></div>
+		<div class="clear"></div>
+	</div>
 </script>
 
 
@@ -541,7 +535,6 @@ $(document).ready(function()
 
 	// History
 	Backbone.history.start();
-
 
 	// Bad Language Hide
 	/*
