@@ -340,12 +340,7 @@
 
 	<div id="visualize_common" class="hide">
 		<h2>Common Words & Feelings</h2>
-		<div class="common_words">
-			<div class="common_words_count"></div>
-			<div class="common_words_words"></div>
-			<div class="clear"></div>
-		</div>
-		<div class="common_words_line"></div>
+		<div id="visualize_common_words"></div>
 	</div>
 
 

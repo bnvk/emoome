@@ -17,6 +17,8 @@ class Analyze extends Oauth_Controller
 
 	function me_authd_get()
 	{
+		$word_types = config_item('emoome_word_types');
+	
 		// QUERIES
 		if ($user_logs = $this->logs_model->get_logs_user($this->oauth_user_id))
 		{
@@ -70,7 +72,7 @@ class Analyze extends Oauth_Controller
 	
 	
 			// COMMON WORDS
-			$common_count=0;
+			$common_count		= 0;
 			$common_words		= array();
 			$common_words_count = array();
 			$log_word_types		= array();
@@ -146,21 +148,22 @@ class Analyze extends Oauth_Controller
 			foreach ($user_logs as $log)
 			{
 				// Limit Experiences Shown
-				if ($experience_count <= 15)
+				if ($experience_count <= 10)
 				{
 					$log_types	= $log_word_types[$log->log_id];
 					$type_count = array_count_values($log_types);
 	
 					foreach ($type_count as $count_key => $count_value)
 					{
-						if ($count_value > 2)
+						if (($count_value > 2) AND ($count_key != 'U'))
 						{
 							$strong_experiences[] = array(
+								'log_id'		=> $log->log_id,
 								'experience'	=> $log->experience,
 								'date'			=> $log->created_date,
 								'time'			=> $log->created_time,
-								'type'			=> $count_key,
-								'value'			=> $count_value
+								'type'			=> $word_types[$count_key],
+								'count'			=> $count_value
 							);
 	
 							$experience_count++;

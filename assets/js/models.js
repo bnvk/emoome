@@ -3,33 +3,33 @@ var EmoomeValues = Backbone.Model.extend({
 	type_colors	: {
 		"emotional": "#ff0000",
 		"intellectual": "#142bd7",
-		"descriptor": "#dcca07",
+		"descriptive": "#dcca07",
 		"sensory": "#0aa80e",
 		"action": "#ee9700",
 		"physical": "#cf00ee",
 		"undecided": "#c3c3c3"
 	},
 	word_types : {
-		"E":"Emotional",
-		"I":"Intellectual",
-		"D":"Descriptive",
-		"S":"Sensory",
-		"A":"Action",
-		"P":"Physical",
-		"U":"Undecided"
+		"E":"emotional",
+		"I":"intellectual",
+		"D":"descriptive",
+		"S":"sensory",
+		"A":"action",
+		"P":"physical",
+		"U":"undecided"
 	},
 	types_count : {
 		"E":0,"I":0,"D":0,"S":0,"A":0,"P":0,"U":0
 	},
 	word_types_sub : {
-		"M":"Moral",
-		"S":"Slang",
-		"P":"Perception",
-		"Y":"Psychological",
-		"L":"Feeling",
-		"F":"Food",
-		"C":"Common",
-		"U":"Undecided"
+		"M":"moral",
+		"S":"slang",
+		"P":"perception",
+		"Y":"psychological",
+		"L":"feeling",
+		"F":"food",
+		"C":"common",
+		"U":"undecided"
 	},
 	types_sub_count	: {
 		"M":0,"S":0,"P":0,"Y":0,"L":0,"F":0,"C":0
@@ -57,24 +57,22 @@ var EmoomeValues = Backbone.Model.extend({
 		"-9":"loathing",
 		"-10":"anger",
 		"-11":"rage"
-	}
+	},
+	visualization_sizes : {
+		"mobile" : {
+			"circle_word_types" : 50,
+			"circle_strong_experiences" : 5
+		},
+		"tablet" : {
+			"circle_word_types" : 75,
+			"circle_strong_experiences" : 10
+		},
+		"web" : {
+			"circle_word_types"	: 100,
+			"circle_strong_experiences" : 10
+		}
+	} 	
 });
-
-/* Device Size */
-var visualization_sizes = {
-	"mobile" : {
-		"circle_word_types" : 50,
-		"circle_strong_experiences" : 5
-	},
-	"tablet" : {
-		"circle_word_types" : 75,
-		"circle_strong_experiences" : 10
-	},
-	"web" : {
-		"circle_word_types"	: 100,
-		"circle_strong_experiences" : 10
-	}
-} 
 
 
 

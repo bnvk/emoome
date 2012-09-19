@@ -759,38 +759,50 @@ var VisualizeView = Backbone.View.extend(
 	},
 	renderCommonWords: function()
 	{
-		$('#visualize_common').delay(750).fadeIn();
+		$visualize_common_words = $('#visualize_common_words');
+
+		var word_count		= 0;
+		var common_words	= VisualizeModel.get('common_words');
+
+		$.each(common_words, function(count, word_array)
+		{
+			if (word_count < 8)
+			{
+				// Create HTML Row
+				$visualize_common_words.append('<div class="common_words">\
+					<div class="common_words_count">' + count + '</div>\
+					<div class="common_words_words">' + word_array.join(', ') + '</div>\
+					<div class="clear"></div>\
+				</div>\
+				<div class="common_words_line"></div>');
+
+				word_count++;
+			}
+		});
+
+		$('#visualize_common').delay(750).fadeIn();		
 	},
 	renderStrongExperiences: function()
 	{		
-		// Make Strong Experiences
 		$strong_experiences	= $('#strong_experiences');
-		
-		var experience_count=0;
-		
 
-			var color	= type_colors[type];
-			var size	= type_count * visualization_sizes[user_data.source].circle_strong_experiences;
-			var svg_size= 8 * visualization_sizes[user_data.source].circle_strong_experiences;
-			var position= svg_size / 2;
-
-			$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_experience">"' + logs_raw[log].experience + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
-
-		    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), svg_size, svg_size);
-			paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
-		
-			experience_count++;
-	
-
-		$('#visualize_experiences').delay(1000).fadeIn();
-		
-		// Show Experience Link (if not Mobile)
-		if (UserData.get('source') != 'mobile')
+		$.each(VisualizeModel.get('strong_experiences'), function(key, experience)
 		{
-			$('#your_experiences').fadeIn();
-		}				
+			var color	 = EmoomeValues.type_colors[experience.type];
+			var size	 = experience.count * 10; //visualization_sizes[user_data.source].circle_strong_experiences;
+			var svg_size = 8 * 10; //visualization_sizes[user_data.source].circle_strong_experiences;
+			var position = svg_size / 2;
+
+			// Create HTML Row
+			$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + experience.log_id + '"></div><div class="strong_experience_experience">"' + experience.experience + '" <span class="strong_experience_date">' + mysqlDateParser(experience.date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+
+			// Draw Circle
+		    var paper = new Raphael(document.getElementById('strong_experience_' + experience.log_id), svg_size, svg_size);
+			paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+		});
+
+		$('#visualize_experiences').delay(1000).fadeIn();				
 	}	
-	
 });
 
 

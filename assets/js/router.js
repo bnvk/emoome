@@ -173,7 +173,7 @@ var ApplicationRouter = Backbone.Router.extend(
 
 
 					// More Than 15
-					if (VisualizeModel.get('logs_count') < 15)
+					if (VisualizeModel.get('logs_count') > 15)
 					{						
 						VisualizeViews.renderStrongExperiences();
 					}
