@@ -68,8 +68,7 @@ class Emoome
 		$word_type_count		= config_item('emoome_word_types_count');
 		$word_type_sub_count	= config_item('emoome_word_types_sub_count');
 		$sentiment				= 0;
-		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 
-		
+		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 	
 
 		// Analyze Words
 		foreach ($words_link as $word)
@@ -92,16 +91,20 @@ class Emoome
 			{
 				$words[$word->word] = 1;
 			}
-			
 		}
 		
-		// Output Type		
+		// Output Type
+		$language_total = 0;
+				
 		foreach (array_filter($word_type_count) as $type => $count)
 		{
-		    $type    = $word_type[$type];
-		    $percent = $count; //percent($count, count($words_link));
+		    $type   	 	 = $word_type[$type];
+		    $percent 		 = $count;
+		    $language_total  = $language_total + $count;
 		    $analysis['language'][$type] = $percent;
 		}
+		
+		$analysis['language_total'] = $language_total;
 		
 		// Output Type Sub
 		foreach (array_filter($word_type_sub_count) as $type_sub => $count)
@@ -114,11 +117,11 @@ class Emoome
 		$analysis['sentiment']	= $sentiment;
 		
 		// Output Words
+		arsort($words);
 		$analysis['words'] = $words;		
 
 
 		return $analysis;
-
 	}
 	
 	
@@ -132,7 +135,7 @@ class Emoome
 		$word_type_count		= config_item('emoome_word_types_count');
 		$word_type_sub_count	= config_item('emoome_word_types_sub_count');
 		$sentiment				= 0;
-		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 
+		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 	// Gives more priority to Feeling, Descriptor, Experience respectively 
 
 		// Experience
 		// To be refactored later using words_link
@@ -164,7 +167,14 @@ class Emoome
 			$sentiment += $word->sentiment * $sentiment_normalize[$word->used];
 			
 			// Words
-			$words[$word->word] = $word_used[$word->used];
+			if (array_key_exists($word->word, $words))
+			{
+				$words[$word->word] = $words[$word->word] + 1;			
+			}
+			else
+			{
+				$words[$word->word] = 1;
+			}
 		}
 
 		// Output Type

@@ -207,5 +207,12 @@ class Utilities extends MY_Controller
 			$this->words_model->update_word($word->word_id, array('speech' => 'U'));
 		}
 	}
+	
+	function update_word_taxonomy()
+	{
+		
+		
+		
+	}
 
 }

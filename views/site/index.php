@@ -308,7 +308,8 @@
 
 <!-- Visualize Views -->
 <script type="text/template" id="visualize">
-	<div id="visualize_waiting" class="content_center text_center">
+
+	<div id="visualize_waiting" class="content_center text_center hide">
 		<h1>We are computing your emotions</h1>
 		<div id="logs_needed">
 			<p>You need to record</p>
@@ -316,11 +317,9 @@
 			<p>More feelings before you can visualize</p>
 		</div>
 	</div>
-</script>
 
-<script type="text/template" id="visualize_index">
 
-	<h1 id="visualize_title">Visualize : Your Language</h1>
+	<h1 id="visualize_title">Your Language</h1>
 	<div id="visualize_language" class="hide">
 	
 		<div id="visualize_last_five">
@@ -334,7 +333,7 @@
 		</div>
 	
 		<div class="clear"></div>
-		<p id="your_language_map" ><a class="button" href="#/visualize/map">Your Language Map</a></p>
+		<p id="your_language_map" class="hide"><a class="button" href="#/visualize/map">Your Language Map</a></p>
 	
 	</div>
 

@@ -116,9 +116,6 @@ var ApplicationRouter = Backbone.Router.extend(
 	{
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true);
 
-		// Visualize Views
-		VisualizeIndex = new ContentView('#visualize');
-
 		$.oauthAjax(
 		{
 			oauth 		: UserData,	
@@ -138,75 +135,52 @@ var ApplicationRouter = Backbone.Router.extend(
 					
 					console.log(VisualizeModel.attributes);
 
-
-					var logs_count	= VisualizeModel.get('logs_raw').length;
 					var logs		= new Array();
 					var total		= 0;
 					var largest		= 0;
 					var percents	= '';
-										
 			
 					// Display Title
-					if (logs_count > 5 && UserData.get('source') != 'mobile')
+					if (VisualizeModel.get('logs_count') > 5 && UserData.get('source') != 'mobile')
 					{
 						$('#visualize_title').fadeIn();
 					}
 				
-					// Display Visualizations by log_count
-					if (logs_count < 5)
+					// Less or More than 5
+					if (VisualizeModel.get('logs_count') < 5)
 					{
-						$('#logs_needed_count').html(5 - logs_count);
+						$('#logs_needed_count').html(5 - VisualizeModel.get('logs_count'));
 						$('#visualize_waiting').fadeIn('slow');
-					}
-					else if (logs_count < 10)
-					{
-						$('#visualize_language').fadeIn();
-				
-						//doWordTypes();
-						VisualizeViews.doLastFive();
-					}
-					else if (logs_count < 15)
-					{		
-						$('#visualize_language').fadeIn();
-				
-						//doWordTypes();
-						VisualizeViews.doLastFive();
-						VisualizeViews.doAllTime();
-						VisualizeViews.renderCommonLanguage();
-				
-						if (UserData.get('source') != 'mobile')
-						{
-							$('#your_language_map').fadeIn();
-						}
 					}
 					else
 					{
 						$('#visualize_language').fadeIn();
-				
-						//doWordTypes();
-						VisualizeViews.doLastFive();
-						VisualizeViews.doAllTime();
-						VisualizeViews.renderCommonLanguage();
-						VisualizeViews.renderStrongExperiences();
-				
+						VisualizeViews.renderLastFive();
+					}
+
+					// More Than 10
+					if (VisualizeModel.get('logs_count') > 10)
+					{
+						// Show Language Map Link
 						if (UserData.get('source') != 'mobile')
 						{
 							$('#your_language_map').fadeIn();
 						}
-					}						
 					
+						VisualizeViews.renderAllTime();
+						VisualizeViews.renderCommonWords();
+					}
+
+
+					// More Than 15
+					if (VisualizeModel.get('logs_count') < 15)
+					{						
+						VisualizeViews.renderStrongExperiences();
+					}
 				}
 		  	}			  			
-		});
-		
-		
-		// View
-/*
-		if (view == undefined)	
-			this.switchView(VisualizeIndex);
-		else
-			this.switchView(this.notFoundView);	
-*/
+		});		
+
 	},
 	settingsViews: function(view)
 	{	

@@ -6,8 +6,7 @@ class Logs_model extends CI_Model
         parent::__construct();
     }
  
- 	// Logs
- 	// Interacts with "logs"
+ 	// Logs - Interacts with "logs" table
 	function count_logs_user($user_id)
 	{		
  		$this->db->select('*');

@@ -15,161 +15,233 @@ class Analyze extends Oauth_Controller
     	$this->form_validation->set_error_delimiters('', '');        
 	}
 
-	function me_get()
+	function me_authd_get()
 	{
-		$person				= $this->social_auth->get_user('user_id', 1);
-		$person_meta		= $this->social_auth->get_user_meta(1);
-		$log_count			= $this->logs_model->count_logs_user(1);
-		$user_logs			= $this->logs_model->get_logs_user(1);
-		$words_link			= $this->words_model->get_words_links_user(1);
-		$last_five			= $this->emoome_model->get_user_most_recent(1, 5);
-
-		$word_map			= '';
-		$common_words		= array();
-		$common_words_count = array();
-		$log_word_types		= array();
-
-		// Do Word Map
-		if ($person_meta)
+		// QUERIES
+		if ($user_logs = $this->logs_model->get_logs_user($this->oauth_user_id))
 		{
-			foreach ($person_meta as $meta)
-			{
-				if ($meta->meta == 'word_type_map')
-				{
-					$word_map = $meta->value;
-					break;
-				}
-			}
-		}
-		else
-		{
-			$word_map = json_encode(array());
-		}
-
-
-
-
-		// Common Words
-		$common_count=0;
-		
-		foreach ($common_words as $count => $words)
-		{
-			if ($common_count <= 7)
-			{
-				$common_count++; 
-			
-				// Was in DIV
-				$count;
+			$words_link	= $this->words_model->get_words_links_user($this->oauth_user_id);
 	
-				$word_count = count($words); $i = 1; $comma = ', ';
-				
-				foreach ($words as $word)
+			// LAST FIVE
+			$log_count		= 0;
+			$last_five_logs	= array();
+			$logs_ids 		= array();
+			
+			foreach ($user_logs as $log)
+			{
+				if ($log_count < 6)
 				{
-					$i++; if ($i > $word_count) $comma = ' '; 
-					echo $word.$comma;
-				}
-			}
-		}
-
-		
-
-		// Strong Experiences
-		foreach ($words_link as $link)
-		{
-			// Build Word Types
-			if (array_key_exists($link->log_id, $log_word_types))
-			{
-				$log_word_types[$link->log_id][] = $link->type; 
-			}
-			else
-			{
-				$log_word_types[$link->log_id] = array($link->type);
-			}
-		
-			// Do Common Words
-			if (array_key_exists($link->word, $common_words_count))
-			{
-				$common_words_count[$link->word] = $common_words_count[$link->word] + 1;
-			}
-			else
-			{			
-				$common_words_count[$link->word] =  1;
-			}
-		}
-		
-		// Build Similar Word Count Array of Words
-		foreach ($common_words_count as $word => $count)
-		{
-			if ($count > 1)
-			{		
-				if (array_key_exists($count, $common_words))
-				{
-					$common_words[$count][] = $word;
+					$logs_ids[] = $log->log_id;
+					$last_five_logs[] = $log;
+					$log_count++;
 				}
 				else
 				{
-					$common_words[$count] = array($word); 
+					break;
 				}
 			}
-		}
-
-		// Sort Words
-		krsort($common_words);
-
-		// Output Data
-		$message = array(
-			'status' 		=> 'success', 
-			'message' 		=> 'Yay found your logs', 
-			'word_map' 		=> $word_map,
-			'last_five'		=> $last_five,
-			'common_words'	=> $common_words,
-		);
-
-		echo '<pre>';
-		print_r($message);
-
-        //$this->response($message, 200);
-	}
 	
-
-	function log_get()
-	{
+			// Analyze
+			$last_five = $this->emoome->analyze_logs($last_five_logs, $this->words_model->get_words_links($logs_ids));
+	
+	
+			// ALL TIME
+			$person_meta 	= $this->social_auth->get_user_meta($this->oauth_user_id);
+			$word_map		= '';
+	
+			if ($person_meta)
+			{
+				foreach ($person_meta as $meta)
+				{
+					if ($meta->meta == 'word_type_map')
+					{
+						$word_map = $meta->value;
+						break;
+					}
+				}
+			}
+			else
+			{
+				$word_map = json_encode(array());
+			}
+	
+			$all_time_json 	= get_object_vars(json_decode($word_map));
+	
+	
+	
+			// COMMON WORDS
+			$common_count=0;
+			$common_words		= array();
+			$common_words_count = array();
+			$log_word_types		= array();
+			
+			foreach ($common_words as $count => $words)
+			{
+				if ($common_count <= 7)
+				{
+					$common_count++; 
+				
+					// Was in DIV
+					$count;
 		
-		if ($log = $this->logs_model->get_log($this->get('id')))
-		{
-			$analysis = $this->emoome->analyze_log($log, TRUE);
+					$word_count = count($words); $i = 1; $comma = ', ';
+					
+					foreach ($words as $word)
+					{
+						$i++; if ($i > $word_count) $comma = ' '; 
+						echo $word.$comma;
+					}
+				}
+			}
+	
+			// Words Link Sort
+			foreach ($words_link as $link)
+			{
+				// For Strong Experiences
+				if (array_key_exists($link->log_id, $log_word_types))
+				{
+					$log_word_types[$link->log_id][] = $link->type; 
+				}
+				else
+				{
+					$log_word_types[$link->log_id] = array($link->type);
+				}
+			
+				// For Common Words
+				if (array_key_exists($link->word, $common_words_count))
+				{
+					$common_words_count[$link->word] = $common_words_count[$link->word] + 1;
+				}
+				else
+				{			
+					$common_words_count[$link->word] =  1;
+				}
+			}
+			
+			// Common Word Count Array (words)
+			foreach ($common_words_count as $word => $count)
+			{
+				if ($count > 1)
+				{	
+					// Word Count is KEY 	
+					if (array_key_exists($count, $common_words))
+					{
+						$common_words[$count][] = $word;
+					}
+					else
+					{
+						$common_words[$count] = array($word); 
+					}
+				}
+			}
+	
+			// Sort Words
+			krsort($common_words);
+			
+			
+			// STRONG EXPERIENCES
+			$experience_count	= 0;
+			$strong_experiences	= array();
+	
+			foreach ($user_logs as $log)
+			{
+				// Limit Experiences Shown
+				if ($experience_count <= 15)
+				{
+					$log_types	= $log_word_types[$log->log_id];
+					$type_count = array_count_values($log_types);
+	
+					foreach ($type_count as $count_key => $count_value)
+					{
+						if ($count_value > 2)
+						{
+							$strong_experiences[] = array(
+								'experience'	=> $log->experience,
+								'date'			=> $log->created_date,
+								'time'			=> $log->created_time,
+								'type'			=> $count_key,
+								'value'			=> $count_value
+							);
+	
+							$experience_count++;
+						}
+					}	
+				}
+			}		
+			
 
-			echo '<pre>';
-			print_r($analysis);
+			// OUTPUT DATA
+			$message = array(
+				'status' 				=> 'success', 
+				'message' 				=> 'Yay found your logs',
+				'logs_count'			=> count($user_logs),
+				'last_five'				=> $last_five,
+				'all_time'				=> array(
+					'language' 			=> $all_time_json,
+					'language_total'	=> array_sum($all_time_json)
+				),
+				'common_words'			=> $common_words,			
+				'strong_experiences'	=> $strong_experiences
+			);
 		}
 		else
 		{
-			echo 'Soz, no dice soldier!';
-		}		
-	}
-	
-	function last_five_logs_get()
-	{
-		$last_five_logs = $this->logs_model->get_logs_user(1, 5);
-
-		$logs_ids = array();
-
-		foreach ($last_five_logs as $log)
-		{
-			$logs_ids[] = $log->log_id;	
+			$message = array('status' => 'error', 'message' => 'Could not find any logs');
 		}
 
-		// Words
-		$user_words_link = $this->words_model->get_words_links($logs_ids);
+        $this->response($message, 200);
+	}
 
-		// Analyze
-		$last_five_analyze = $this->emoome->analyze_logs($last_five_logs, $user_words_link);
+	function log_authd_get()
+	{
+		if ($log = $this->logs_model->get_log($this->get('id')))
+		{
+			if ($log->user_id == $this->oauth_user_id)
+			{
+				$analysis = $this->emoome->analyze_log($log, TRUE);
 
-		echo '<pre>';
-		//print_r($logs_ids);
-		print_r($last_five_analyze);
+				$message = array('status' => 'success', 'message' => 'Yay found your logs', 'analysis' => $analysis);
+			}
+			else
+			{
+				$message = array('status' => 'error', 'message' => 'Oops that is your not log, carry on now!');			
+			}
+		}
+		else
+		{
+			$message = array('status' => 'error', 'message' => 'Could not find that log');	
+		}
 
+        $this->response($message, 200);
+	}
+	
+	function last_five_authd_get()
+	{
+		// Get Logs
+		if ($last_five_logs = $this->logs_model->get_logs_user($this->oauth_user_id, 5))
+		{
+			// Log IDS for words
+			$logs_ids = array();
+			
+			foreach ($last_five_logs as $log)
+			{
+				$logs_ids[] = $log->log_id;	
+			}
+	
+			// Words
+			$user_words_link = $this->words_model->get_words_links($logs_ids);
+	
+			// Analyze
+			$last_five_analyze = $this->emoome->analyze_logs($last_five_logs, $user_words_link);
+	
+			$message = array('status' => 'success', 'message' => 'Yay found your logs', 'analysis' => $last_five_analyze);
+		}
+		else
+		{
+			$message = array('status' => 'error', 'message' => 'Could not find that log');	
+		}
 
+        $this->response($message, 200);
 	}
 
 

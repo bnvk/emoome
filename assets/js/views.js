@@ -680,13 +680,13 @@ var VisualizeView = Backbone.View.extend(
 	render: function()
 	{
     	var view_data	= {};
-        var template	= _.template($("#visualize_index").html(), view_data);
+        var template	= _.template($("#visualize").html(), view_data);
         this.$el.html(template).hide().delay(250).fadeIn();		
 	},
-	doLastFive: function()
+	renderLastFive: function()
 	{	
 		// Create Pie Chart
-		var types 			= VisualizeModel.get('last_five').types;		
+		var types 			= VisualizeModel.get('last_five').language;		
 		var types_colors	= new Array();
 		var word_values		= new Array();
 		var word_percents	= new Array();
@@ -694,33 +694,32 @@ var VisualizeView = Backbone.View.extend(
 		// Build Data Values
 		for (var type in types)
 		{			
-			if (type != 'U')
+			if (type != 'undecided')
 			{
 				word_values.push(types[type]);			
-				word_percents.push("%% " + word_types[type]);
-				types_colors.push(type_colors[type]);
+				word_percents.push("%% " + type);
+				types_colors.push(EmoomeValues.type_colors[type]);
 			}
 		}
 		
 		this.renderPieChart("last_five", word_values, word_percents, types_colors);
 	},
-	doAllTime: function()
+	renderAllTime: function()
 	{	
 		// Create Pie Chart
-		var types 			= VisualizeModel.get('word_map');		
+		var types 			= VisualizeModel.get('all_time').language;		
 		var types_colors	= new Array();
 		var word_values		= new Array();
 		var word_percents	= new Array();
 	
 		// Build Data Values
 		for (var type in types)
-		{			
-			if (type[0] != 'U')
-			{
-				//console.log(type[0]);
+		{					
+			if (type != 'undecided')
+			{			
 				word_values.push(types[type]);			
 				word_percents.push("%% " + type);
-				types_colors.push(type_colors[type[0]]);
+				types_colors.push(EmoomeValues.type_colors[type]);
 			}
 		}
 	
@@ -730,10 +729,10 @@ var VisualizeView = Backbone.View.extend(
 	{
 	    var r = Raphael(element, 575, 375);
 	    pie = r.piechart(175, 175, 150, word_values,
-	    { 
+	    {
 	    	colors 	 : types_colors,
 	    	legend	 : word_percents,
-	    	'stroke-width': 1, 'stroke': '#c3c3c3',
+	    	'stroke-width' : 1, 'stroke': '#c3c3c3',
 	    	legendpos: "east"
 	    }).attr({"font": "24px 'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-family": "'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-size": 24, "font-weight": 100, "letter-spacing": 2});
 
@@ -758,7 +757,7 @@ var VisualizeView = Backbone.View.extend(
 	
 		return true;	
 	},
-	renderCommonLanguage: function()
+	renderCommonWords: function()
 	{
 		$('#visualize_common').delay(750).fadeIn();
 	},
@@ -769,42 +768,19 @@ var VisualizeView = Backbone.View.extend(
 		
 		var experience_count=0;
 		
-		// Loop Logs	
-		for (var log in VisualizeModel.get('logs_raw'))
-		{
-			// Limit Experiences Shown
-			if (experience_count < 10)
-			{
-				var log_id = logs_raw[log].log_id;		
-				
-				if (log_id !== undefined)
-				{		
-					for (var type in word_types)
-					{		
-						// Dont Show Undecided
-						if (type != 'U')
-						{
-							var type_count 	= countElementsArray(type, words[log_id]);
-			
-							if (type_count > 2)
-							{
-								var color	= type_colors[type];
-								var size	= type_count * visualization_sizes[user_data.source].circle_strong_experiences;
-								var svg_size= 8 * visualization_sizes[user_data.source].circle_strong_experiences;
-								var position= svg_size / 2;
-			
-								$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_experience">"' + logs_raw[log].experience + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
-			
-							    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), svg_size, svg_size);
-								paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
-							
-								experience_count++;
-							}
-						}
-					}
-				}
-			}
-		}
+
+			var color	= type_colors[type];
+			var size	= type_count * visualization_sizes[user_data.source].circle_strong_experiences;
+			var svg_size= 8 * visualization_sizes[user_data.source].circle_strong_experiences;
+			var position= svg_size / 2;
+
+			$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_experience">"' + logs_raw[log].experience + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+
+		    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), svg_size, svg_size);
+			paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);
+		
+			experience_count++;
+	
 
 		$('#visualize_experiences').delay(1000).fadeIn();
 		
