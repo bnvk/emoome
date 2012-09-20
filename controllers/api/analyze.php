@@ -44,7 +44,7 @@ class Analyze extends Oauth_Controller
 			}
 	
 			// Analyze Five
-			$last_five = $this->emoome->analyze_logs($last_five_logs, $this->words_model->get_words_links($logs_ids));
+			$last_five = $this->emoome->analyze_words_link($this->words_model->get_words_links($logs_ids));
 	
 	
 			// ALL TIME
@@ -183,58 +183,97 @@ class Analyze extends Oauth_Controller
         $this->response($message, 200);
 	}
 	
-	function last_five_authd_get()
+	function last_five_get()
 	{
 		// Get Logs
-		if ($last_five_logs = $this->logs_model->get_logs_user($this->oauth_user_id, 5))
+		if ($logs = $this->logs_model->get_logs_user(1, 5))
 		{
 			// Log IDS for words
-			$logs_ids = array();
-			
-			foreach ($last_five_logs as $log)
-			{
-				$logs_ids[] = $log->log_id;	
-			}
-	
+			$logs_ids = $this->emoome->generate_object_ids($logs, 'log_id');
+
 			// Words
-			$user_words_link = $this->words_model->get_words_links($logs_ids);
-	
+			$words = $this->words_model->get_words_links($logs_ids);
+
 			// Analyze
-			$last_five_analyze = $this->emoome->analyze_logs($last_five_logs, $user_words_link);
+			$analysis = $this->emoome->analyze_words_link($words);
 	
-			$message = array('status' => 'success', 'message' => 'Yay found your logs', 'analysis' => $last_five_analyze);
+			$message = array('status' => 'success', 'message' => 'Yay found your logs', 'analysis' => $analysis);
 		}
 		else
 		{
 			$message = array('status' => 'error', 'message' => 'Could not find that log');	
 		}
 
-        $this->response($message, 200);
+		echo '<pre>';
+        print_r($message);//$this->response($message, 200);
 	}
 
 
-	function time_authd_get()
+	function time_get()
 	{
-		if (($this->get('start') != '') AND ($this->get('end') != ''))
+		if (($this->get('start')) AND ($this->get('end')))
 		{
-			// Set Range
-			$emotions = $this->logs_model->get_emotions_range_time($this->oauth_user_id, $this->get('start'), $this->get('end'));
+			if ($this->get('start') === 00) $start = '00';
+			else $start = $this->get('start');
 
-			if ($emotions)
+			if ($this->get('end') === 00) $end = '00';
+			else $end = $this->get('end');
+
+			// Set Range
+			$logs = $this->logs_model->get_logs_range_time(1, $start, $end);
+
+			// Log IDS for words
+			$logs_ids = $this->emoome->generate_object_ids($logs, 'log_id');
+
+			// Words
+			$words = $this->words_model->get_words_links($logs_ids);
+
+			// MOOD DATA
+			$moods				= array();
+			$sentiment_emotions	= config_item('emoome_sentiment_emotion');
+			$sentiment_arrays	= config_item('emoome_sentiment_emotion_array');
+			$moods_logs_ids		= $this->emoome->generate_moods_log_ids($words);			
+
+			foreach ($moods_logs_ids as $sentiment => $mood_logs_ids)
+			{
+				$this_mood_words = array();
+			
+				// Words
+				foreach ($words as $word)
+				{
+					if (in_array($word->log_id, $mood_logs_ids))
+					{
+						$this_mood_words[] = $word;
+					}
+				}
+
+				// Analyze
+				$analysis = $this->emoome->analyze_words_link($this_mood_words);
+			
+				$mood    	  = $sentiment_emotions[$sentiment];
+				$moods[$mood] = $analysis;
+			}
+
+			if ($logs)
 			{				
-	            $message = array('status' => 'success', 'message' => 'Yay we found some feelings', 'emotions' => $emotions);
+	            $message = array('status' => 'success', 'message' => 'Yay we found some feelings', 'moods' => $moods, 'logs' => $logs, 'log_count' => count($logs));
 			}
 			else
 			{
 	            $message = array('status' => 'error', 'message' => 'You have not recorded any feelings during that time period');
 			}
+
 		}
 		else
 		{
             $message = array('status' => 'error', 'message' => 'One or more search parameters are missing');
 		}
 
-        $this->response($message, 200);
+		//echo '<pre>';
+		//print_r($moods);
+		//echo '</pre>';
+
+		$this->response($message, 200);
 	}
 
 

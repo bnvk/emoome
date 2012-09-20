@@ -1,4 +1,4 @@
-// Lightbox
+// LIGHTBOX
 var LightboxView = Backbone.View.extend(
 {
 	initialize: function()
@@ -62,7 +62,7 @@ var LightboxView = Backbone.View.extend(
 var Lightbox = new LightboxView({ el: $('body') });
 
 
-// Header
+// HEADER
 var NavigationView = Backbone.View.extend(
 {
 	initialize: function()
@@ -94,7 +94,7 @@ var NavigationView = Backbone.View.extend(
 
 
 
-// Generic Content
+// GENERIC CONTENT
 var ContentView = Backbone.View.extend(
 {
 	/* Initialize with the template-id */
@@ -112,7 +112,7 @@ var ContentView = Backbone.View.extend(
 });
 	
 	
-// Record Views
+// AUTHENTICATE
 var AuthView = Backbone.View.extend(
 {
     initialize: function()
@@ -354,7 +354,7 @@ var AuthView = Backbone.View.extend(
 
 
 
-// Record Views
+// RECORD
 var RecordFeelingView = Backbone.View.extend(
 {
     initialize: function()
@@ -423,7 +423,7 @@ var RecordFeelingView = Backbone.View.extend(
 		var emoticons 		= '';
 		var emoticons_width	= 65;	
 	
-		$.each(EmoomeValues.core_emotions, function(key, value)
+		$.each(EmoomeSettings.core_emotions, function(key, value)
 		{
 			emoticons += '<div class="emoticon_item"><img data-feeling="' + value + '" src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + value + '.png"><span>' + value + '</span></div>';
 			emoticons_width += 465;
@@ -668,7 +668,7 @@ var RecordFeelingView = Backbone.View.extend(
 });
 
 
-// Visualize Views
+// VISUALIZE
 var VisualizeView = Backbone.View.extend(
 {
 	initialize: function()
@@ -733,7 +733,7 @@ var VisualizeView = Backbone.View.extend(
 			{
 				word_values.push(types[type]);			
 				word_percents.push("%% " + type);
-				types_colors.push(EmoomeValues.type_colors[type]);
+				types_colors.push(EmoomeSettings.type_colors[type]);
 			}
 		}
 		
@@ -754,7 +754,7 @@ var VisualizeView = Backbone.View.extend(
 			{			
 				word_values.push(types[type]);			
 				word_percents.push("%% " + type);
-				types_colors.push(EmoomeValues.type_colors[type]);
+				types_colors.push(EmoomeSettings.type_colors[type]);
 			}
 		}
 	
@@ -831,7 +831,7 @@ var VisualizeView = Backbone.View.extend(
 
 		$.each(VisualizeModel.get('strong_experiences'), function(key, experience)
 		{
-			var color	 = EmoomeValues.type_colors[experience.type];
+			var color	 = EmoomeSettings.type_colors[experience.type];
 			var size	 = experience.count * 10; //visualization_sizes[user_data.source].circle_strong_experiences;
 			var svg_size = 8 * 10; //visualization_sizes[user_data.source].circle_strong_experiences;
 			var position = svg_size / 2;
@@ -848,6 +848,8 @@ var VisualizeView = Backbone.View.extend(
 	}
 });
 
+
+// VISUALIZE LANGUAGE
 var VisualizeLanguageView = Backbone.View.extend(
 {
 	initialize: function()
@@ -872,7 +874,7 @@ var VisualizeLanguageView = Backbone.View.extend(
 		var logs_data	= VisualizeLanguageModel.get('logs');
 		var words_data	= VisualizeLanguageModel.get('words')
 
-		// Group Words By Logs
+		// Group Words By log_id
 		for (link in words_data)
 		{
 			if (words[words_data[link].log_id] === undefined)
@@ -895,25 +897,24 @@ var VisualizeLanguageView = Backbone.View.extend(
 		}
 
 		// Do Color Key
-  		for (color in EmoomeValues.type_colors)
+  		for (color in EmoomeSettings.type_colors)
   		{
-  			// Dont Show Undecided
   			if (color != 'U')
   			{
-  				var color_swatch = '<div class="type_swatch"><div class="color_swatch" style="background:' + EmoomeValues.type_colors[color] + '"></div>' + color + '</div>';
+  				var color_swatch = '<div class="type_swatch"><div class="color_swatch" style="background:' + EmoomeSettings.type_colors[color] + '"></div>' + color + '</div>';
   				$('#user_word_colors').append(color_swatch);
   			}
   		}	  		
   		
   		// Do Color Height
-  		for (type in EmoomeValues.word_types)
+  		for (type in EmoomeSettings.word_types)
   		{	
 			color_height[type] = height;
 			height = height + 100;
 		}
 		
 		$word_map_container = $('#user_word_map');
-		var set_width = 80 -125;
+		var set_width = 80 - 125;
 
 		// Loop Groups of Types			
   		$.each(words, function(log_id, value)
@@ -933,12 +934,12 @@ var VisualizeLanguageView = Backbone.View.extend(
 				    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
 					
 		  			// Do 4 Types
-					for (type in EmoomeValues.word_types)
+					for (type in EmoomeSettings.word_types)
 					{					
 						if (type != 'U')
 						{	
-							var this_type	= EmoomeValues.word_types[type];
-							var color 		= EmoomeValues.type_colors[this_type];
+							var this_type	= EmoomeSettings.word_types[type];
+							var color 		= EmoomeSettings.type_colors[this_type];
 							var circle_y	= color_height[type];
 							var size 		= circle_size * countElementsArray(type, value);
 							
@@ -983,7 +984,157 @@ var VisualizeLanguageView = Backbone.View.extend(
 });
 
 
-// Settings Views
+// SEARCH
+SearchBox = Backbone.View.extend(
+{
+    initialize: function()
+    {
+        this.render();
+    },
+    render: function()
+    {    
+    	// ADD SEARCH FEATURES
+    	// - When Do I Feel [search], What Makes Me Feel [search]
+    	// - How Do I Feel Between [hours]
+    	// - How Do I Feel Between [dates]
+    	// - How Do I Feel About [keyword search]
+    	// - How Do I Feel At [location]
+    	var search_data = {
+	    	title: "How Do I Feel Between"
+    	}
+    	
+    	// Load Controls
+    	var search_template = _.template($('#visualize_search_box').html(), search_data);
+    	
+    	// Add to HTML
+    	this.$el.html(search_template);
+    },
+    events:
+    {
+        "click #search_button": "doSearch"  
+    },
+    doSearch: function()
+    {	    	
+	    // Search Vars
+	    var search_options = {
+	    	start_hour	: determineHourStart($('#start_time').val(), $('#start_meridian').val()),
+	    	end_hour	: determineHourEnd($('#end_time').val(), $('#end_meridian').val())
+	    }
+	    	
+	    // Do Search
+	    this.getHourSearch(search_options);
+    },
+	getHourSearch: function(options)
+	{
+		$("#search_visualization").html('');
+			
+		$.oauthAjax(
+		{
+			oauth 		: UserData,		
+			url			: base_url + 'api/emoome/analyze/time/start/' + options.start_hour + '/end/' + options.end_hour,
+			type		: 'GET',
+			dataType	: 'json',
+		  	success		: function(result)
+		  	{
+		  		// Yay Feelings
+				if (result.status == 'success')
+				{
+					// New View
+					$('#search_visualization_title').html(result.log_count + ' entries found during those hours');
+					
+					var NewSearch = new ResultSearch({ el: $("#search_visualization") });
+			  		NewSearch.renderHourSearch(result);
+				}				
+				else
+				{
+					$('#search_visualization').append('<div id="search_visualization_none">' + result.message + '</div>');
+				}
+		  	}
+		});
+	}
+});
+
+ResultSearch = Backbone.View.extend(
+{
+    initialize: function()
+    {
+        this.render();
+    },
+    render: function() {},
+    renderHourSearch: function(result)
+    {
+    	console.log(result);
+   
+    	$.each(result.moods, function(mood, mood_value)
+	    {
+	    	if (mood != 'undefined')
+	    	{
+	    		// TOPICS
+	    		var topics_data = mood_value.topics;
+	    		var topics      = '';
+	    	
+	    		for (var topic in topics_data)
+	    		{
+		    		if (topic != 'undecided')
+		    		{
+		    			topics += '<div class="search_topic_container"><div class="search_topic_icon icons_topics_' + topic + '"></div><span class="search_topic_text">' + topics_data[topic] + ' x ' + topic + '</span></div>';
+		    		}
+	    		}
+	    		
+	    		// WORDS
+	    		var words_data = mood_value.words;
+	    		var words      = '';
+	    		
+	    		for (var word in words_data)
+	    		{
+		    		words += words_data[word] + ' ' + word + '<br>';
+	    		}
+	    		
+	    		
+				// INJECT DATA
+		        var mood_data = { 
+		        	mood      	: mood,
+		        	emoticon 	: '<img src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + mood  + '.png">',
+		        	topics  	: topics + '<div class="clear"></div>',
+		        	words   	: words
+		        };
+	
+		        var mood_item = _.template($("#search_hour_mood").html(), mood_data);
+		        
+		        // INJECT HTML
+		        $('#search_visualization').append(mood_item);
+
+
+		        // LANGUAGE PIE CHART
+				var types 			= mood_value.language;		
+				var types_colors	= new Array();
+				var word_values		= new Array();
+				var word_percents	= new Array();
+			
+				for (var type in types)
+				{					
+					if (type != 'undecided')
+					{			
+						word_values.push(types[type]);			
+						word_percents.push("%% " + type);
+						types_colors.push(EmoomeSettings.type_colors[type]);
+					}
+				}		        
+		        
+			    var r = Raphael('search_mood_language_' + mood, 190, 190);
+			    pie = r.piechart(90, 90, 90, word_values,
+			    {
+			    	colors : types_colors,
+			    });
+			}
+	    });
+
+    }
+});
+
+
+
+// SETTINGS
 var SettingsView = Backbone.View.extend(
 {
     initialize: function()

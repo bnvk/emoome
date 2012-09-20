@@ -1,5 +1,5 @@
 // Emoome Settings
-var EmoomeValues = Backbone.Model.extend({
+var EmoomeSettings = Backbone.Model.extend({
 	type_colors	: {
 		"emotional": "#ff0000",
 		"intellectual": "#142bd7",
@@ -35,17 +35,17 @@ var EmoomeValues = Backbone.Model.extend({
 		"M":0,"S":0,"P":0,"Y":0,"L":0,"F":0,"C":0
 	},
 	core_emotions : {
-		"10":"love",
-		"9":"joy",
-		"8":"happy",
-		"7":"amazement",
-		"6":"serenity",
-		"5":"interest",
-		"4":"optimism",
-		"3":"cool",
-		"2":"goofy",
-		"1":"acceptance",
-		"0":"surprise",
+		"10":"joy",
+		"9":"happy",
+		"8":"amazement",
+		"7":"serenity",
+		"6":"interest",
+		"5":"optimism",
+		"4":"happy",
+		"3":"goofy",
+		"2":"acceptance",
+		"1":"surprise",
+		"0":"neutral",
 		"-1":"annoyed",
 		"-2":"crazy",
 		"-3":"disapproval",
@@ -56,7 +56,7 @@ var EmoomeValues = Backbone.Model.extend({
 		"-8":"grief",
 		"-9":"loathing",
 		"-10":"anger",
-		"-11":"rage"
+		"-11":"rage",
 	},
 	visualization_sizes : {
 		"mobile" : {
@@ -189,7 +189,7 @@ var VisualizeLanguageModel = Backbone.Model.extend({
 
 
 // Instantiate Models
-var EmoomeValues	= new EmoomeValues();
+var EmoomeSettings	= new EmoomeSettings();
 var UIMessages		= new UIMessages();
 var LogFeelingModel = new LogFeelingModel();
 var VisualizeModel	= new VisualizeModel();

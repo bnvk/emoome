@@ -55,10 +55,45 @@ class Emoome
 
 		return FALSE;
 	}
+	
+	// Used for getting unique IDs for Words Link
+	function generate_object_ids($object, $param)
+	{
+		$ids = array();
+			
+		foreach ($object as $item)
+		{
+			$ids[] = $item->$param;	
+		}
+		
+		return $ids;
+		
+	}
+	
+	// Takes array of 'words' & 'words_link'
+	function generate_moods_log_ids($words)
+	{
+		// GENERATE MOOD log_ids
+		$moods = array();
+				
+		foreach ($words as $word)
+		{
+			if ($word->used == 'F')
+			{
+				$sentiment = $word->sentiment * 2;
+				
+				$moods[$sentiment][] = $word->log_id;	
+			}
+		}
+				
+		krsort($moods);
+		
+		return $moods;
+	}
 
 
-	/* Analyze Logs */
-	function analyze_logs($logs, $words_link, $details=FALSE)
+	/* Analyze Words */
+	function analyze_words_link($words_link, $details=FALSE)
 	{
 		$analysis				= array();
 		$words					= array();
@@ -93,6 +128,9 @@ class Emoome
 			}
 		}
 		
+		// Remove Words with only '1' count
+		$words = array_diff($words, array(1));
+		
 		// Output Type
 		$language_total = 0;
 				
@@ -124,7 +162,7 @@ class Emoome
 		return $analysis;
 	}
 	
-	
+	/* Analyze Log  */
 	function analyze_log($log, $details=FALSE)
 	{
 		$analysis				= array();

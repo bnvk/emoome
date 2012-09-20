@@ -32,6 +32,7 @@ var ApplicationRouter = Backbone.Router.extend(
 		"record/:view"			: "recordViews",
 		"visualize"				: "visualize",
 		"visualize/language"	: "visualizeLanguage",
+		"visualize/search"		: "visualizeSearch",
 		"settings"				: "settingsViews",
 		"settings/:view"		: "settingsViews"
 	},
@@ -176,6 +177,11 @@ var ApplicationRouter = Backbone.Router.extend(
 		{				
 			VisualizeLanguage.renderLanguage();
 		}
+	},
+	visualizeSearch: function()
+	{		
+		// Instantiate Search
+		VisualizeSearch = new SearchBox({ el: $("#container") });	
 	},
 	settingsViews: function(view)
 	{	

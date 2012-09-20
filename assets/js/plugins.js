@@ -573,7 +573,7 @@ var mysqlDateParser = function(str)
 	return api;
 }
 
-
+/* MISC HELPER FUNCTIONS */
 function countElementsArray(item, array)
 {
     var count = 0;
@@ -585,3 +585,40 @@ function countElementsArray(item, array)
     return count;
 }
 
+function determineHourStart(time, meridian)
+{
+	var result = 0;
+	if ((meridian == 'PM') && (time != 12))
+	{
+		var time = parseFloat(time).toFixed(2);
+		result = parseInt(time) + 12;
+	}
+	else
+	{
+		var time = parseFloat(time).toFixed(2);
+		result = parseInt(time);
+	}	
+
+	return result;
+}
+
+function determineHourEnd(time, meridian)
+{
+	var result = 0;
+	if ((meridian == 'AM') && (time == 12))
+	{
+		result = '00';
+	}
+	else if ((meridian == 'PM') && (time != 12))
+	{
+		var time = parseFloat(time).toFixed(2);
+		result = parseInt(time) + 12;
+	}
+	else
+	{
+		var time = parseFloat(time).toFixed(2);
+		result = parseInt(time);
+	}	
+
+	return result;
+}

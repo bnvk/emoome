@@ -111,6 +111,45 @@ $config['emoome_word_used'] = array(
 	'E' => 'experience'
 );
 
+$config['emoome_sentiment_emotion'] = array(
+	'10' 	=> "joy",
+	'9' 	=> "happy",
+	'8' 	=> "amazement",
+	'7' 	=> "serenity",
+	'6' 	=> "interest",
+	'5' 	=> "optimism",
+	'4' 	=> "happy",
+	'3' 	=> "goofy",
+	'2' 	=> "acceptance",
+	'1' 	=> "surprise",
+	'0' 	=> "neutral",
+	'-1' 	=>"annoyed",
+	'-2' 	=> "crazy",
+	'-3' 	=> "disapproval",
+	'-4' 	=> "disgust",
+	'-5' 	=> "fear",
+	'-6' 	=> "sad",
+	'-7' 	=> "shame",
+	'-8' 	=> "grief",
+	'-9' 	=> "loathing",
+	'-10' 	=> "anger",
+	'-11'	=> "rage"
+);
+
+$config['emoome_sentiment_emotion_array'] = array(
+	'10' 		=> array(), // 10
+	'8' 		=> array(), // 8
+	'6' 		=> array(), // 6
+	'4' 		=> array(), // 4
+	'2'			=> array(),	// 2
+	'0' 		=> array(), // 0
+	'-2'		=> array(), // -2
+	'-4'		=> array(), // -4	
+	'-6' 		=> array(), // -6
+	'-8'		=> array(), // -8
+	'-10' 		=> array()  // -10
+);
+
 $config['emoome_speech_types'] = array(
 	'V' => 'verb', 
 	'N' => 'noun', 
