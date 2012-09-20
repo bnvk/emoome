@@ -1040,7 +1040,7 @@ SearchBox = Backbone.View.extend(
 				if (result.status == 'success')
 				{
 					// New View
-					$('#search_visualization_title').html(result.log_count + ' entries found during those hours');
+					$('#search_visualization_title').html(result.log_count + ' entries found during those hours').hide().delay(250).fadeIn();
 					
 					var NewSearch = new ResultSearch({ el: $("#search_visualization") });
 			  		NewSearch.renderHourSearch(result);
@@ -1077,32 +1077,22 @@ ResultSearch = Backbone.View.extend(
 	    		{
 		    		if (topic != 'undecided')
 		    		{
-		    			topics += '<div class="search_topic_container"><div class="search_topic_icon icons_topics_' + topic + '"></div><span class="search_topic_text">' + topics_data[topic] + ' x ' + topic + '</span></div>';
+		    			topics += '<div class="search_topic_container"><div class="icons_topics icons_topics_' + topic + '"></div><span class="search_topic_text"><span style="color:#999; font-style:italic;">' + topics_data[topic] + '</span> &nbsp;' + topic + '</span></div>';
 		    		}
 	    		}
-	    		
-	    		// WORDS
-	    		var words_data = mood_value.words;
-	    		var words      = '';
-	    		
-	    		for (var word in words_data)
-	    		{
-		    		words += words_data[word] + ' ' + word + '<br>';
-	    		}
-	    		
-	    		
+
+
 				// INJECT DATA
 		        var mood_data = { 
 		        	mood      	: mood,
 		        	emoticon 	: '<img src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + mood  + '.png">',
-		        	topics  	: topics + '<div class="clear"></div>',
-		        	words   	: words
+		        	topics  	: topics + '<div class="clear"></div>'
 		        };
 	
 		        var mood_item = _.template($("#search_hour_mood").html(), mood_data);
 		        
 		        // INJECT HTML
-		        $('#search_visualization').append(mood_item);
+		        $('#search_visualization').append(mood_item).hide().delay(500).fadeIn();
 
 
 		        // LANGUAGE PIE CHART
@@ -1126,6 +1116,46 @@ ResultSearch = Backbone.View.extend(
 			    {
 			    	colors : types_colors,
 			    });
+			    
+			    
+	    		// WORDS
+	    		$search_mood_words = $('#search_mood_words_' + mood);
+	    		var words_data	= mood_value.words;
+	    		var words_count	= 0;
+	    		var words      	= '';
+
+	    		for (var word in words_data)
+	    		{
+	    			words += words_data[word] + ' ' + word + '<br>';
+	    		
+	    			//if (words_count < 10)
+	    			//{
+		    			if ($('#search_words_' + mood + '_' + words_data[word]).length)
+		    			{
+		    				console.log('here item ADDED');
+		    			
+			    			// Add Word To Row
+			    			$('#search_words_' + mood + '_words_' + words_data[word]).append(', ' + word);
+			    		}
+			    		else
+			    		{
+			    			console.log('here item NOT ADDED ' + words_data[word] + ' - ' + word);
+			    		
+							// Create HTML Row
+							$search_mood_words.append('<div id="search_words_' + mood + '_' + words_data[word] + '" class="search_words_row">\
+								<div class="search_words_count">' + words_data[word] + '</div>\
+								<div id="search_words_' + mood + '_words_' + words_data[word] + '" class="search_words_words">' + word + '</div>\
+								<div class="clear"></div>\
+							</div>\
+							<div class="search_common_words_line"></div>');
+
+							words_count++;
+			    		}
+		    		//}
+	    		}			    
+			    
+			    //$('#search_mood_words_' + mood).append(words);
+			    
 			}
 	    });
 

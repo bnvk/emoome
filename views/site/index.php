@@ -399,7 +399,7 @@
 		<div class="search_mood_emoticon"><%= emoticon %></div>
 		<div class="search_mood_pie_chart" id="search_mood_language_<%= mood %>"></div>
 		<div class="search_mood_topics"><%= topics %></div>
-		<div class="search_mood_words"><%= words %></div>
+		<div class="search_mood_words" id="search_mood_words_<%= mood %>"></div>
 	</div>		
 </script>
 
