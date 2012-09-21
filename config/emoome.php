@@ -37,6 +37,7 @@ $config['emoome_word_types_count'] = array(
 
 $config['emoome_word_types_sub'] = array(
 	'A'	 => 'animals',
+	'AG' => 'age',
 	'AR' => 'architecture',
 	'AL' => 'alcohol',
 	'C'  => 'common',
@@ -77,6 +78,7 @@ $config['emoome_word_types_sub'] = array(
 
 $config['emoome_word_types_sub_count'] = array(
 	'A'	 => 0,
+	'AG' => 0,
 	'AR' => 0,
 	'AL' => 0,
 	'C'  => 0,

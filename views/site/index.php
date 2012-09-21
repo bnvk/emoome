@@ -326,7 +326,7 @@
 			<div id="all_time"></div>
 		</div>
 		<div class="clear"></div>
-		<p id="your_language_map" class="hide"><a href="#/visualize/language" class="button">Map</a> <a href="#/visualize/search" class="button">Search</a></p>
+		<p id="your_language_map" class="hide"><a href="#/visualize/language" class="button">Language</a> <a href="#/visualize/search" class="button">Search</a></p>
 	</div>
 	<div id="visualize_common" class="hide">
 		<h2>Common Words & Feelings</h2>
@@ -390,8 +390,10 @@
 	<input type="button" name="search_button" id="search_button" value="Go">
 	<div class="clear"></div>
 	
-	<h3 id="search_visualization_title"></h3>
-	<div id="search_visualization"></div>
+	<h2 id="search_visualization_title"></h2>
+	<div id="search_visualization">
+		<h3>~What would you like to find out about yourself?</h3>
+	</div>
 </script>	
 
 <script type="text/template" id="search_hour_mood">

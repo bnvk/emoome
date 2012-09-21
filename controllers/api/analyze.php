@@ -204,8 +204,7 @@ class Analyze extends Oauth_Controller
 			$message = array('status' => 'error', 'message' => 'Could not find that log');	
 		}
 
-		echo '<pre>';
-        print_r($message);//$this->response($message, 200);
+        $this->response($message, 200);
 	}
 
 

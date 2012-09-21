@@ -129,7 +129,7 @@ class Emoome
 		}
 		
 		// Remove Words with only '1' count
-		$words = array_diff($words, array(1));
+		//$words = array_diff($words, array(1));
 		
 		// Output Type
 		$language_total = 0;

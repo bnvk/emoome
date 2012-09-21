@@ -765,11 +765,9 @@ var VisualizeView = Backbone.View.extend(
 	    var r = Raphael(element, 575, 375);
 	    pie = r.piechart(175, 175, 150, word_values,
 	    {
-	    	colors 	 : types_colors,
-	    	legend	 : word_percents,
-	    	'stroke-width' : 1, 'stroke': '#c3c3c3',
-	    	legendpos: "east"
-	    }).attr({"font": "24px 'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-family": "'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-size": 24, "font-weight": 100, "letter-spacing": 2});
+	    	colors 	 : types_colors
+	    });
+	    //.attr({"font": "24px 'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-family": "'Ralway', 'Helvetica Neue', Helvetica, Arial, Sans-Serif", "font-size": 24, "font-weight": 100, "letter-spacing": 2});
 
 	    pie.hover(function()
 	    {	    
@@ -832,8 +830,8 @@ var VisualizeView = Backbone.View.extend(
 		$.each(VisualizeModel.get('strong_experiences'), function(key, experience)
 		{
 			var color	 = EmoomeSettings.type_colors[experience.type];
-			var size	 = experience.count * 10; //visualization_sizes[user_data.source].circle_strong_experiences;
-			var svg_size = 8 * 10; //visualization_sizes[user_data.source].circle_strong_experiences;
+			var size	 = experience.count * 10; 
+			var svg_size = 8 * 10;
 			var position = svg_size / 2;
 
 			// Create HTML Row
@@ -1067,20 +1065,29 @@ ResultSearch = Backbone.View.extend(
    
     	$.each(result.moods, function(mood, mood_value)
 	    {
+	    	    
 	    	if (mood != 'undefined')
 	    	{
 	    		// TOPICS
 	    		var topics_data = mood_value.topics;
 	    		var topics      = '';
+	    		var topics_count= _.values(mood_value.topics).length;
 	    	
 	    		for (var topic in topics_data)
 	    		{
 		    		if (topic != 'undecided')
 		    		{
-		    			topics += '<div class="search_topic_container"><div class="icons_topics icons_topics_' + topic + '"></div><span class="search_topic_text"><span style="color:#999; font-style:italic;">' + topics_data[topic] + '</span> &nbsp;' + topic + '</span></div>';
+		    			if ((topics_count > 6) && (topics_data[topic] > 1))
+		    			{
+		    				topics += '<div class="search_topic_container"><div class="icons_topics icons_topics_' + topic + '"></div><span class="search_topic_count">' + topics_data[topic] + '</span> <span class="search_topic_text">' + topic + '</span></div>';
+		    			}
+		    			else if (topics_count < 6)
+		    			{
+		    				topics += '<div class="search_topic_container"><div class="icons_topics icons_topics_' + topic + '"></div><span class="search_topic_count">' + topics_data[topic] + '</span> <span class="search_topic_text">' + topic + '</span></div>';
+		    			}
+		    					
 		    		}
 	    		}
-
 
 				// INJECT DATA
 		        var mood_data = { 
@@ -1117,45 +1124,37 @@ ResultSearch = Backbone.View.extend(
 			    	colors : types_colors,
 			    });
 			    
-			    
+
 	    		// WORDS
 	    		$search_mood_words = $('#search_mood_words_' + mood);
-	    		var words_data	= mood_value.words;
-	    		var words_count	= 0;
-	    		var words      	= '';
+	    		var words_data = mood_value.words;
 
 	    		for (var word in words_data)
 	    		{
-	    			words += words_data[word] + ' ' + word + '<br>';
-	    		
-	    			//if (words_count < 10)
-	    			//{
-		    			if ($('#search_words_' + mood + '_' + words_data[word]).length)
-		    			{
-		    				console.log('here item ADDED');
-		    			
-			    			// Add Word To Row
-			    			$('#search_words_' + mood + '_words_' + words_data[word]).append(', ' + word);
-			    		}
-			    		else
-			    		{
-			    			console.log('here item NOT ADDED ' + words_data[word] + ' - ' + word);
-			    		
-							// Create HTML Row
-							$search_mood_words.append('<div id="search_words_' + mood + '_' + words_data[word] + '" class="search_words_row">\
-								<div class="search_words_count">' + words_data[word] + '</div>\
-								<div id="search_words_' + mood + '_words_' + words_data[word] + '" class="search_words_words">' + word + '</div>\
-								<div class="clear"></div>\
-							</div>\
-							<div class="search_common_words_line"></div>');
+	    			if ($('#search_words_' + mood + '_' + words_data[word]).length)
+	    			{	
+	    				$search_words_mood_words = $('#search_words_' + mood + '_words_' + words_data[word]);
+	    				var word_count = $search_words_mood_words.data('word_count');
+	    				word_count = parseInt(word_count) + 1;
 
-							words_count++;
-			    		}
-		    		//}
+		    			// Add Word To Row	
+	    				if (word_count <= 10)	
+	    				{
+		    				$search_words_mood_words.data('word_count', word_count);
+		    				$search_words_mood_words.append(', ' + word);
+		    			}
+		    		}
+		    		else
+		    		{			    		
+						// Create HTML Row
+						$search_mood_words.append('<div id="search_words_' + mood + '_' + words_data[word] + '" class="search_words_row">\
+							<div class="search_words_count">' + words_data[word] + '</div>\
+							<div id="search_words_' + mood + '_words_' + words_data[word] + '" data-word_count="1" class="search_words_words">' + word + '</div>\
+							<div class="clear"></div>\
+						</div>\
+						<div class="search_common_words_line"></div>');
+		    		}
 	    		}			    
-			    
-			    //$('#search_mood_words_' + mood).append(words);
-			    
 			}
 	    });
 
