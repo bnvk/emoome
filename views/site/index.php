@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="<?= $site_title ?>"/>
 <meta property="og:description" content="<?= $site_description ?>">
 
-<link rel="stylesheet" media="screen" href="<?= $site_assets ?>css/site.css" type="text/css" />
+<link rel="stylesheet" media="screen" href="<?= module_assets_url('emoome') ?>css/site.css" type="text/css" />
 
 <!-- Apple Icons -->
 <link rel="apple-touch-icon-precomposed" href="<?= $site_assets ?>apple-touch-icon-precomposed.png" />

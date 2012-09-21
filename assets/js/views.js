@@ -421,12 +421,12 @@ var RecordFeelingView = Backbone.View.extend(
 
 		// Emoticons
 		var emoticons 		= '';
-		var emoticons_width	= 65;	
+		var emoticons_width	= 765;	
 	
 		$.each(EmoomeSettings.core_emotions, function(key, value)
 		{
 			emoticons += '<div class="emoticon_item"><img data-feeling="' + value + '" src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + value + '.png"><span>' + value + '</span></div>';
-			emoticons_width += 465;
+			emoticons_width += 395;
 		});
 
 		$('#emoticons').html(emoticons).width(emoticons_width);
