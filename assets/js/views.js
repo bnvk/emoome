@@ -1060,11 +1060,10 @@ ResultSearch = Backbone.View.extend(
     },
     render: function() {},
     renderHourSearch: function(result)
-    {
-    	console.log(result);
-   
+    {   
     	$.each(result.moods, function(mood, mood_value)
 	    {
+	    	console.log(mood_value);
 	    	    
 	    	if (mood != 'undefined')
 	    	{
@@ -1093,6 +1092,7 @@ ResultSearch = Backbone.View.extend(
 		        var mood_data = { 
 		        	mood      	: mood,
 		        	emoticon 	: '<img src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + mood  + '.png">',
+		        	log_count   : mood_value.log_count,
 		        	topics  	: topics + '<div class="clear"></div>'
 		        };
 	

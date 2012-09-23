@@ -9,17 +9,17 @@ var ApplicationRouter = Backbone.Router.extend(
 
 		// Public Views
 		this.indexView				= new ContentView('#index');
-		this.authView				= new AuthView({ el: $('#container') });
+		this.authView				= new AuthView({ el: $('#content') });
 		this.logoutView				= new ContentView('#logout');
 		this.notFoundView			= new ContentView('#not_found');
 
 		// Record Views
 		this.recordIndex			= new ContentView('#record');
-		this.recordFeeling			= new RecordFeelingView({ el: $('#container') });
+		this.recordFeeling			= new RecordFeelingView({ el: $('#content') });
 
 		// Settings Views
 		this.settingsIndex			= new ContentView('#settings');
-		this.settingsViews			= new SettingsView({ el: $('#container')});
+		this.settingsViews			= new SettingsView({ el: $('#content')});
 	},
 	routes: {
 		"" 						: "index",
@@ -136,14 +136,14 @@ var ApplicationRouter = Backbone.Router.extend(
 						VisualizeModel.set({ data : 'updated' });
 	
 						// Render View
-						VisualizeViews = new VisualizeView({ el: $('#container')});
+						VisualizeViews = new VisualizeView({ el: $('#content')});
 					}
 			  	}			  			
 			});
 		}
 		else
 		{
-			VisualizeViews = new VisualizeView({ el: $('#container')});			
+			VisualizeViews = new VisualizeView({ el: $('#content')});			
 		}	
 	},
 	visualizeLanguage: function()
@@ -151,7 +151,7 @@ var ApplicationRouter = Backbone.Router.extend(
 		if (UserData.get('logged') != 'yes') Backbone.history.navigate('#/login', true);
 
 		// Instantiate Views
-		VisualizeLanguage = new VisualizeLanguageView({ el: $('#container')});
+		VisualizeLanguage = new VisualizeLanguageView({ el: $('#content')});
 
 		// Get / Render Visualize Language		
 		if (VisualizeLanguageModel.get('data') != 'updated')
@@ -181,7 +181,7 @@ var ApplicationRouter = Backbone.Router.extend(
 	visualizeSearch: function()
 	{		
 		// Instantiate Search
-		VisualizeSearch = new SearchBox({ el: $("#container") });	
+		VisualizeSearch = new SearchBox({ el: $("#content") });	
 	},
 	settingsViews: function(view)
 	{	

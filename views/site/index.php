@@ -40,7 +40,9 @@
 </header>
 
 <!-- Where The Magic Happens -->
-<div id="container"></div>
+<div id="container">
+	<div id="content"></div>
+</div>
 
 <!-- Footer -->
 <footer>
@@ -263,7 +265,7 @@
 			<h1>How do you feel right now?</h1>
 			<p><input type="text" name="log_feeling" id="log_feeling_value" placeholder="Good" value=""></p>
 			<p><button id="log_feel_next">Next</button></p>
-			<p><a href="#" class="log_save_feeling">Finish</a></p>
+			<!-- <p><a href="#" class="log_save_feeling">Finish</a></p> --> 
 		</div>
 		<!--  Emoticons -->
 		<div id="record_feeling_emoticons">
@@ -281,7 +283,7 @@
 		<h1>What is one thing you did today?</h1>
 		<p><textarea name="log_experience" id="log_experience_value" placeholder="Walked my pet dog"></textarea></p>
 		<p><button id="log_experience_next">Next</button></p>
-		<p><a href="#" class="log_save_feeling">Finish</a></p>
+		<!-- <p><a href="#" class="log_save_feeling">Finish</a></p> -->
 	</div>
 </script>
 
@@ -400,6 +402,8 @@
 	<div id="mood_bar_<%= mood %>" class="search_mood_row">
 		<div class="search_mood_emoticon"><%= emoticon %></div>
 		<div class="search_mood_pie_chart" id="search_mood_language_<%= mood %>"></div>
+		<div class="search_mood_stats">Based on <%= log_count %> Logs</div>
+		
 		<div class="search_mood_topics"><%= topics %></div>
 		<div class="search_mood_words" id="search_mood_words_<%= mood %>"></div>
 	</div>		
@@ -590,7 +594,7 @@ var base_url = '<?= base_url() ?>';
 $(document).ready(function()
 {
 	// Create Router
-	var Router = new ApplicationRouter($('#container'));
+	var Router = new ApplicationRouter($('#content'));
 
 	// History
 	Backbone.history.start();

@@ -96,6 +96,7 @@ class Emoome
 	function analyze_words_link($words_link, $details=FALSE)
 	{
 		$analysis				= array();
+		$log_ids				= array();
 		$words					= array();
 		$word_used				= config_item('emoome_word_used');
 		$word_type				= config_item('emoome_word_types');
@@ -126,6 +127,13 @@ class Emoome
 			{
 				$words[$word->word] = 1;
 			}
+			
+			// Logs Count
+			if (!in_array($word->log_id, $log_ids))
+			{
+				$log_ids[] = $word->log_id;
+			}
+			
 		}
 		
 		// Remove Words with only '1' count
@@ -156,8 +164,8 @@ class Emoome
 		
 		// Output Words
 		arsort($words);
-		$analysis['words'] = $words;		
-
+		$analysis['words']		= $words;
+		$analysis['log_count']	= count($log_ids);		
 
 		return $analysis;
 	}
