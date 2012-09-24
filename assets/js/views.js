@@ -425,7 +425,7 @@ var RecordFeelingView = Backbone.View.extend(
 	
 		$.each(EmoomeSettings.core_emotions, function(key, value)
 		{
-			emoticons += '<div class="emoticon_item"><img data-feeling="' + value + '" src="' + base_url + 'application/modules/emoome/assets/images/emoticons-' + value + '.png"><span>' + value + '</span></div>';
+			emoticons += '<div class="emoticon_item"><div class="record_feeling_emoticon"><span data-feeling="' + value + '" class="emoticons-' + value + '"></span></div><div class="record_feeling_emoticon_text">' + value + '</div></div>';
 			emoticons_width += 395;
 		});
 
@@ -865,8 +865,9 @@ var VisualizeLanguageView = Backbone.View.extend(
 		var circle_y	= 0;
 		var circle_size	= 10;
 		var height		= 40;
-		var logs		= {}
-		var words		= {}
+		var logs		= {};
+		var words		= {};
+		var log_sentiments	= {};
 		var canvas_width= 0;
 		var color_height= {};
 		var logs_data	= VisualizeLanguageModel.get('logs');
@@ -877,12 +878,21 @@ var VisualizeLanguageView = Backbone.View.extend(
 		{
 			if (words[words_data[link].log_id] === undefined)
 			{			
-				words[words_data[link].log_id] = new Array(words_data[link].type);  								
+				words[words_data[link].log_id] = new Array(words_data[link].type);								
 			}
 			else
 			{
 				words[words_data[link].log_id].push(words_data[link].type);
 			}
+			
+			if (log_sentiments[words_data[link].log_id] === undefined)
+			{
+				log_sentiments[words_data[link].log_id] = new Array(words_data[link].sentiment);
+			}
+			else
+			{
+				log_sentiments[words_data[link].log_id].push(words_data[link].sentiment);				
+			}			
 		}
 
 		// Group Logs
@@ -914,6 +924,7 @@ var VisualizeLanguageView = Backbone.View.extend(
 		$word_map_container = $('#user_word_map');
 		var set_width = 80 - 125;
 
+
 		// Loop Groups of Types			
   		$.each(words, function(log_id, value)
   		{	  		
@@ -926,8 +937,8 @@ var VisualizeLanguageView = Backbone.View.extend(
 				
 				if (jQuery.inArray('U', value) < 0)
 				{
-					$word_map_container.append('<div class="word_map_column" data-experience="' + logs[log_id].experience + '" data-created_date="' + logs[log_id].created_date + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
-	
+					$word_map_container.append('<div class="word_map_column" data-experience="' + logs[log_id].experience + '" data-sentiment="' + log_sentiments[log_id] + '" data-created_date="' + logs[log_id].created_date + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
+
 					// Make Paper
 				    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
 					
@@ -959,8 +970,12 @@ var VisualizeLanguageView = Backbone.View.extend(
 		// Do ToolTips
 		$('.word_map_column').qtip({
 			content: {
-				text: function(api) {
-					return $(this).data('experience') + ' <span>' + mysqlDateParser($(this).data('created_date')).date('short') + '</span>';
+				text: function(api)
+				{
+					var sentiment = sentimentFromArray($(this).data('sentiment').split(','));
+					var tooltip	  = '<span class="language-map-emoticons emoticons-small-' + EmoomeSettings.core_emotions[sentiment] + '"></span>';
+					tooltip		 +='<span class="language-map-experience">' + $(this).data('experience') + ' <i>' + mysqlDateParser($(this).data('created_date')).date('short') + '</i></span>';
+					return tooltip;
 				}
 			},
 			position: {

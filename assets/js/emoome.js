@@ -82,35 +82,22 @@ b,c){var d;d=b&&b.hasOwnProperty("constructor")?b.constructor:function(){a.apply
 */
 
 
-/* Utility Functions */
-function renderSentimentHuman(sentiment, count)
+function sentimentFromArray(sentiment_array)
 {
+	var count 			= sentiment_array.length;
+	var total 			= 0;
 	var absolute_good	= 5 * count;
 	var absolute_bad 	= -5 * count;
 	var	range_good		= absolute_good / 4;
 	var	range_bad		= absolute_bad / 4;
 	var feeling			= '';
-	
-	if (sentiment > range_good)
+
+	for (sentiment in sentiment_array)
 	{
-		feeling = 'Really Good';
-	}
-	else if (sentiment > 0)
-	{
-		feeling = 'Decent';
-	}
-	else if (sentiment < 0)
-	{
-		feeling = 'Could Be Better';
-	}
-	else if (sentiment < range_bad)
-	{
-		feeling = 'Really Bad';
-	}
-	else
-	{
-		feeling = 'Ok';
+		total += parseInt(sentiment_array[sentiment]); 
 	}
 	
+	feeling = Math.round(total / count);
+
 	return feeling;
 }
