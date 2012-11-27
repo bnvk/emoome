@@ -97,6 +97,7 @@ class Emoome
 	{
 		$analysis				= array();
 		$log_ids				= array();
+		$language				= array();
 		$words					= array();
 		$word_used				= config_item('emoome_word_used');
 		$word_type				= config_item('emoome_word_types');
@@ -147,11 +148,13 @@ class Emoome
 		    $type   	 	 = $word_type[$type];
 		    $percent 		 = $count;
 		    $language_total  = $language_total + $count;
-		    $analysis['language'][$type] = $percent;
+		    $language[$type] = $percent;
 		}
-		
-		$analysis['language_total'] = $language_total;
-		
+
+		arsort($language);
+		$analysis['language']		= $language;
+		$analysis['language_total']	= $language_total;
+
 		// Output Type Sub
 		foreach (array_filter($word_type_sub_count) as $type_sub => $count)
 		{
@@ -169,7 +172,8 @@ class Emoome
 
 		return $analysis;
 	}
-	
+
+
 	/* Analyze Log  */
 	function analyze_log($log, $details=FALSE)
 	{
