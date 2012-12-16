@@ -137,7 +137,6 @@ class Analyze extends Oauth_Controller
 				}
 			}
 
-
 			// OUTPUT DATA
 			$message = array(
 				'status' 				=> 'success', 
