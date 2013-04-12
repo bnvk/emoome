@@ -159,6 +159,7 @@ class Analyze extends Oauth_Controller
         $this->response($message, 200);
 	}
 
+
 	function log_authd_get()
 	{
 		if ($log = $this->logs_model->get_log($this->get('id')))
@@ -181,6 +182,7 @@ class Analyze extends Oauth_Controller
 
         $this->response($message, 200);
 	}
+
 	
 	function last_five_get()
 	{

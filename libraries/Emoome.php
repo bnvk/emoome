@@ -102,10 +102,19 @@ class Emoome
 		$word_used				= config_item('emoome_word_used');
 		$word_type				= config_item('emoome_word_types');
 		$word_type_sub			= config_item('emoome_word_types_sub');
-		$word_type_count		= config_item('emoome_word_types_count');
-		$word_type_sub_count	= config_item('emoome_word_types_sub_count');
+		$word_type_count		= array();
+		$word_type_sub_count	= array();
 		$sentiment				= 0;
 		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 	
+
+		// Make Count Arrays
+		foreach ($word_type as $key => $val) {
+			$word_type_count[$key] = 0;
+		}
+
+		foreach ($word_type_sub as $key => $val) {
+			$word_type_sub_count[$key] = 0;
+		}
 
 		// Analyze Words
 		foreach ($words_link as $word)
