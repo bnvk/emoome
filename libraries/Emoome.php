@@ -22,6 +22,9 @@ class Emoome
         $this->ci->load->model('logs_model');
         $this->ci->load->model('thoughts_model');
         $this->ci->load->model('words_model');
+
+        // Language Files
+		$this->ci->lang->load('words');
 	}
 
 	/* Users Meta Maps */
@@ -30,13 +33,12 @@ class Emoome
 		$users_meta	= $this->ci->emoome_model->get_users_meta_map($user_id);
 		$word_count	= array();
 
-		if ($users_meta)
-		{
+		if ($users_meta):
+
 			// Loops Existing Word Types
-			foreach (config_item('emoome_word_types') as $key => $type)
-			{
+			foreach (config_item('emoome_word_types') as $key => $type):
 	 			$word_count[$type] = $this->ci->words_model->count_user_word_type($user_id, $key);
-			}			
+			endforeach;			
 			
 			$update_data = array(
 				'user_id'		=> $user_id,
@@ -48,11 +50,9 @@ class Emoome
 			);
 
 			return $this->ci->emoome_model->update_users_meta_map($users_meta->user_meta_id, $update_data);
-		}
-		else
-		{
+		else:
 			return $this->ci->emoome_model->add_users_meta_map($user_id);
-		}
+		endif;
 
 		return FALSE;
 	}
@@ -62,10 +62,9 @@ class Emoome
 	{
 		$ids = array();
 			
-		foreach ($object as $item)
-		{
+		foreach ($object as $item):
 			$ids[] = $item->$param;	
-		}
+		endforeach;
 		
 		return $ids;
 		
@@ -77,15 +76,12 @@ class Emoome
 		// GENERATE MOOD log_ids
 		$moods = array();
 				
-		foreach ($words as $word)
-		{
-			if ($word->used == 'F')
-			{
+		foreach ($words as $word):
+			if ($word->used == 'F'):
 				$sentiment = $word->sentiment * 2;
-				
 				$moods[$sentiment][] = $word->log_id;	
-			}
-		}
+			endif;
+		endforeach;
 				
 		krsort($moods);
 		
@@ -109,8 +105,8 @@ class Emoome
 		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 	
 
 		// Analyze Words
-		foreach ($words_link as $word)
-		{
+		foreach ($words_link as $word):
+
 			// Type
 			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
 
@@ -121,21 +117,18 @@ class Emoome
 			$sentiment += $word->sentiment * $sentiment_normalize[$word->used];
 			
 			// Words
-			if (array_key_exists($word->word, $words))
-			{
+			if (array_key_exists($word->word, $words)):
 				$words[$word->word] = $words[$word->word] + 1;			
-			}
-			else
-			{
+			else:
 				$words[$word->word] = 1;
-			}
+			endif;
 			
 			// Logs Count
-			if (!in_array($word->log_id, $log_ids))
-			{
+			if (!in_array($word->log_id, $log_ids)):
 				$log_ids[] = $word->log_id;
-			}
-		}
+			endif;
+
+		endforeach;
 		
 		// Remove Words with only '1' count
 		//$words = array_diff($words, array(1));
@@ -143,24 +136,22 @@ class Emoome
 		// Output Type
 		$language_total = 0;
 				
-		foreach (array_filter($word_type_count) as $type => $count)
-		{
+		foreach (array_filter($word_type_count) as $type => $count):
 		    $type   	 	 = $word_type[$type];
 		    $percent 		 = $count;
 		    $language_total  = $language_total + $count;
 		    $language[$type] = $percent;
-		}
+		endforeach;
 
 		arsort($language);
 		$analysis['language']		= $language;
 		$analysis['language_total']	= $language_total;
 
 		// Output Type Sub
-		foreach (array_filter($word_type_sub_count) as $type_sub => $count)
-		{
+		foreach (array_filter($word_type_sub_count) as $type_sub => $count):
 		    $type_sub_word = $word_type_sub[$type_sub];
 		    $analysis['topics'][$type_sub_word] = $word_type_sub_count[$type_sub];
-		}		
+		endforeach;
 
 		// Output Sentiment
 		$analysis['sentiment']	= $sentiment;
@@ -192,8 +183,8 @@ class Emoome
 		$experience_words = $this->ci->words_model->get_words_words(explode(' ', $log->experience));
 		
 		// Analyze Experience
-		foreach ($experience_words as $word)
-		{
+		foreach ($experience_words as $word):
+
 			// Type
 			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
 
@@ -202,11 +193,11 @@ class Emoome
 			
 			// Sentiment
 			$sentiment += $word->sentiment * $sentiment_normalize['E'];
-		}
+		endforeach;
 		
 		// Analyze Words
-		foreach ($log->words as $word)
-		{
+		foreach ($log->words as $word):
+
 			// Type
 			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
 
@@ -217,30 +208,25 @@ class Emoome
 			$sentiment += $word->sentiment * $sentiment_normalize[$word->used];
 			
 			// Words
-			if (array_key_exists($word->word, $words))
-			{
-				$words[$word->word] = $words[$word->word] + 1;			
-			}
-			else
-			{
+			if (array_key_exists($word->word, $words)):
+				$words[$word->word] = $words[$word->word] + 1;
+			else:
 				$words[$word->word] = 1;
-			}
-		}
+			endif;
+		endforeach;
 
 		// Output Type
-		foreach (array_filter($word_type_count) as $type => $count)
-		{
+		foreach (array_filter($word_type_count) as $type => $count):
 		    $type    = $word_type[$type];
 		    $percent = $count; //percent($count, 4 + count($experience_words));
 		    $analysis['language'][$type] = $percent;
-		}
+		endforeach;
 		
 		// Output Type Sub
-		foreach (array_filter($word_type_sub_count) as $type_sub => $count)
-		{
+		foreach (array_filter($word_type_sub_count) as $type_sub => $count):
 		    $type_sub_word = $word_type_sub[$type_sub];
 		    $analysis['topics'][$type_sub_word] = $word_type_sub_count[$type_sub];
-		}		
+		endforeach;
 
 		// Output Sentiment
 		$analysis['sentiment']	= $sentiment;
@@ -250,8 +236,7 @@ class Emoome
 		
 
 		// Details (full log result)
-		if ($details)
-		{
+		if ($details):
 			$analysis['user_id']	= $log->user_id;
 			$analysis['experience'] = $log->experience;
 			$analysis['type']		= $log->type;
@@ -259,10 +244,84 @@ class Emoome
 			$analysis['geo_lat']	= $log->geo_lat;
 			$analysis['geo_lon']	= $log->geo_lon;
 			$analysis['created_at'] = $log->created_date.' '.$log->created_time; 
-		}
+		endif;
 				
 		return $analysis;
 	}
-	
+
+	/* Analyze Log  */
+	function analyze_text($text, $filter_common=FALSE, $filter_mentions=FALSE)
+	{
+		// Clean Text
+		$words_split			= explode(' ', $text);
+		$words 					= array_map('strtolower', $words_split);
+
+		// Filter Common
+		if ($filter_common):
+			$words = array_diff($words, $this->ci->lang->line('common'));
+		endif;
+
+		// Filter Mentions
+		if ($filter_mentions):
+			$words = array_diff($words, $filter_mentions);
+		endif;
+
+		$words_trans	= implode(' ', $words);
+		$words_clean 	= preg_replace('/[^a-z0-9 ]/i', '', $words_trans);
+		$words 			= explode(' ', $words_clean);
+
+		// Get Words from DB
+		$experience_words = $this->ci->words_model->get_words_words($words);
+
+
+		// Set Vars
+		$analysis				= array();
+		$word_used				= config_item('emoome_word_used');
+		$word_type				= config_item('emoome_word_types');
+		$word_type_sub			= config_item('emoome_word_types_sub');
+		$word_type_count		= make_counter_array(config_item('emoome_word_types'));
+		$word_type_sub_count	= make_counter_array(config_item('emoome_word_types_sub'));
+		$sentiment				= 0;
+
+
+		// Analyze Experience
+		foreach ($experience_words as $word):
+
+			// Type
+			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
+
+			// Type Sub
+			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1;
+			
+			// Sentiment
+			$sentiment += $word->sentiment;
+		endforeach;
+		
+
+		// Output Type
+		foreach (array_filter($word_type_count) as $type => $count):
+		    $type    = $word_type[$type];
+		    $percent = $count; //percent($count, 4 + count($experience_words));
+		    $analysis['language'][$type] = $percent;
+		endforeach;
+
+		
+		// Output Type Sub
+		foreach (array_filter($word_type_sub_count) as $type_sub => $count):
+		    $type_sub_word = $word_type_sub[$type_sub];
+		    $analysis['topics'][$type_sub_word] = $word_type_sub_count[$type_sub];
+		endforeach;
+
+
+		// Output Sentiment
+		$analysis['sentiment']	= $sentiment;
+
+
+		// Output Words
+		$analysis['language_total'] = count($words);
+
+
+		return $analysis;
+	}
 	
 }

@@ -80,11 +80,14 @@ $config['emoome_word_types_sub'] = array(
 	'SC' =>	'science',
 	'SE' =>	'sexuality',
 	'SI' =>	'significance',
+	'SG' => 'sight',
+	'SL' =>	'sleep',
 	'SM' =>	'smell',
 	'SN' =>	'sound',
 	'SO' =>	'social',
 	'SP' =>	'sports',
 	'T'  =>	'talking',
+	'TA' =>	'taste',
 	'TE' =>	'technology',
 	'TI' =>	'time',
 	'TO' =>	'touch',
@@ -93,6 +96,7 @@ $config['emoome_word_types_sub'] = array(
 	'UR' =>	'urban',
 	'V'	 =>	'violence',
 	'W'  =>	'weapons',
+	'WR' => 'writing',
 	'WO' =>	'work'
 );
 
