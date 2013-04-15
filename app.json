@@ -1,0 +1,12 @@
+{
+	"app":"emoome",
+	"name":"Emoome",
+	"created":"2012-12-15",
+	"updated":"2012-12-15",
+	"creator":"Brennan Novak",
+	"category":"apps",
+	"links":{
+		"default":"home/emoome/people"
+	},
+	"launcher":"yes"
+}

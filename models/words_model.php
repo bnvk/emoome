@@ -208,10 +208,10 @@ class Words_model extends CI_Model
 
     // Words Taxonomy
  	// Interacts with "words_taxonomy"    
-    function increment_word_taxonomy($user_id, $word_id, $use)
+    function increment_word_taxonomy($user_id, $word_id, $used)
     {
-		$word_total		= $this->get_word_user_count($user_id, $word_id, $use);			
-		$word_taxonomy	= $this->get_word_taxonomy($user_id, $word_id, $use);
+		$word_total		= $this->get_word_user_count($user_id, $word_id, $used);			
+		$word_taxonomy	= $this->get_word_taxonomy($user_id, $word_id, $used);
 			
 		if ($word_taxonomy)
 		{
@@ -219,7 +219,7 @@ class Words_model extends CI_Model
 		}				
 		else
 		{
-			$this->add_word_taxonomy($user_id, $word_id, $word_total, $use);
+			$this->add_word_taxonomy($user_id, $word_id, $word_total, $used);
 		}    
     }
     

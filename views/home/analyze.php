@@ -50,7 +50,7 @@ $(document).ready(function()
 
 				$.ajax(
 				{
-					url			: base_url + 'api/emoome/analyze_text',
+					url			: base_url + 'api/emoome/analyze/text',
 					type		: 'POST',
 					dataType	: 'json',
 					data		: analyze_data,
@@ -62,7 +62,15 @@ $(document).ready(function()
 				  		var text_output		 = $('#analyze_text').val();
 				  		var common_words	 = '';
 				  		var words_type_count = parseInt(result.analysis.words_type_total_count);
-
+						var word_types = {
+							"E":"emotional",
+							"I":"intellectual",
+							"D":"descriptive",
+							"S":"sensory",
+							"A":"action",
+							"P":"physical",
+							"U":"undecided"
+						};
 
 				  		// Show Color Types
 						$.each(result.analysis.words, function(key, value)

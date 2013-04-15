@@ -197,7 +197,7 @@ class Utilities extends MY_Controller
 	{
 		$this->db->select('word_id, word, type_sub, speech');
 		$this->db->from('words');
-		$this->db->where('speech', NULL);
+		$this->db->where($this->uri->segment(4), NULL);
  		$query = $this->db->get();
  		$result = $query->result();
 
@@ -208,8 +208,15 @@ class Utilities extends MY_Controller
 		{
 			echo 'Updating: '.$word->word.'<br>';	
 		
-			$this->words_model->update_word($word->word_id, array('speech' => 'U'));
+			$this->words_model->update_word($word->word_id, array($this->uri->segment(4) => 'U'));
 		}
+	}
+	
+	function update_word_taxonomy()
+	{
+		
+		
+		
 	}
 
 }

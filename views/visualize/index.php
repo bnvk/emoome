@@ -16,7 +16,7 @@
 		<!-- <h3>Feeling: <span id="last_five_feeling"></span></h3> -->
 		<div id="last_five"></div>
 	</div>
-	
+
 	<div id="visualize_all_time">
 		<h3>All Entries</h3>
 		<div id="all_time"></div>
@@ -268,53 +268,5 @@ $(document).ready(function()
 		}				
 	}
 		
-	// Display Title
-	if (logs_count > 5 && user_data.source != 'mobile')
-	{
-		$('#visualize_title').fadeIn();
-	}
-
-	// Display Visualizations by log_count
-	if (logs_count < 5)
-	{
-		$('#logs_needed_count').html(5 - logs_count);
-		$('#visualize_waiting').fadeIn('slow');
-	}
-	else if (logs_count < 10)
-	{
-		$('#visualize_language').fadeIn();
-
-		//doWordTypes();
-		doLastFive();
-	}
-	else if (logs_count < 15)
-	{		
-		$('#visualize_language').fadeIn();
-
-		//doWordTypes();
-		doLastFive();
-		doAllTime();
-		doCommonLanguage();
-
-		if (user_data.source != 'mobile')
-		{
-			$('#your_language_map').fadeIn();
-		}
-	}
-	else
-	{
-		$('#visualize_language').fadeIn();
-
-		//doWordTypes();
-		doLastFive();
-		doAllTime();
-		doCommonLanguage();
-		doStrongExperiences();
-
-		if (user_data.source != 'mobile')
-		{
-			$('#your_language_map').fadeIn();
-		}
-	}
 });
 </script>

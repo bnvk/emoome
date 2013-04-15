@@ -6,8 +6,7 @@ class Logs_model extends CI_Model
         parent::__construct();
     }
  
- 	// Logs
- 	// Interacts with "logs"
+ 	// Logs - Interacts with "logs" table
 	function count_logs_user($user_id)
 	{		
  		$this->db->select('*');
@@ -39,15 +38,21 @@ class Logs_model extends CI_Model
 		
 	}
 	
-	function get_logs_user($user_id)
+	function get_logs_user($user_id, $limit=FALSE)
 	{
 		$this->db->select('*');
 		$this->db->from('logs');
 		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
 		$this->db->order_by('logs.created_date', 'desc');
 		$this->db->where('user_id', $user_id);
- 		$result = $this->db->get();
- 		return $result->result();	
+		
+		if ($limit)
+		{
+			$this->db->limit($limit);
+		}
+		
+ 		$logs = $this->db->get()->result();
+ 		return $logs;	
 	}
 
     function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
@@ -86,7 +91,7 @@ class Logs_model extends CI_Model
     }
 
 
-	function get_emotions_range_time($user_id, $start_hour, $end_hour, $order='type')
+	function get_logs_range_time($user_id, $start_hour, $end_hour, $order='type')
 	{
 		$start_time	= $start_hour.':00:00';
 		$end_hour	= $end_hour + 1;
@@ -95,13 +100,20 @@ class Logs_model extends CI_Model
 
 		$this->db->select('*');
 		$this->db->from('logs');
-		$this->db->join('words_link', 'words_link.log_id = logs.log_id');
-		$this->db->join('words', 'words.word_id = words_link.word_id');
+		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
 		$this->db->where('logs.user_id', $user_id);
-		$this->db->where('logs.created_time >=', $start_time);
-		$this->db->where('logs.created_time <=', $end_time);
-		$this->db->where('words_link.used', 'F');
-		$this->db->order_by('words.type', 'asc');
+		
+		if ($end_time < $start_time)
+		{
+			$this->db->where('logs.created_time >=', $start_time);
+			$this->db->where('logs.created_time >=', $end_time);		
+		}
+		else
+		{
+			$this->db->where('logs.created_time >=', $start_time);
+			$this->db->where('logs.created_time <=', $end_time);
+		}
+		
 		$this->db->order_by('logs.created_time', 'asc');
  		$result = $this->db->get();
  		$results = $result->result();

@@ -1,7 +1,5 @@
 <div id="search_container"></div>
 
-<script type="text/javascript" src="<?= base_url() ?>js/underscore.js"></script>
-<script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
 
 <script type="text/template" id="search_controls">
 	<h2 id="search_title">
@@ -118,7 +116,7 @@ SearchBox = Backbone.View.extend(
 		$.oauthAjax(
 		{
 			oauth 		: user_data,		
-			url			: base_url + 'api/emoome/get_emotions_range/range/time/start/' + options.start_hour + '/end/' + options.end_hour,
+			url			: base_url + 'api/emoome/analyze/time/start/' + options.start_hour + '/end/' + options.end_hour,
 			type		: 'GET',
 			dataType	: 'json',
 		  	success		: function(result)
