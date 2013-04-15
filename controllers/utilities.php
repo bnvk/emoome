@@ -6,9 +6,7 @@ class Utilities extends MY_Controller
         parent::__construct();
 
 		// Load Things
-		$this->load->config('emoome');
-		$this->lang->load('words');		
-		$this->load->model('emoome_model');
+        $this->load->library('emoome');
 
 		if ($this->session->userdata('user_level_id') != 1) redirect();
 	}
@@ -44,16 +42,16 @@ class Utilities extends MY_Controller
 				$sentiment = $value[1];
 	
 				// Check if added to database (add IF NOT or update)
-				$check_word = $this->emoome_model->check_word($word);
+				$check_word = $this->words_model->check_word($word);
 	
 				if ($check_word)
 				{
-					$this->emoome_model->update_word($check_word->word_id, array('sentiment' => $sentiment));
+					$this->words_model->update_word($check_word->word_id, array('sentiment' => $sentiment));
 					$output .= 'updated: '.$word.'<br>';
 				}
 				else
 				{
-					$this->emoome_model->add_word($word, TRUE);
+					$this->words_model->add_word($word, TRUE);
 					$output .= 'added: '.$word.'<br>';
 				}
 			}
@@ -67,15 +65,15 @@ class Utilities extends MY_Controller
 		if (($this->uri->segment(4) != '') AND ($this->uri->segment(5) != ''))
 		{
 			$field	= $this->uri->segment(4);
-			$word	= $this->emoome_model->check_word($this->uri->segment(5));
+			$word	= $this->words_model->check_word($this->uri->segment(5));
 		
 			if ($word->$field != 'U')
 			{
-				$words_stem = $this->emoome_model->get_words_stem($word->stem);
+				$words_stem = $this->words_model->get_words_stem($word->stem);
 				
 				foreach ($words_stem as $stem)
 				{
-					$this->emoome_model->update_word($stem->word_id, array($field => $word->$field));
+					$this->words_model->update_word($stem->word_id, array($field => $word->$field));
 
 					echo $stem->word.' ---> '.$stem->$field.' ---> '.$word->$field.'<br>';
 				}
@@ -116,7 +114,11 @@ class Utilities extends MY_Controller
 			foreach ($words_array as $word)
 			{
 				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
+<<<<<<< HEAD
 				$add_word = $this->emoome_model->add_word($word, TRUE, 'A', 'CL', 'NP', 1);
+=======
+				$add_word = $this->words_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
+>>>>>>> cfd15db82cbaa97cd3fc3bfe4cd6db5f199386cf
 				$output .= $add_word.' '.$word.'<br>';
 			}
 		}
@@ -130,7 +132,7 @@ class Utilities extends MY_Controller
 		$text = "";
 
 		// Prepare Text
-		//$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
+		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
 		$text	= preg_replace('/\s+/', ' ', $text);		// Strip Whitespace & Breaks
 		$text	= strtolower($text);						// Lowercase
 		$words	= explode(" ", $text);						// Make into array
@@ -187,9 +189,27 @@ class Utilities extends MY_Controller
 			
 			echo 'date: '.$date_time[0].' time: '.$date_time[1].'<br>';
 
-			$this->emoome_model->update_log($log->log_id, array('created_date' => $date_time[0], 'created_time' => $date_time[1]));
+			$this->logs_model->update_log($log->log_id, array('created_date' => $date_time[0], 'created_time' => $date_time[1]));
 		}
+	}
+
+	function update_null_attributes()
+	{
+		$this->db->select('word_id, word, type_sub, speech');
+		$this->db->from('words');
+		$this->db->where('speech', NULL);
+ 		$query = $this->db->get();
+ 		$result = $query->result();
+
+		echo '<h1>'.count($result).'</h1>';
+		echo '<pre>';
 		
+		foreach ($result as $word)
+		{
+			echo 'Updating: '.$word->word.'<br>';	
+		
+			$this->words_model->update_word($word->word_id, array('speech' => 'U'));
+		}
 	}
 
 }

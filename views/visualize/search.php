@@ -1,210 +1,242 @@
-<h2 id="search_title">
-	<!-- When Do I -->
-	How Do I Feel Between
-	<!-- Between (hours), Between (dates), About (enter keyword), At (location) -->
-	<?php
-	echo form_dropdown('start_time', config_item('time_increments_hours_twelve'), $start_hour, 'id="start_time"');
-	echo form_dropdown('start_meridian', config_item('time_meridian'), $start_meridian, 'id="start_meridian"');
-	echo ' to ';
-	echo form_dropdown('end_time', config_item('time_increments_hours_twelve'), $end_hour, 'id="end_time"');
-	echo form_dropdown('end_meridian', config_item('time_meridian'), $end_meridian, 'id="end_meridian"'); 
-	?>
-</h2>
-<button name="search_button" id="search_button">Go</button>
+<div id="search_container"></div>
 
-<div id="visualize_feelings" data-start="" data-end=""></div>
-
-
-
-
-<style type="text/css">
-/* Search Controls */
-#search_title 	{ float: left; }
-#search_title select { position: relative; top: -7px; left: 0px; }
-#start_time		{ margin: 0px 10px 0px 15px; }
-#start_meridian	{ margin: 0px 15px 0px 5px; }
-#end_time 		{ margin: 0px 10px 0px 15px; }
-#end_meridian 	{ margin: 0px 15px 0px 5px; }
-#search_button	{ float: left; margin: 2px 0px 0px 20px; }
-
-/* Search Results */
-#visualize_feelings {
-	width: 100%;
-	overflow: scroll;
-	clear: both;
-}
-#visualize_feelings_none {
-	width: 500px;
-	font-size: 18px;
-	font-style: italic;	
-	color: #999999;
-}
-
-div.hour_bar {
-	width: 230px;
-	height: 100px;
-	font-size: 18px;
-	border-bottom: 1px solid #999;
-	clear: both;
-}
-div.hour_bar_time {
-	width: 80px;
-	float: left;
-	text-align: center;
-	padding-top: 40px;
-}
-span.hour_time_meridian {
-	font-style: italic;
-	color: #999;
-}
-div.hour_bar_emotion {
-	width: 60px;
-	height: 35px;
-	border: 1px solid #d9d9d9;
-	text-align: center;
-	padding-top: 25px;
-	margin-top: 20px;
-	margin-left: 20px;
-	float: left;	
-	border-radius: 30px;
-	font-size: 11px;
-	font-weight: bold;
-	color: #ddd;
-}
-</style>
 <script type="text/javascript" src="<?= base_url() ?>js/underscore.js"></script>
-<script src="http://backbonejs.org/backbone-min.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>js/backbone-min.js"></script>
+
+<script type="text/template" id="search_controls">
+	<h2 id="search_title">
+		<%= title %>
+		<?php
+		echo form_dropdown('start_time', config_item('time_increments_hours_twelve'), $start_hour, 'id="start_time"');
+		echo form_dropdown('start_meridian', config_item('time_meridian'), $start_meridian, 'id="start_meridian"');
+		echo ' to ';
+		echo form_dropdown('end_time', config_item('time_increments_hours_twelve'), $end_hour, 'id="end_time"');
+		echo form_dropdown('end_meridian', config_item('time_meridian'), $end_meridian, 'id="end_meridian"'); 
+		?>
+	</h2>
+	<input type="button" name="search_button" id="search_button" value="Go">
+	<div id="search_visualization"></div>
+</script>	
 
 <script type="text/template" id="hour_row">
-	<div id="hour_bar_<%= hour_time %>" class="hour_bar">
-		<div class="hour_bar_time"><?= hour_display ?></div>
+	<div id="hour_bar_<%= id %>" class="hour_bar">
+		<div class="hour_bar_time"><%= display %></div>
+		<div class="hour_bar_type_circles"><%= circles %></div>
+		<div class="hour_bar_type_words"><%= words %></div>
+		<div class="hour_bar_topics"><%= topics %></div>
 	</div>		
 </script>
 
 <script type="text/javascript">
+Logs = Backbone.Model.extend(
+{
+    defaults: {
+        hours: [],
+        hours_data: {}
+    },
+    initialize: function()
+    { 
+	    
+    },
+    addHours: function(rows)
+    {
+    	// Get Current Hours
+        var hours_array = this.get('hours');
+        var hours_data	= this.get('hours_data');
+        
+        // Loop Rows
+		for (var row in rows)
+		{ 
+			// Is Row
+			if (!_.isUndefined(rows[row].created_time))
+			{			
+				var time = rows[row].created_time.split(':');
+				var hour = time[0]; 
+	
+				// Is New Hour
+				if ($.inArray(hour, hours_array) == -1)
+				{
+					hours_array.push(hour);
+				
+					// Update Hours
+					this.set({ hours: hours_array });
+				
+					// Update Hours Data					
+				}
+	        }
+	    }
+	},
+    addHourData: function(row)  
+    {
+
+    }  
+});
+
+// Render Search
+SearchBox = Backbone.View.extend(
+{
+    initialize: function()
+    {
+        this.render();
+    },
+    render: function()
+    {    
+    	// ADD SEARCH FEATURES
+    	// - When Do I Feel [search], What Makes Me Feel [search]
+    	// - Between (hours), Between (dates), About (enter keyword), At (location)
+    	var search_data = {
+	    	title: "How Do I Feel Between"
+    	}
+    	
+    	// Load Controls
+    	var search_template = _.template($('#search_controls').html(), search_data);
+    	
+    	// Add to HTML
+    	this.$el.html(search_template);
+    },
+    events:
+    {
+        "click #search_button": "doSearch"  
+    },
+    doSearch: function()
+    {
+		// Start Time
+		var start_time	= determineHourTime($('#start_time').val(), $('#start_meridian').val());
+		var end_time	= determineHourTime($('#end_time').val(), $('#end_meridian').val());
+	    	
+	    // Search Vars
+	    var search_options = {
+	    	start_hour: start_time.time,
+	    	end_hour: end_time.time
+	    }
+	    	
+	    // Do Search
+	    this.getHourSearch(search_options);
+    },
+	getHourSearch: function(options)
+	{
+		$.oauthAjax(
+		{
+			oauth 		: user_data,		
+			url			: base_url + 'api/emoome/get_emotions_range/range/time/start/' + options.start_hour + '/end/' + options.end_hour,
+			type		: 'GET',
+			dataType	: 'json',
+		  	success		: function(result)
+		  	{
+		  		// Yay Feelings
+				if (result.status == 'success')
+				{
+					// Make Model
+					// var logs = new Logs();
+					// logs.addHours(result.emotions);
+				
+			  		var render_search = new ResultHours({ el: $("#search_visualization") });
+			  		render_search.addHourRow(result.emotions);
+				}				
+				else
+				{
+					$('#search_visualization').append('<div id="search_visualization_none">' + result.message + '</div>');
+				}
+		  	}
+		});
+	}
+});
+
+ResultHours = Backbone.View.extend(
+{
+    initialize: function()
+    {
+        this.render();
+    },
+    render: function()
+    {    
+	    console.log('starting ResultHours');
+
+    	// ADD SEARCH FEATURES
+    	// var search_template = _.template($('#search_controls').html(), search_data);
+    },
+    addHourRow: function(rows)
+    {
+    	$.each(rows, function(key, value)
+	    {	    
+			var time = value.created_time.split(':');
+	        var hour = time[0];
+
+		    // Does HTML Row Exist
+		    $hour_bar = $('#hour_bar_' + hour);
+
+	    	if ($hour_bar.length == 0)
+	    	{
+	    		if (hour > 12)
+				{
+					var hour_display = parseInt(hour) - 12 + ' <span class="hour_time_meridian">PM</span>';
+				}
+				else if (hour == 12)
+				{
+					var hour_display = hour + ' <span class="hour_time_meridian">PM</span>';										
+				}
+				else
+				{
+					var hour_display = hour + ' <span class="hour_time_meridian">AM</span>';	
+				}
+	    	
+		        var hour_data = { 
+		        	id      : hour,
+		        	display : hour_display,
+		        	circles : '',
+		        	words   : '',
+		        	topics  : ''
+		        };
+
+		        var hour_item = _.template($("#hour_row").html(), hour_data);
+		        
+		        // Load the compiled HTML into the Backbone "el"
+		        $('#search_visualization').append(hour_item);
+	        }
+	        else
+	        {
+		        console.log(hour + ' added');
+	        }
+	        
+	        // Add Types
+			var emotion		= '<div class="hour_bar_emotion" style="background-color: ' + type_colors[value.type] + '">' + value.word + '</div>';
+			var bar_width	= parseInt($hour_bar.width()) + 80;
+		
+			// Emotions
+			$hour_bar.append(emotion).width(bar_width);	
+	    });
+    }
+});
+
+    
+
+
+function determineHourTime(time, meridian)
+{
+	var result = {
+		time: time,
+		meridian: meridian
+	}
+
+	if ((result.meridian == 'PM') && (result.time != 12))
+	{
+		result.time = parseInt(result.time) + 12;
+	}
+	else
+	{
+		result.time = parseInt(result.time);
+	}	
+
+	return result;
+}
+
+
+// When Ready
 $(document).ready(function()
 {
-
-	$('#search_button').bind('click', function(e)
-	{
-		// Start Time
-		var start_time		= $('#start_time').val();
-		var start_meridian	= $('#start_meridian').val();
-		if ((start_meridian == 'PM') && ($('#start_time').val() != 12))
-		{
-			start_time = parseInt(start_time) + 12;
-		}
-		else
-		{
-			start_time = parseInt(start_time);
-		}		
-		
-		// End Time
-		var end_time		= $('#end_time').val();
-		var end_meridian	= $('#end_meridian').val();
-		if (end_meridian == 'PM')
-		{
-			end_time = parseInt(end_time) + 12;
-		}
-		
-
-
-		// If One Time Value is Different
-		if ((start_time != $('#visualize_feelings').data('start')) || (end_time != $('#visualize_feelings').data('end')))	
-		{
-			$visualize_feelings = $('#visualize_feelings');
-			$visualize_feelings.html('');
-			
-			$.oauthAjax(
-			{
-				oauth 		: user_data,		
-				url			: base_url + 'api/emoome/get_emotions_range/range/time/start/' + start_time + '/end/' + end_time,
-				type		: 'GET',
-				dataType	: 'json',
-			  	success		: function(result)
-			  	{
-			  		// Yay Feelings
-					if (result.status == 'success')
-					{
-						// Update Range
-						$('#visualize_feelings').data('start', start_time);
-						$('#visualize_feelings').data('end', end_time)
-
-						// Hour Array
-						var hour_object	= new Object;
-
-						// Build Start Rows						
-						for (i=0; end_time - start_time + 1 > i; i++)
-						{							
-							hour = start_time + i;
-							display_hour = hour + ' ';
-							
-							if (hour > 12)
-							{
-								var time_hour = parseInt(hour) - 12;
-								var display_hour = time_hour + ' <span class="hour_time_meridian">PM</span>';
-							}
-							else if (hour == 12)
-							{
-								var display_hour = hour + ' <span class="hour_time_meridian">PM</span>';										
-							}
-							else
-							{
-								var display_hour = hour + ' <span class="hour_time_meridian">AM</span>';	
-							}
-
-							// Add To Backbone
-							$visualize_feelings.append('');						
-						}
-
-						console.log(result.emotions);
-					
-						// Loop Through Results
-						$.each(result.emotions, function(key, value)
-						{
-							$hour_bar = $('#hour_bar_' + hour);
-
-							var hour		= value.created_time.split(':');
-							var hour 		= hour[0];
-							var emotion		= '<div class="hour_bar_emotion" style="background-color: ' + type_colors[value.type] + '">' + value.word + '</div>';
-							var bar_width	= parseInt($hour_bar.width()) + 80;
-						
-							// Emotions
-							$hour_bar.width(bar_width).append(emotion);
-
-							//console.log('hour: ' + hour + ' type: ' + value.type + ' count: ' + type_count + ' log_id: ' + value.log_id);
-							
-							if (hour_object[hour] == undefined)
-							{
-								console.log('is undefined');
-								hour_object[hour] = { "type": types_count, "type_sub" : types_sub_count, "words" : "hiii"};
-								hour_object[hour]["type"][value.type] = 1;
-								
-								console.log(value.type + ': ' + hour_object[hour]["type"][value.type])
-								
-							}
-							else
-							{
-								var type_count 	= hour_object[hour]["type"][value.type];
-
-								console.log('is DEFINED');
-								hour_object[hour]["type"][value.type] = type_count + 1;
-							}
-							
+	// Instantiate Search
+	new SearchBox({ el: $("#search_container") });
 	
-						});
-						
-						console.log(hour_object);
-						
-					}
-					else
-					{
-						$visualize_feelings.append('<div id="visualize_feelings_none">' + result.message + '</div>');
-					}
-			  	}		
-			});
-		}
-	});	
-
+		
 });
 </script>

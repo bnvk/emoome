@@ -95,7 +95,7 @@ var messages = {
 /* Data Objects */
 var log_feeling_time = {
 	time_feeling : '',
-	time_action : '',
+	time_experience : '',
 	time_describe : ''
 }
 
@@ -212,30 +212,30 @@ function logFeelingComplete()
 {
 	// Stamp Times
 	log_feeling_time.time_feeling	= getTimeSpent(log_feeling_time.time_feeling);
-	log_feeling_time.time_action	= new Date().getTime();
+	log_feeling_time.time_experience	= new Date().getTime();
 
-	//jQT.goTo('#log_action', 'slideleft');
+	//jQT.goTo('#log_experience', 'slideleft');
 	$('#log_feeling').fadeOut();
-	$('#log_action').delay(500).fadeIn();
+	$('#log_experience').delay(500).fadeIn();
 }
 
-function logAction()
+function logExperience()
 {
-	// Set Action
-	$('#log_describe_this').html('"' + $('#log_val_action').val() + '"');
+	// Set Experience
+	$('#log_describe_this').html('"' + $('#log_val_experience').val() + '"');
 
 	$.validator(
 	{
 		elements :
 			[{
-				'selector' 	: '#log_val_action',
+				'selector' 	: '#log_val_experience',
 				'rule'		: 'require', 
-				'field'		: 'Action'
+				'field'		: 'Experience'
 			}],
 		message : 'Enter a ',
 		success	: function()
 		{
-			logActionComplete();
+			logExperienceComplete();
 		},
 		failed : function()
 		{
@@ -244,14 +244,14 @@ function logAction()
 	});
 }
 
-function logActionComplete()
+function logExperienceComplete()
 {
 	// Get Start Time
-	log_feeling_time.time_action	= getTimeSpent(log_feeling_time.time_action);
+	log_feeling_time.time_experience	= getTimeSpent(log_feeling_time.time_experience);
 	log_feeling_time.time_describe	= new Date().getTime();
 
-	//jQT.goTo('#log_action', 'slideleft');
-	$('#log_action').fadeOut();
+	//jQT.goTo('#log_experience', 'slideleft');
+	$('#log_experience').fadeOut();
 	$('#log_describe').delay(500).fadeIn();
 
 }
@@ -284,7 +284,7 @@ function logDescribe()
 
 			log_data.push({'name' : 'source', 'value' : user_data.source });
 			log_data.push({'name' : 'feeling', 'value' : $('#log_val_feeling').val() });
-			log_data.push({'name' : 'action', 'value' : $('#log_val_action').val() });
+			log_data.push({'name' : 'experience', 'value' : $('#log_val_experience').val() });
 			log_data.push({'name' : 'describe_1', 'value' : $('#log_val_describe_1').val() });
 			log_data.push({'name' : 'describe_2', 'value' : $('#log_val_describe_2').val() });
 			log_data.push({'name' : 'describe_3', 'value' : $('#log_val_describe_3').val() });
@@ -319,7 +319,7 @@ function logDescribe()
 					{
 						// Clean Data & Completion
 				  		$('#log_val_feeling').val('');
-				  		$('#log_val_action').val('');
+				  		$('#log_val_experience').val('');
 				  		$('#log_val_describe_1').val('');
 				  		$('#log_val_describe_2').val('');
 				  		$('#log_val_describe_3').val('');
@@ -344,7 +344,7 @@ function logDescribe()
 
 function logThanks()
 {
-	//jQT.goTo('#log_action', 'slideleft');
+	//jQT.goTo('#log_experience', 'slideleft');
 	$('#log_thanks').fadeOut();
 	logFeelingStart();
 }
@@ -535,7 +535,7 @@ function logThought()
 
 function logThoughtThanks()
 {
-	//jQT.goTo('#log_action', 'slideleft');
+	//jQT.goTo('#log_experience', 'slideleft');
 	$('#log_thanks').fadeOut();
 	logThoughtStart();
 }
@@ -574,7 +574,7 @@ function renderSentimentHuman(sentiment, count)
 }
 
 
-// Live Actions
+// Live Experiences
 $(document).ready(function()
 {
 	// Main Nav Buttons

@@ -53,7 +53,7 @@
 </div>
 
 
-<!-- Do NLP on Actions look for names of People, Places, Media
+<!-- Do NLP on Experiences look for names of People, Places, Media
 <h2>Significant Words</h2>
 <p>We don't know what these words mean, but you have mentioned them in your activities more than once.</p>
 <p>These words might be people, places, or things you do. You can help us better understand you by flagging these words.</p>
@@ -138,7 +138,7 @@ $(document).ready(function()
 	
 		// Build Data Values
 		for (var type in types)
-		{			
+		{
 			if (type != 'U')
 			{
 				word_values.push(types[type]);			
@@ -160,14 +160,14 @@ $(document).ready(function()
 	
 		// Build Data Values
 		for (var type in types)
-		{			
-			if (type[0] != 'U')
-			{
-				console.log(type[0]);
+		{		
+			var this_type = type[0].toUpperCase();
 			
+			if (this_type != 'U')
+			{			
 				word_values.push(types[type]);			
-				word_percents.push("%% " + type);
-				types_colors.push(type_colors[type[0]]);
+				word_percents.push("%% " + word_types[this_type]);
+				types_colors.push(type_colors[this_type]);
 			}
 		}
 	
@@ -245,7 +245,7 @@ $(document).ready(function()
 								var svg_size= 8 * visualization_sizes[user_data.source].circle_strong_experiences;
 								var position= svg_size / 2;
 			
-								$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_action">"' + logs_raw[log].action + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
+								$strong_experiences.append('<div class="strong_experience"><div class="strong_experience_circle" id="strong_experience_' + log_id + '"></div><div class="strong_experience_experience">"' + logs_raw[log].experience + '" <span class="strong_experience_date">' + mysqlDateParser(logs_raw[log].created_date).date('short') + '</span></div>' + '<div class="clear"></div></div>');
 			
 							    var paper = new Raphael(document.getElementById('strong_experience_' + log_id), svg_size, svg_size);
 								paper.circle(position, position, size).attr({fill: color, opacity: 0, 'stroke-width': 1, 'stroke': '#c3c3c3'}).animate({opacity: 1}, 1500);

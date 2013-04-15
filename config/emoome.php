@@ -16,13 +16,13 @@ $config['emoome_path'] = 'emoome';
 
 /*	Word Types */	
 $config['emoome_word_types'] = array(
-	'E' => 'Emotional',
-	'I' => 'Intellectual',
-	'S' => 'Sensory',
-	'D' => 'Descriptive',
-	'A' => 'Action',
-	'P' => 'Physical',
-	'U' => 'Undecided'
+	'E' => 'emotional',
+	'I' => 'intellectual',
+	'S' => 'sensory',
+	'D' => 'descriptive',
+	'A' => 'action',
+	'P' => 'physical',
+	'U' => 'undecided'
 );
 
 $config['emoome_word_types_count'] = array(
@@ -36,20 +36,79 @@ $config['emoome_word_types_count'] = array(
 );
 
 $config['emoome_word_types_sub'] = array(
-	'M' => 'Moral',
-	'S' => 'Slang',
-	'P' => 'Perception',
-	'Y' => 'Psychological',
-	'L' => 'Feeling',
-	'F' => 'Food',
-	'C' => 'Common',
-	'U' => 'Undecided'
+	'A'	 => 'animals',
+	'AL' => 'alcohol',
+	'C'  => 'common',
+	'CO' => 'color',
+	'CL' => 'clothing',
+	'CU' => 'culture',
+	'F'  => 'food',
+	'FA' => 'family',
+	'FE' => 'feeling',
+	'G'  => 'significance',
+	'H'  => 'home',
+	'HY' => 'hygiene',
+	'M'  => 'moral',
+	'MO' => 'movement',
+	'MU' => 'music',
+	'N'  => 'nature',
+	'NA' => 'names',
+	'NU' => 'numbers',
+	'OB' => 'objects',
+	'P'  => 'people',
+	'PE' => 'perception',
+	'PL' => 'place',
+	'PS' => 'psychological',	
+	'S'  => 'slang',
+	'SO' => 'social',
+	'SP' => 'sports',
+	'T'  => 'talking',
+	'TE' => 'technology',
+	'UR' => 'urban',
+	'V'  => 'violence',
+	'W'  => 'weapons',
+	'U' => 'undecided'	
 );
 
-$config['emoome_word_use'] = array(
-	'F' => 'Feeling',
-	'D' => 'Descriptor',
-	'A' => 'Actions'
+$config['emoome_word_types_sub_count'] = array(
+	'A'	 => 0,
+	'AL' => 0,
+	'C'  => 0,
+	'CO' => 0,
+	'CL' => 0,
+	'CU' => 0,
+	'F'  => 0,
+	'FA' => 0,
+	'FE' => 0,
+	'G'  => 0,
+	'H'  => 0,
+	'HY' => 0,
+	'M'  => 0,
+	'MO' => 0,
+	'MU' => 0,
+	'N'  => 0,
+	'NA' => 0,
+	'NU' => 0,
+	'OB' => 0,
+	'P'  => 0,
+	'PE' => 0,
+	'PL' => 0,
+	'PS' => 0,	
+	'S'  => 0,
+	'SO' => 0,
+	'SP' => 0,
+	'T'  => 0,
+	'TE' => 0,
+	'UR' => 0,
+	'V'  => 0,
+	'W'  => 0,
+	'U'  => 0
+);
+
+$config['emoome_word_used'] = array(
+	'F' => 'feeling',
+	'D' => 'descriptor',
+	'E' => 'experience'
 );
 
 $config['emoome_speech_types'] = array(
@@ -146,17 +205,4 @@ $config['emoome_brown_corpus_speech'] = array(
 	'WPS' 	=> 'nominative wh- pronoun (who, which, that)',
 	'WQL' 	=> 'wh- qualifier (how)',
 	'WRB' 	=> 'wh- adverb (how, where, when)'
-);
-
-$config['define_compass_derose'] = array(
-	'pleasure',
-	'pain', 
-	'power_control_responsibility',
-	'attachment', 
-	'social_standing', 
-	'justice', 
-	'freedom', 
-	'direction_focus', 
-	'desire_interest',
-	'safety_security'
 );

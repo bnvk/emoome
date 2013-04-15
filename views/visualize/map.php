@@ -42,7 +42,7 @@ $(document).ready(function()
 			// Group Logs
   			for (log in result.logs)
   			{
-  				logs[result.logs[log].log_id] = {"created_date":result.logs[log].created_date,"action":result.logs[log].action};
+  				logs[result.logs[log].log_id] = {"created_date":result.logs[log].created_date,"experience":result.logs[log].experience};
 			}
 
 			// Do Color Key
@@ -78,7 +78,7 @@ $(document).ready(function()
 					
 					if (jQuery.inArray('U', value) < 0)
 					{
-						$word_map_container.append('<div class="word_map_column" data-action="' + logs[log_id].action + '" data-created_date="' + logs[log_id].created_date + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
+						$word_map_container.append('<div class="word_map_column" data-experience="' + logs[log_id].experience + '" data-created_date="' + logs[log_id].created_date + '" id="word_map_column_' + log_id + '"></div>').width(set_width);
 		
 						// Make Paper
 					    var paper = new Raphael(document.getElementById('word_map_column_' + log_id), 80, 700);
@@ -112,7 +112,7 @@ $(document).ready(function()
 			$('.word_map_column').qtip({
 				content: {
 					text: function(api) {
-						return $(this).data('action') + ' <span>' + mysqlDateParser($(this).data('created_date')).date('short') + '</span>';
+						return $(this).data('experience') + ' <span>' + mysqlDateParser($(this).data('created_date')).date('short') + '</span>';
 					}
 				},
 				position: {
