@@ -215,4 +215,34 @@ class Utilities extends MY_Controller
 		
 	}
 
+
+	function import_mech_turk()
+	{
+		$this->load->model('words_model');
+
+
+		$this->db->select('*');
+ 		$this->db->from('import1');
+// 		$this->db->where('Updated', 'N');
+ 		$result = $this->db->get();
+ 		$this->data['report1'] = $result->result();
+
+		$this->db->select('*');
+ 		$this->db->from('import2');
+ 		$result = $this->db->get();
+ 		$report2 = $result->result();
+
+
+
+ 		// Handle One Worker Difference
+ 		$report2_array = array();
+ 		foreach ($report2 as $item2):
+ 			$report2_array[$item2->word] = $item2->Answer;
+ 		endforeach;
+ 		
+ 		$this->data['report2'] = $report2_array;
+
+		$this->load->view('../modules/emoome/views/utilities/import_mech_turk', $this->data);
+	}
+
 }
