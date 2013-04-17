@@ -227,7 +227,7 @@ class Utilities extends MY_Controller
 
 		$this->db->select('*');
  		$this->db->from('import1');
-// 		$this->db->where('Updated', 'N');
+ 		$this->db->where('Updated', 'N');
  		$result = $this->db->get();
  		$this->data['report1'] = $result->result();
 
