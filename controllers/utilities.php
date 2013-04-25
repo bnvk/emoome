@@ -114,11 +114,7 @@ class Utilities extends MY_Controller
 			foreach ($words_array as $word)
 			{
 				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
-<<<<<<< HEAD
-				$add_word = $this->emoome_model->add_word($word, TRUE, 'A', 'CL', 'NP', 1);
-=======
 				$add_word = $this->words_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
->>>>>>> cfd15db82cbaa97cd3fc3bfe4cd6db5f199386cf
 				$output .= $add_word.' '.$word.'<br>';
 			}
 		}

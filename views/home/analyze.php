@@ -1,5 +1,5 @@
 <form name="analyze_text_form" id="analyze_text_form">
-	<p><textarea id="analyze_text" name="analyze_text" rows="6" cols="75" placeholder="Paste your text here…">I would love to go sky diving over the weekend, if you want to. Aren't you ready to do such things with me? I am getting a little bit frustrated that stuff is not going to work out between you and me. If I'm off base let me know we can chat.</textarea><br>
+	<p><textarea id="analyze_text" name="text" rows="6" cols="75" placeholder="Paste your text here…">I would love to go sky diving over the weekend, if you want to. Aren't you ready to do such things with me? I am getting a little bit frustrated that stuff is not going to work out between you and me. If I'm off base let me know we can chat.</textarea><br>
 	<span id="analyze_text_error"></span></p>
 	<p><input type="submit" name="submit" value="Submit"></p>
 </form>
@@ -35,7 +35,7 @@ $(document).ready(function()
 		{
 			elements :
 				[{
-					'selector' 	: '#analyze_text', 
+					'selector' 	: '#text', 
 					'rule'		: 'require', 
 					'field'		: 'Please enter some text',
 					'action'	: 'label'	

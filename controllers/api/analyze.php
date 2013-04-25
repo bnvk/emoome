@@ -304,12 +304,12 @@ class Analyze extends Oauth_Controller
 
 	function text_post()
 	{
-	   	$this->form_validation->set_rules('analyze_text', 'Text', 'required');
+	   	$this->form_validation->set_rules('text', 'Text', 'required');
 
 		// Passes Validation
 	    if ($this->form_validation->run() == true)
 	    {		
-			$analysis = $this->emoome->analyze_text($this->input->post('analyze_text'));
+			$analysis = $this->emoome->analyze_text($this->input->post('text'), TRUE);
 
             $message = array('status' => 'success', 'message' => 'Success word analysis performed', 'analysis' => $analysis);		
 		}
