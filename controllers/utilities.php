@@ -8,7 +8,7 @@ class Utilities extends MY_Controller
 		// Load Things
         $this->load->library('emoome');
 
-		if ($this->session->userdata('user_level_id') != 1) redirect();
+		//if ($this->session->userdata('user_level_id') != 1) redirect();
 	}
 
 	function stem()
@@ -113,7 +113,7 @@ class Utilities extends MY_Controller
 		{
 			foreach ($words_array as $word)
 			{
-				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
+				$word = preg_replace('/[^A-Za-z0-9-\ ]/i', '', $word);
 				$add_word = $this->words_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
 				$output .= $add_word.' '.$word.'<br>';
 			}
@@ -123,9 +123,11 @@ class Utilities extends MY_Controller
 	}
 	
 	// Simple tool for cleaning text to copy into an array()
-	function clean_text()
+	function clean_text_to_array()
 	{
-		$text = "";
+
+		$text = '';
+
 
 		// Prepare Text
 		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
@@ -215,11 +217,13 @@ class Utilities extends MY_Controller
 		
 	}
 
-
+	
+	/*  Used to import data from Mechanical Turk on word categorization
+		
+	*/
 	function import_mech_turk()
 	{
 		$this->load->model('words_model');
-
 
 		$this->db->select('*');
  		$this->db->from('import1');
@@ -243,6 +247,49 @@ class Utilities extends MY_Controller
  		$this->data['report2'] = $report2_array;
 
 		$this->load->view('../modules/emoome/views/utilities/import_mech_turk', $this->data);
+	}
+	
+	
+	function import_json_words() {
+	
+		// Load Sentiment TXT file
+		$the_file		= "/Users/brennannovak/Dropbox/Node/emoome_scraper/scraped/english/age.json";
+		$output			= "No JSON file loaded";
+		
+		// Opens TXT File of Words
+		$file_handle	= fopen($the_file, 'r');
+		$dictionary		= fread($file_handle, 5000000);	
+		$dictionary_json= json_decode($dictionary);	
+		
+		$words_array 	= json_decode($dictionary)->words;
+		$output 		= '';
+/*		
+		echo '<pre>';
+		print_r($words_array);
+		die();
+*/
+		if ($words_array):
+
+			// Loop Types
+			foreach ($words_array as $key => $words):
+
+				echo  'Key: ' . $key . '<br>';
+
+				// Loop Words
+				foreach ($words as $word):
+
+					$word = preg_replace('/[^A-Za-z0-9-\ ]/i', '', $word);
+					//$add_word = $this->words_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
+					//$output .= $add_word.' '.$word.'<br>';
+					echo ' - '.$word.'<br>';
+
+				endforeach;
+
+			endforeach;
+
+		endif;
+
+		echo $output;
 	}
 
 }

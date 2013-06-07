@@ -24,7 +24,7 @@ class Emoome
         $this->ci->load->model('words_model');
 
         // Language Files
-		$this->ci->lang->load('words');
+		$this->ci->lang->load('common');
 	}
 
 	/* Users Meta Maps */
@@ -267,7 +267,7 @@ class Emoome
 		endif;
 
 		$words_trans	= implode(' ', $words);
-		$words_clean 	= preg_replace('/[^a-z0-9 ]/i', '', $words_trans);
+		$words_clean 	= preg_replace('/[^A-Za-z0-9-\ ]/i', '', $words_trans);
 		$words 			= explode(' ', $words_clean);
 
 		// Get Words from DB

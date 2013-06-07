@@ -1,13 +1,26 @@
 <?php
+/**
+ * Words Model
+ * 
+ * A model for Emoome Words table
+ * 
+ * @author Brennan Novak @brennannovak
+ * @package Emoome\Models
+ */
 class Words_model extends CI_Model 
 {
     function __construct()
     {
         parent::__construct();
     }
-    
- 	// Words
- 	// Interacts with "words"
+
+	/**
+	 * get_word function.
+	 * 
+	 * @access public
+	 * @param mixed $word_id
+	 * @return void
+	 */
 	function get_word($word_id)
 	{
 		$this->db->select('*');
@@ -23,13 +36,20 @@ class Words_model extends CI_Model
 		return FALSE;
 	}
 
+	/**
+	 * check_word function.
+	 * 
+	 * @access public
+	 * @param mixed $word
+	 * @return void
+	 */
 	function check_word($word)
 	{
 		$this->db->select('*');
 		$this->db->from('words');
 		$this->db->where('word', $word);
 		$this->db->limit(1);
- 		
+
  		if ($result = $this->db->get()->row())	
  		{
  			return $result;
@@ -37,7 +57,14 @@ class Words_model extends CI_Model
 
 		return FALSE;
 	}
-	
+
+	/**
+	 * get_words_words function.
+	 * 
+	 * @access public
+	 * @param mixed $words_array
+	 * @return object The result of the query
+	 */
 	function get_words_words($words_array)
 	{
 		$this->db->select('*');
@@ -47,6 +74,13 @@ class Words_model extends CI_Model
  		return $result->result();		
 	}
 
+	/**
+	 * get_words_stem function.
+	 * 
+	 * @access public
+	 * @param mixed $stem A word stripped of any gerunds (running -> run)
+	 * @return void
+	 */
 	function get_words_stem($stem)
 	{
 		$this->db->select('*');
@@ -56,6 +90,18 @@ class Words_model extends CI_Model
  		return $result->result();	      
 	}
 
+	/**
+     * add_word function.
+     * 
+     * @access public
+     * @param string $word The word that is being added
+     * @param bool $check_stem Checks if a word with similar stem exists (to copy other properties)
+     * @param string $type The Emoome language type classification
+     * @param string $type_sub The Emoome language topic
+     * @param string $speech Part of speech
+     * @param int $sentiment The sentiment of the word -5 to 5
+     * @return int|false Either word_id of newly inserted word for FALSE
+     */
     function add_word($word, $check_stem=FALSE, $type='U', $type_sub='U', $speech='U', $sentiment=0)
     {
     	$word		= strtolower($word);
@@ -109,6 +155,14 @@ class Words_model extends CI_Model
 	    return FALSE;    
     }
 
+	/**
+	 * update_word function.
+	 * 
+	 * @access public
+	 * @param int $word_id The word_id of a word
+	 * @param array $word_data An array of attributes of the word to update
+	 * @return bool Always returns true
+	 */
 	function update_word($word_id, $word_data)
 	{
 		$this->db->where('word_id', $word_id);
@@ -117,10 +171,14 @@ class Words_model extends CI_Model
 		return TRUE;
 	}
 
-
-
-	// Words Link
- 	// Interacts with "words_link"
+	/**
+	 * count_user_word_type function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @param mixed $type
+	 * @return void
+	 */
 	function count_user_word_type($user_id, $type)
 	{		
  		$this->db->select('*');
@@ -130,7 +188,14 @@ class Words_model extends CI_Model
 		$this->db->where('words.type', $type);
  		return $this->db->count_all_results();
 	} 	
-	
+
+	/**
+	 * get_words_links_log function.
+	 * 
+	 * @access public
+	 * @param mixed $log_id
+	 * @return void
+	 */
 	function get_words_links_log($log_id)
 	{
 		$this->db->select('*');
@@ -141,6 +206,13 @@ class Words_model extends CI_Model
  		return $result->result();
 	}
 
+	/**
+	 * get_words_links function.
+	 * 
+	 * @access public
+	 * @param mixed $log_array
+	 * @return void
+	 */
 	function get_words_links($log_array)
 	{
 		$this->db->select('*');
@@ -151,6 +223,13 @@ class Words_model extends CI_Model
  		return $result->result();
 	}
 
+	/**
+	 * get_words_links_user function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return void
+	 */
 	function get_words_links_user($user_id)
 	{
 		$this->db->select('*');
@@ -160,7 +239,16 @@ class Words_model extends CI_Model
  		$result = $this->db->get();
  		return $result->result();
 	}
-	
+
+	/**
+	 * get_word_user_count function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @param mixed $word_id
+	 * @param mixed $used
+	 * @return void
+	 */
 	function get_word_user_count($user_id, $word_id, $used)
 	{
 		$this->db->select('*');
@@ -168,7 +256,17 @@ class Words_model extends CI_Model
  		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used));
  		return $this->db->count_all_results();
 	}
-
+	
+	/**
+	 * add_word_link function.
+	 * 
+	 * @access public
+	 * @param mixed $log_id
+	 * @param mixed $user_id
+	 * @param mixed $word
+	 * @param mixed $used
+	 * @return void
+	 */
 	function add_word_link($log_id, $user_id, $word, $used)
 	{
 		// Check / Add Word
@@ -196,6 +294,14 @@ class Words_model extends CI_Model
 		return FALSE;
 	}
 
+	/**
+	 * update_word_link function.
+	 * 
+	 * @access public
+	 * @param mixed $link_id
+	 * @param mixed $link_data
+	 * @return void
+	 */
 	function update_word_link($link_id, $link_data)
 	{
 		$this->db->where('link_id', $link_id);
@@ -204,10 +310,15 @@ class Words_model extends CI_Model
 		return TRUE;
 	}
 
-
-
-    // Words Taxonomy
- 	// Interacts with "words_taxonomy"    
+    /**
+     * increment_word_taxonomy function.
+     * 
+     * @access public
+     * @param mixed $user_id
+     * @param mixed $word_id
+     * @param mixed $used
+     * @return void
+     */
     function increment_word_taxonomy($user_id, $word_id, $used)
     {
 		$word_total		= $this->get_word_user_count($user_id, $word_id, $used);			
@@ -222,7 +333,16 @@ class Words_model extends CI_Model
 			$this->add_word_taxonomy($user_id, $word_id, $word_total, $used);
 		}    
     }
-    
+
+    /**
+     * get_word_taxonomy function.
+     * 
+     * @access public
+     * @param mixed $user_id
+     * @param mixed $word_id
+     * @param mixed $used
+     * @return void
+     */
     function get_word_taxonomy($user_id, $word_id, $used)
     {
  		$this->db->select('*');
@@ -232,6 +352,16 @@ class Words_model extends CI_Model
  		return $result;    	
     }
 
+    /**
+     * add_word_taxonomy function.
+     * 
+     * @access public
+     * @param mixed $user_id
+     * @param mixed $word_id
+     * @param mixed $count
+     * @param mixed $used
+     * @return void
+     */
     function add_word_taxonomy($user_id, $word_id, $count, $used)
     {
  		$data = array(
@@ -243,12 +373,19 @@ class Words_model extends CI_Model
 
 		return $this->db->insert('words_taxonomy', $data);
     }
-    
+
+    /**
+     * update_word_taxonomy function.
+     * 
+     * @access public
+     * @param mixed $word_taxonomy_id
+     * @param mixed $count
+     * @return void
+     */
     function update_word_taxonomy($word_taxonomy_id, $count)
     {
 		$this->db->where('word_taxonomy_id', $word_taxonomy_id);
 		$this->db->update('words_taxonomy', array('count' => $count));        
     }
-
 
 }

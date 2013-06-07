@@ -15,7 +15,7 @@ class Natural_language {
 	function __construct() 
 	{
 		$this->ci =& get_instance();
-		$this->ci->lang->load('words');
+		$this->ci->lang->load('common');
 	}
      
 	function remove_words($words, $stoplist)
