@@ -59,7 +59,7 @@ class Emoome_model extends CI_Model
 		{
 			foreach (config_item('emoome_word_types') as $type)
 			{
-	 			$word_count[$type] = $this->count_user_word_type($user_id, $type);
+	 			$word_count[$type] = $this->ci->words_model->count_user_word_type($user_id, $type);
 			}
 	
 			$add_data = array(

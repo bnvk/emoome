@@ -121,13 +121,17 @@ class Utilities extends MY_Controller
 
 		echo $output;
 	}
-	
-	// Simple tool for cleaning text to copy into an array()
+
+	/**
+	 * clean_text_to_array function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function clean_text_to_array()
 	{
 
 		$text = '';
-
 
 		// Prepare Text
 		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
@@ -149,6 +153,12 @@ class Utilities extends MY_Controller
 		echo $output;
 	}
 	
+	/**
+	 * find_duplicates function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function find_duplicates()
 	{
 		$words 		= array();
@@ -174,6 +184,12 @@ class Utilities extends MY_Controller
 		print_r($existing);
 	}
 
+	/**
+	 * split_date_time function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function split_date_time()
 	{
 		$this->db->select('*');
@@ -191,6 +207,12 @@ class Utilities extends MY_Controller
 		}
 	}
 
+	/**
+	 * update_null_attributes function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function update_null_attributes()
 	{
 		$this->db->select('word_id, word, type_sub, speech');
@@ -217,10 +239,12 @@ class Utilities extends MY_Controller
 		
 	}
 
-	
-	/*  Used to import data from Mechanical Turk on word categorization
-		
-	*/
+	/**
+	 * import_mech_turk function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function import_mech_turk()
 	{
 		$this->load->model('words_model');
@@ -237,7 +261,6 @@ class Utilities extends MY_Controller
  		$report2 = $result->result();
 
 
-
  		// Handle One Worker Difference
  		$report2_array = array();
  		foreach ($report2 as $item2):
@@ -249,7 +272,12 @@ class Utilities extends MY_Controller
 		$this->load->view('../modules/emoome/views/utilities/import_mech_turk', $this->data);
 	}
 	
-	
+	/**
+	 * import_json_words function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function import_json_words() {
 	
 		// Load Sentiment TXT file

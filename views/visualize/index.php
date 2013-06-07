@@ -138,7 +138,7 @@ $(document).ready(function()
 	
 		// Build Data Values
 		for (var type in types)
-		{			
+		{
 			if (type != 'U')
 			{
 				word_values.push(types[type]);			
@@ -160,14 +160,14 @@ $(document).ready(function()
 	
 		// Build Data Values
 		for (var type in types)
-		{			
-			if (type[0] != 'U')
-			{
-				console.log(type[0]);
+		{		
+			var this_type = type[0].toUpperCase();
 			
+			if (this_type != 'U')
+			{			
 				word_values.push(types[type]);			
-				word_percents.push("%% " + type);
-				types_colors.push(type_colors[type[0]]);
+				word_percents.push("%% " + word_types[this_type]);
+				types_colors.push(type_colors[this_type]);
 			}
 		}
 	
