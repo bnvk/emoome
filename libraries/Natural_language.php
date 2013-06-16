@@ -55,7 +55,7 @@ class Natural_language {
     		}
     	}
     	return $result;    	    	
-    }	  
+    }
 
 
 	// PORTER STEMMER

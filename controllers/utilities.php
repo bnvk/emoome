@@ -7,16 +7,28 @@ class Utilities extends MY_Controller
 
 		// Load Things
         $this->load->library('emoome');
+        $this->load->library('natural_language');
 
-		//if ($this->session->userdata('user_level_id') != 1) redirect();
+		if ($this->session->userdata('user_level_id') != 1) redirect();
 	}
 
+	/**
+	 * stem function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function stem()
 	{
-		$this->load->library('natural_language');
 		echo $this->natural_language->stem($this->uri->segment(4));
 	}
 
+	/**
+	 * add_sentiment function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function add_sentiment()
 	{
 		// Load Sentiment TXT file
@@ -59,7 +71,13 @@ class Utilities extends MY_Controller
 	
 		echo $output;
 	}
-	
+
+	/**
+	 * update_stems function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function update_stems()
 	{
 		if (($this->uri->segment(4) != '') AND ($this->uri->segment(5) != ''))
@@ -89,6 +107,12 @@ class Utilities extends MY_Controller
 		}	
 	}
 
+	/**
+	 * pos_tagger function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function pos_tagger()
 	{
 		$this->load->library('post_tagger');
@@ -103,6 +127,12 @@ class Utilities extends MY_Controller
         }
 	}
 
+	/**
+	 * add_words function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function add_words()
 	{
 		$this->lang->load('firstnames');
@@ -231,7 +261,13 @@ class Utilities extends MY_Controller
 			$this->words_model->update_word($word->word_id, array($this->uri->segment(4) => 'U'));
 		}
 	}
-	
+
+	/**
+	 * update_word_taxonomy function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function update_word_taxonomy()
 	{
 		
@@ -286,14 +322,12 @@ class Utilities extends MY_Controller
 		
 		// Opens TXT File of Words
 		$file_handle	= fopen($the_file, 'r');
-		$dictionary		= fread($file_handle, 5000000);	
-		$dictionary_json= json_decode($dictionary);	
-		
-		$words_array 	= json_decode($dictionary)->words;
+		$dictionary		= json_decode(fread($file_handle, 5000000));
+		$words_array 	= $dictionary->words;
 		$output 		= '';
-/*		
+/*	
 		echo '<pre>';
-		print_r($words_array);
+		print_r($dictionary->topic);
 		die();
 */
 		if ($words_array):
@@ -301,23 +335,58 @@ class Utilities extends MY_Controller
 			// Loop Types
 			foreach ($words_array as $key => $words):
 
-				echo  'Key: ' . $key . '<br>';
+				$output_new = '';
+				$output_update = '';
 
 				// Loop Words
 				foreach ($words as $word):
 
 					$word = preg_replace('/[^A-Za-z0-9-\ ]/i', '', $word);
-					//$add_word = $this->words_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
-					//$output .= $add_word.' '.$word.'<br>';
-					echo ' - '.$word.'<br>';
 
+					// Check if added to database (add IF NOT or update)
+					$check = $this->words_model->check_word($word);
+
+					// Word Exists
+					if ($check):
+						
+						// Classify if "U"
+						if ($check->type_sub == 'U'):
+
+							// Does Existing Word have Type specified
+							if ($check->type == 'U'):
+								$word_update = array('type' => $key, 'type_sub' => $dictionary->topic);
+							else:
+								$word_update = array('type_sub' => $dictionary->topic);							
+							endif;
+
+							$this->words_model->update_word($check->word_id, $word_update);
+
+							$output_update .= 
+							'<li>'.$word.'<ul>'.
+								'<li> type: '.$check->type.' ---> update: '.$key.'</li>
+								<li> topic:' .$check->type_sub.' ---> update: '.$dictionary->topic.'</li>'.
+							'</ul></li>';
+						else:
+							$output_update .= '<li>'.$word.' not changed from: <b>'.$check->type.' / '.$check->type_sub.'</b></li>'; 
+						endif;
+					else:
+						$add_word = $this->words_model->add_word($word, FALSE, $key, $dictionary->topic, 'U', 0);
+						$output_new .= '<li>'.$word.'</li>';
+					endif;
 				endforeach;
 
+				// Show This Type
+				echo '<h1>' . $key . ' type</h1>';
+				if ($output_new):
+					echo '<h3>New</h3>';
+					echo '<ul>'.$output_new.'</ul>';
+				endif;
+				if ($output_update):
+					echo '<h3>Update</h3>';
+					echo '<ul>'.$output_update.'</ul>';
+				endif;
 			endforeach;
-
 		endif;
-
-		echo $output;
 	}
 
 }

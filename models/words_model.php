@@ -28,10 +28,9 @@ class Words_model extends CI_Model
 		$this->db->where('word_id', $word_id);
 		$this->db->limit(1);
  		
- 		if ($result = $this->db->get()->row())	
- 		{
+ 		if ($result = $this->db->get()->row()):
  			return $result;
- 		}
+ 		endif;
 
 		return FALSE;
 	}
@@ -50,10 +49,9 @@ class Words_model extends CI_Model
 		$this->db->where('word', $word);
 		$this->db->limit(1);
 
- 		if ($result = $this->db->get()->row())	
- 		{
+ 		if ($result = $this->db->get()->row()):	
  			return $result;
- 		}
+ 		endif;
 
 		return FALSE;
 	}
@@ -108,27 +106,21 @@ class Words_model extends CI_Model
 		$check_word = $this->check_word($word);
     
     	// Word Does Not Exist
-    	if ($check_word)
-    	{
+    	if ($check_word):
     		return $check_word->word_id;
-		}
-		else
-		{
+		else:
+		
 	    	$stem = $this->natural_language->stem($word);
 
-	    	// Lookup Similar Word
-	    	if ($check_stem)
-	    	{
-	    		$stem_words = $this->get_words_stem($stem);
-	
-	    		if ($stem_words)
-	    		{
+	    	// Lookup Word Stem
+	    	if ($check_stem):
+	    		if ($stem_words = $this->get_words_stem($stem)):
 		    		$type		= $stem_words[0]->type;
 		    		$type_sub	= $stem_words[0]->type_sub;
 		    		$speech		= $stem_words[0]->speech;
 		    		$sentiment	= $stem_words[0]->sentiment;
-	    		}
-	    	}
+	    		endif;
+	    	endif;
 			
 			// Add Word To Dictionary
 	 		$word_data = array(
@@ -138,19 +130,16 @@ class Words_model extends CI_Model
 				'type_sub'	=> $type_sub,
 				'speech'	=> $speech,
 				'sentiment'	=> $sentiment
-			);			
+			);	
 
 			$this->db->insert('words', $word_data);
 
-			if ($word_id = $this->db->insert_id())
-			{
+			if ($word_id = $this->db->insert_id()):
 				return $word_id;
-	    	}
-	    	else
-	    	{
+	    	else:
 	    		return FALSE;
-	    	}
-	    }
+	    	endif;
+	    endif;
 
 	    return FALSE;    
     }
@@ -272,8 +261,7 @@ class Words_model extends CI_Model
 		// Check / Add Word
 		$word_id = $this->add_word($word, TRUE);
 
-		if ($word_id)
-		{
+		if ($word_id):
 			$link_data = array(
 				'log_id'	=> $log_id,
 				'user_id'	=> $user_id,
@@ -283,13 +271,11 @@ class Words_model extends CI_Model
 	
 			$this->db->insert('words_link', $link_data);
 
-			if ($word_link_id = $this->db->insert_id())
-			{
+			if ($word_link_id = $this->db->insert_id()):
 				$this->increment_word_taxonomy($user_id, $word_id, $used);
-
 				return $word_link_id;
-			}
-		}
+			endif;
+		endif;
 
 		return FALSE;
 	}
@@ -321,17 +307,14 @@ class Words_model extends CI_Model
      */
     function increment_word_taxonomy($user_id, $word_id, $used)
     {
-		$word_total		= $this->get_word_user_count($user_id, $word_id, $used);			
+		$word_total		= $this->get_word_user_count($user_id, $word_id, $used);
 		$word_taxonomy	= $this->get_word_taxonomy($user_id, $word_id, $used);
-			
-		if ($word_taxonomy)
-		{
+
+		if ($word_taxonomy):
 			$this->update_word_taxonomy($word_taxonomy->word_taxonomy_id, $word_total);
-		}				
-		else
-		{
+		else:
 			$this->add_word_taxonomy($user_id, $word_id, $word_total, $used);
-		}    
+		endif;
     }
 
     /**
