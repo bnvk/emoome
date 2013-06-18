@@ -1,4 +1,12 @@
 <?php
+/**
+ * Emoome Model
+ * 
+ * A model for Emoome miscellaneous tables and joins
+ * 
+ * @author Brennan Novak @brennannovak
+ * @package Emoome\Models
+ */
 class Emoome_model extends CI_Model 
 {
 	protected $ci;
@@ -10,8 +18,13 @@ class Emoome_model extends CI_Model
 		$this->ci =& get_instance();
     }
 
-
-	// Users Meta Values (mostly map reduced user info) 
+	/**
+	 * get_users_meta_map function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return void
+	 */
 	function get_users_meta_map($user_id)
 	{
 		$this->db->select('*');
@@ -29,7 +42,14 @@ class Emoome_model extends CI_Model
 
  		return FALSE;
 	}
-	
+
+	/**
+	 * add_users_meta_map function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return void
+	 */
 	function add_users_meta_map($user_id)
 	{
 		$users_meta	= $this->get_users_meta_map($user_id);
@@ -64,7 +84,14 @@ class Emoome_model extends CI_Model
 		return FALSE;		
 	}
 
-
+	/**
+	 * update_users_meta_map function.
+	 * 
+	 * @access public
+	 * @param mixed $user_meta_id
+	 * @param mixed $update_data
+	 * @return void
+	 */
 	function update_users_meta_map($user_meta_id, $update_data)
 	{
 		$this->db->where('user_meta_id', $user_meta_id);
@@ -72,8 +99,14 @@ class Emoome_model extends CI_Model
 		return TRUE;
 	}
 
-
-	/* User Specific Calls */
+	/**
+	 * get_user_most_recent function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @param mixed $limit
+	 * @return void
+	 */
 	function get_user_most_recent($user_id, $limit)
 	{
 		// Get Log & Experience

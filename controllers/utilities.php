@@ -7,16 +7,28 @@ class Utilities extends MY_Controller
 
 		// Load Things
         $this->load->library('emoome');
+        $this->load->library('natural_language');
 
 		if ($this->session->userdata('user_level_id') != 1) redirect();
 	}
 
+	/**
+	 * stem function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function stem()
 	{
-		$this->load->library('natural_language');
 		echo $this->natural_language->stem($this->uri->segment(4));
 	}
 
+	/**
+	 * add_sentiment function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function add_sentiment()
 	{
 		// Load Sentiment TXT file
@@ -59,7 +71,13 @@ class Utilities extends MY_Controller
 	
 		echo $output;
 	}
-	
+
+	/**
+	 * update_stems function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function update_stems()
 	{
 		if (($this->uri->segment(4) != '') AND ($this->uri->segment(5) != ''))
@@ -89,6 +107,12 @@ class Utilities extends MY_Controller
 		}	
 	}
 
+	/**
+	 * pos_tagger function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function pos_tagger()
 	{
 		$this->load->library('post_tagger');
@@ -103,17 +127,23 @@ class Utilities extends MY_Controller
         }
 	}
 
+	/**
+	 * add_words function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function add_words()
 	{
-		$this->lang->load('clothing');
-		$words_array = $this->lang->line('clothing_actions');
+		$this->lang->load('firstnames');
+		$words_array = $this->lang->line('firstnames');
 		$output = '';
 
 		if ($words_array)
 		{
 			foreach ($words_array as $word)
 			{
-				$word = preg_replace('/[^a-z0-9 ]/i', '', $word);
+				$word = preg_replace('/[^A-Za-z0-9-\ ]/i', '', $word);
 				$add_word = $this->words_model->add_word($word, TRUE, 'D', 'NA', 'NP', 0);
 				$output .= $add_word.' '.$word.'<br>';
 			}
@@ -121,11 +151,17 @@ class Utilities extends MY_Controller
 
 		echo $output;
 	}
-	
-	// Simple tool for cleaning text to copy into an array()
-	function clean_text()
+
+	/**
+	 * clean_text_to_array function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function clean_text_to_array()
 	{
-		$text = "";
+
+		$text = '';
 
 		// Prepare Text
 		$text	= preg_replace('/[^a-zA-Z]/', ' ', $text);	// Strip Non Chars
@@ -147,6 +183,12 @@ class Utilities extends MY_Controller
 		echo $output;
 	}
 	
+	/**
+	 * find_duplicates function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function find_duplicates()
 	{
 		$words 		= array();
@@ -172,6 +214,12 @@ class Utilities extends MY_Controller
 		print_r($existing);
 	}
 
+	/**
+	 * split_date_time function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function split_date_time()
 	{
 		$this->db->select('*');
@@ -189,6 +237,12 @@ class Utilities extends MY_Controller
 		}
 	}
 
+	/**
+	 * update_null_attributes function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function update_null_attributes()
 	{
 		$this->db->select('word_id, word, type_sub, speech');
@@ -207,7 +261,13 @@ class Utilities extends MY_Controller
 			$this->words_model->update_word($word->word_id, array($this->uri->segment(4) => 'U'));
 		}
 	}
-	
+
+	/**
+	 * update_word_taxonomy function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function update_word_taxonomy()
 	{
 		
@@ -215,11 +275,15 @@ class Utilities extends MY_Controller
 		
 	}
 
-
+	/**
+	 * import_mech_turk function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function import_mech_turk()
 	{
 		$this->load->model('words_model');
-
 
 		$this->db->select('*');
  		$this->db->from('import1');
@@ -233,7 +297,6 @@ class Utilities extends MY_Controller
  		$report2 = $result->result();
 
 
-
  		// Handle One Worker Difference
  		$report2_array = array();
  		foreach ($report2 as $item2):
@@ -243,6 +306,87 @@ class Utilities extends MY_Controller
  		$this->data['report2'] = $report2_array;
 
 		$this->load->view('../modules/emoome/views/utilities/import_mech_turk', $this->data);
+	}
+	
+	/**
+	 * import_json_words function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function import_json_words() {
+	
+		// Load Sentiment TXT file
+		$the_file		= "/Users/brennannovak/Dropbox/Node/emoome_scraper/scraped/english/age.json";
+		$output			= "No JSON file loaded";
+		
+		// Opens TXT File of Words
+		$file_handle	= fopen($the_file, 'r');
+		$dictionary		= json_decode(fread($file_handle, 5000000));
+		$words_array 	= $dictionary->words;
+		$output 		= '';
+/*	
+		echo '<pre>';
+		print_r($dictionary->topic);
+		die();
+*/
+		if ($words_array):
+
+			// Loop Types
+			foreach ($words_array as $key => $words):
+
+				$output_new = '';
+				$output_update = '';
+
+				// Loop Words
+				foreach ($words as $word):
+
+					$word = preg_replace('/[^A-Za-z0-9-\ ]/i', '', $word);
+
+					// Check if added to database (add IF NOT or update)
+					$check = $this->words_model->check_word($word);
+
+					// Word Exists
+					if ($check):
+						
+						// Classify if "U"
+						if ($check->type_sub == 'U'):
+
+							// Does Existing Word have Type specified
+							if ($check->type == 'U'):
+								$word_update = array('type' => $key, 'type_sub' => $dictionary->topic);
+							else:
+								$word_update = array('type_sub' => $dictionary->topic);							
+							endif;
+
+							$this->words_model->update_word($check->word_id, $word_update);
+
+							$output_update .= 
+							'<li>'.$word.'<ul>'.
+								'<li> type: '.$check->type.' ---> update: '.$key.'</li>
+								<li> topic:' .$check->type_sub.' ---> update: '.$dictionary->topic.'</li>'.
+							'</ul></li>';
+						else:
+							$output_update .= '<li>'.$word.' not changed from: <b>'.$check->type.' / '.$check->type_sub.'</b></li>'; 
+						endif;
+					else:
+						$add_word = $this->words_model->add_word($word, FALSE, $key, $dictionary->topic, 'U', 0);
+						$output_new .= '<li>'.$word.'</li>';
+					endif;
+				endforeach;
+
+				// Show This Type
+				echo '<h1>' . $key . ' type</h1>';
+				if ($output_new):
+					echo '<h3>New</h3>';
+					echo '<ul>'.$output_new.'</ul>';
+				endif;
+				if ($output_update):
+					echo '<h3>Update</h3>';
+					echo '<ul>'.$output_update.'</ul>';
+				endif;
+			endforeach;
+		endif;
 	}
 
 }

@@ -2,7 +2,7 @@
 // Social
 // type = A
 // type_sub = SO
-$lang["social_actions"] = array("party", "partying", "partied");
+$lang["social_actions"] = array("type" => "A", "words" => array("party", "partying", "partied"));
 // type = D
 // type_sub = SO
-$lang["social_terms"] = array("friends", "friend", "roommates", "roomies", "housemate", "flatmate");
+$lang["social_terms"] = array("type" => "D", "words" => array("friends", "friend", "roommates", "roomies", "housemate", "flatmate"));

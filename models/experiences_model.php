@@ -1,4 +1,12 @@
 <?php
+/**
+ * Experience Model
+ * 
+ * A model for Emoome Experience table
+ * 
+ * @author Brennan Novak @brennannovak
+ * @package Emoome\Models
+ */
 class Experiences_model extends CI_Model 
 {
     function __construct()
@@ -6,8 +14,13 @@ class Experiences_model extends CI_Model
         parent::__construct();
     }
  
-	// Experiences
-	// Interacts with "experiences"
+	/**
+	 * get_experience function.
+	 * 
+	 * @access public
+	 * @param mixed $experience_id
+	 * @return void
+	 */
 	function get_experience($experience_id)
 	{
 		$this->db->select('*');
@@ -18,6 +31,14 @@ class Experiences_model extends CI_Model
  		return $result->result();	      
 	}
 
+	/**
+	 * add_experience function.
+	 * 
+	 * @access public
+	 * @param mixed $log_id
+	 * @param mixed $experience
+	 * @return void
+	 */
 	function add_experience($log_id, $experience) 
 	{	
 		$word_count = count(explode(' ', $experience));
@@ -37,6 +58,5 @@ class Experiences_model extends CI_Model
 	
 		return FALSE;
 	}
-
 
 }

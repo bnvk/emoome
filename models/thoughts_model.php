@@ -6,7 +6,16 @@ class Thoughts_model extends CI_Model
         parent::__construct();
     }
 
-	/* Thoughts */
+	/**
+	 * add_thought function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @param mixed $category_id
+	 * @param mixed $source
+	 * @param mixed $thought
+	 * @return void
+	 */
 	function add_thought($user_id, $category_id, $source, $thought)
 	{
 		$thought_data = array(
@@ -45,8 +54,14 @@ class Thoughts_model extends CI_Model
 
 		return FALSE;		
 	}
-	
-	
+
+	/**
+	 * get_thoughts_category function.
+	 * 
+	 * @access public
+	 * @param mixed $category_id
+	 * @return void
+	 */
 	function get_thoughts_category($category_id)
 	{
 		$this->db->select('words_link_thoughts.*, words.word, words.type');
@@ -56,6 +71,5 @@ class Thoughts_model extends CI_Model
  		$result = $this->db->get();
  		return $result->result();	
 	}
-
 
 }

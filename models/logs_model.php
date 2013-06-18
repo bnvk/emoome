@@ -1,12 +1,26 @@
 <?php
+/**
+ * Logs Model
+ * 
+ * A model for Emoome Logs table
+ * 
+ * @author Brennan Novak @brennannovak
+ * @package Emoome\Models
+ */
 class Logs_model extends CI_Model 
 {
     function __construct()
     {
         parent::__construct();
     }
- 
- 	// Logs - Interacts with "logs" table
+
+	/**
+	 * count_logs_user function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return void
+	 */
 	function count_logs_user($user_id)
 	{		
  		$this->db->select('*');
@@ -15,6 +29,13 @@ class Logs_model extends CI_Model
  		return $this->db->count_all_results();
 	}
 	
+	/**
+	 * get_log function.
+	 * 
+	 * @access public
+	 * @param mixed $log_id
+	 * @return void
+	 */
 	function get_log($log_id)
 	{	
 		$this->db->select('*');
@@ -34,10 +55,17 @@ class Logs_model extends CI_Model
 	 		return $log;	 		
  		}
  		
- 		return FALSE;	
-		
+ 		return FALSE;
 	}
-	
+
+	/**
+	 * get_logs_user function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @param mixed $limit (default: FALSE)
+	 * @return void
+	 */
 	function get_logs_user($user_id, $limit=FALSE)
 	{
 		$this->db->select('*');
@@ -55,6 +83,16 @@ class Logs_model extends CI_Model
  		return $logs;	
 	}
 
+    /**
+     * get_nearby_feelings function.
+     * 
+     * @access public
+     * @param mixed $geo_lat
+     * @param mixed $geo_lon
+     * @param mixed $distance
+     * @param mixed $user_id (default: FALSE)
+     * @return void
+     */
     function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
     {
     	if ($user_id)
@@ -90,7 +128,16 @@ class Logs_model extends CI_Model
 		}
     }
 
-
+	/**
+	 * get_logs_range_time function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @param mixed $start_hour
+	 * @param mixed $end_hour
+	 * @param string $order (default: 'type')
+	 * @return void
+	 */
 	function get_logs_range_time($user_id, $start_hour, $end_hour, $order='type')
 	{
 		$start_time	= $start_hour.':00:00';
@@ -120,8 +167,14 @@ class Logs_model extends CI_Model
 
  		return $results;
 	}
-        
 
+	/**
+	 * add_log function.
+	 * 
+	 * @access public
+	 * @param mixed $log_data
+	 * @return void
+	 */
 	function add_log($log_data)
 	{
 		$date_time = explode(' ', unix_to_mysql(now()));
@@ -139,11 +192,19 @@ class Logs_model extends CI_Model
 	    return FALSE;
 	}
 
+	/**
+	 * update_log function.
+	 * 
+	 * @access public
+	 * @param mixed $log_id
+	 * @param mixed $log_data
+	 * @return void
+	 */
 	function update_log($log_id, $log_data)
 	{
 		$this->db->where('log_id', $log_id);
 		$this->db->update('logs', $log_data);
 		return TRUE;
 	}
-    
+
 }

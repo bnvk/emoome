@@ -2,6 +2,6 @@
 // Humor
 // type = E
 // type_sub = HU
-$lang["humor_emotions"] = array("laughed","laughs","laugh","laughing","giggly","giggle");
+$lang["humor_emotions"] = array("type" => "E", "words" => array("laughed","laughs","laugh","laughing","giggly","giggle"));
 // type = I
-$lang["humor_intellect"] = array("jokes","joke","cheeky");
+$lang["humor_intellect"] = array("type" => "I", "words" => array("jokes","joke","cheeky"));
