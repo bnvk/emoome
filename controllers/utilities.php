@@ -317,7 +317,7 @@ class Utilities extends MY_Controller
 	function import_json_words() {
 	
 		// Load Sentiment TXT file
-		$the_file		= "/Users/brennannovak/Dropbox/Node/emoome_scraper/scraped/english/age.json";
+		$the_file		= "/home/emoome/emoome-tools/scraped/english/".$this->uri->segment(4).".json";
 		$output			= "No JSON file loaded";
 		
 		// Opens TXT File of Words
@@ -348,30 +348,33 @@ class Utilities extends MY_Controller
 
 					// Word Exists
 					if ($check):
-						
+
 						// Classify if "U"
 						if ($check->type_sub == 'U'):
 
 							// Does Existing Word have Type specified
 							if ($check->type == 'U'):
 								$word_update = array('type' => $key, 'type_sub' => $dictionary->topic);
+								$type_update = $key;
 							else:
-								$word_update = array('type_sub' => $dictionary->topic);							
+								$word_update = array('type_sub' => $dictionary->topic);
+								$type_update = $check->type_sub;
 							endif;
 
 							$this->words_model->update_word($check->word_id, $word_update);
 
 							$output_update .= 
-							'<li>'.$word.'<ul>'.
-								'<li> type: '.$check->type.' ---> update: '.$key.'</li>
-								<li> topic:' .$check->type_sub.' ---> update: '.$dictionary->topic.'</li>'.
+							'<li><b>'.$word.'</b><ul>'.
+								'<li> type: '.$check->type.' ---> '.$type_update.'</li>
+								<li> type_sub: ' .$type_update.' ---> '.$dictionary->topic.'</li>'.
 							'</ul></li>';
+
 						else:
-							$output_update .= '<li>'.$word.' not changed from: <b>'.$check->type.' / '.$check->type_sub.'</b></li>'; 
+							$output_update .= '<li><b>'.$word.'</b> not changed type: <b>'.$check->type.'</b> / type_sub: <b>'.$check->type_sub.'</b></li>'; 
 						endif;
 					else:
 						$add_word = $this->words_model->add_word($word, FALSE, $key, $dictionary->topic, 'U', 0);
-						$output_new .= '<li>'.$word.'</li>';
+						$output_new .= '<li><b>'.$word.'</b> with: type: <b>'.$key.'</b> / type_sub: <b>'.$dictionary->topic.'</b></li>';
 					endif;
 				endforeach;
 
