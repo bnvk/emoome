@@ -32,6 +32,7 @@ $config['emoome_word_types_sub'] = array(
 	'AL' =>	'alcohol',
 	'AC' =>	'architecture',
 	'AR' =>	'art',
+	'AT' => 'activism',
 	'B'  => 'body',
 	'C'  => 'common',
 	'CA' =>	'caffeine',
