@@ -9,5 +9,7 @@
 *
 * Standard installed routes for Emoome 
 */
-$route['emoome'] 					= 'emoome';
-$route['emoome/visualize']			= 'visualize/index';
+$route['emoome']                    = 'emoome';
+$route['emoome/visualize']          = 'visualize/index';
+
+$route['emoome/home/people/(:num)'] = 'home/person/$1';

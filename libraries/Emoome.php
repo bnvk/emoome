@@ -168,31 +168,24 @@ class Emoome
 	/* Analyze Log  */
 	function analyze_log($log, $details=FALSE)
 	{
-		$analysis				= array();
-		$words					= array();
-		$word_used				= config_item('emoome_word_used');
-		$word_type				= config_item('emoome_word_types');
-		$word_type_sub			= config_item('emoome_word_types_sub');
-		$word_type_count		= make_counter_array(config_item('emoome_word_types'));
-		$word_type_sub_count	= make_counter_array(config_item('emoome_word_types_sub'));
-		$sentiment				= 0;
-		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 	// Gives more priority to Feeling, Descriptor, Experience respectively 
+		$analysis             = array();
+		$words					      = array();
+		$word_used				    = config_item('emoome_word_used');
+		$word_type				    = config_item('emoome_word_types');
+		$word_type_sub			  = config_item('emoome_word_types_sub');
+		$word_type_count		  = make_counter_array(config_item('emoome_word_types'));
+		$word_type_sub_count  = make_counter_array(config_item('emoome_word_types_sub'));
+		$sentiment            = 0;
+		$sentiment_normalize  = array('F' => 3, 'D' => 2, 'E' => 1); 	// Gives more priority to Feeling, Descriptor, Experience respectively
 
-		// Experience
-		// To be refactored later using words_link
+		// Experience - to be refactored later using words_link
 		$experience_words = $this->ci->words_model->get_words_words(explode(' ', $log->experience));
-		
+
 		// Analyze Experience
 		foreach ($experience_words as $word):
-
-			// Type
-			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;
-
-			// Type Sub
-			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1;
-			
-			// Sentiment
-			$sentiment += $word->sentiment * $sentiment_normalize['E'];
+			$word_type_count[$word->type] = $word_type_count[$word->type] + 1;                 // Type
+			$word_type_sub_count[$word->type_sub] = $word_type_sub_count[$word->type_sub] + 1; // Type Sub
+			$sentiment += $word->sentiment * $sentiment_normalize['E'];                        // Sentiment
 		endforeach;
 		
 		// Analyze Words

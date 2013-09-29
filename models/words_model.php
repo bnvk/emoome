@@ -72,14 +72,14 @@ class Words_model extends CI_Model
  		return $result->result();		
 	}
 
-	/**
-	 * get_words_stem function.
+  /**
+   * get_words_stem function.
 	 * 
 	 * @access public
 	 * @param mixed $stem A word stripped of any gerunds (running -> run)
 	 * @return void
 	 */
-	function get_words_stem($stem)
+  function get_words_stem($stem)
 	{
 		$this->db->select('*');
 		$this->db->from('words');
@@ -89,60 +89,62 @@ class Words_model extends CI_Model
 	}
 
 	/**
-     * add_word function.
-     * 
-     * @access public
-     * @param string $word The word that is being added
-     * @param bool $check_stem Checks if a word with similar stem exists (to copy other properties)
+   * add_word function.
+   * 
+   * @access public
+   * @param string $word The word that is being added
+   * @param bool $check_stem Checks if a word with similar stem exists (to copy other properties)
      * @param string $type The Emoome language type classification
      * @param string $type_sub The Emoome language topic
      * @param string $speech Part of speech
      * @param int $sentiment The sentiment of the word -5 to 5
      * @return int|false Either word_id of newly inserted word for FALSE
      */
-    function add_word($word, $check_stem=FALSE, $type='U', $type_sub='U', $speech='U', $sentiment=0)
-    {
-    	$word		= strtolower($word);
-		$check_word = $this->check_word($word);
+  function add_word($word, $check_stem=FALSE, $type='U', $type_sub='U', $speech='U', $sentiment=0)
+  {
+    $word		    = strtolower($word);
+    $check_word = $this->check_word($word);
     
-    	// Word Does Not Exist
-    	if ($check_word):
-    		return $check_word->word_id;
-		else:
-		
-	    	$stem = $this->natural_language->stem($word);
+    // Word Exists
+    if ($check_word):
+      return $check_word->word_id;
+    else:
+        
+      // Get Stem
+	    $stem = $this->natural_language->stem($word);
 
-	    	// Lookup Word Stem
-	    	if ($check_stem):
-	    		if ($stem_words = $this->get_words_stem($stem)):
-		    		$type		= $stem_words[0]->type;
-		    		$type_sub	= $stem_words[0]->type_sub;
-		    		$speech		= $stem_words[0]->speech;
-		    		$sentiment	= $stem_words[0]->sentiment;
-	    		endif;
-	    	endif;
-			
+	    // Lookup Word Stem
+	    if ($check_stem):
+        if ($stem_words = $this->get_words_stem($stem)):
+		      $type		      = $stem_words[0]->type;
+		      $type_sub	    = $stem_words[0]->type_sub;
+		      $speech		    = $stem_words[0]->speech;
+		      $sentiment	  = $stem_words[0]->sentiment;
+	      endif;
+      endif;
+
 			// Add Word To Dictionary
 	 		$word_data = array(
-	 			'word'		=> $word,
-	 			'stem'		=> $stem,
-				'type'		=> $type,
+	 			'word'      => $word,
+	 			'stem'      => $stem,
+				'type'      => $type,
 				'type_sub'	=> $type_sub,
-				'speech'	=> $speech,
+				'speech'    => $speech,
 				'sentiment'	=> $sentiment
-			);	
+			);
 
 			$this->db->insert('words', $word_data);
 
-			if ($word_id = $this->db->insert_id()):
-				return $word_id;
-	    	else:
-	    		return FALSE;
-	    	endif;
-	    endif;
+    if ($word_id = $this->db->insert_id()):
+			  return $word_id;
+      else:
+        return FALSE;
+      endif;
+	  endif;
 
-	    return FALSE;    
-    }
+    return FALSE;
+  }
+
 
 	/**
 	 * update_word function.
@@ -296,79 +298,92 @@ class Words_model extends CI_Model
 		return TRUE;
 	}
 
-    /**
-     * increment_word_taxonomy function.
-     * 
-     * @access public
-     * @param mixed $user_id
-     * @param mixed $word_id
-     * @param mixed $used
-     * @return void
-     */
-    function increment_word_taxonomy($user_id, $word_id, $used)
-    {
-		$word_total		= $this->get_word_user_count($user_id, $word_id, $used);
-		$word_taxonomy	= $this->get_word_taxonomy($user_id, $word_id, $used);
 
-		if ($word_taxonomy):
-			$this->update_word_taxonomy($word_taxonomy->word_taxonomy_id, $word_total);
-		else:
-			$this->add_word_taxonomy($user_id, $word_id, $word_total, $used);
-		endif;
-    }
+  function get_taxonomy_user($user_id)
+  {
+		$this->db->select('*');
+		$this->db->from('words_taxonomy');    
+		$this->db->join('words', 'words.word_id = words_taxonomy.word_id');
+		$this->db->where('words_taxonomy.user_id', $user_id);
+		$this->db->order_by('words_taxonomy.count', 'desc');
+		$result = $this->db->get()->result();
+		return $result;
+  }
 
-    /**
-     * get_word_taxonomy function.
-     * 
-     * @access public
-     * @param mixed $user_id
-     * @param mixed $word_id
-     * @param mixed $used
-     * @return void
-     */
-    function get_word_taxonomy($user_id, $word_id, $used)
-    {
- 		$this->db->select('*');
- 		$this->db->from('words_taxonomy');    
- 		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used)); 				
- 		$result = $this->db->get()->row();	
- 		return $result;    	
-    }
 
-    /**
-     * add_word_taxonomy function.
-     * 
-     * @access public
-     * @param mixed $user_id
-     * @param mixed $word_id
-     * @param mixed $count
-     * @param mixed $used
-     * @return void
-     */
-    function add_word_taxonomy($user_id, $word_id, $count, $used)
-    {
- 		$data = array(
- 			'user_id'	=> $user_id,
-			'word_id'	=> $word_id,
-			'count' 	=> $count,
-			'used'		=> $used
-		);
+  /**
+   * increment_word_taxonomy function.
+   * 
+   * @access public
+   * @param mixed $user_id
+   * @param mixed $word_id
+   * @param mixed $used
+   * @return void
+   */
+  function increment_word_taxonomy($user_id, $word_id, $used)
+  {
+	  $word_total		= $this->get_word_user_count($user_id, $word_id, $used);
+	  $word_taxonomy	= $this->get_word_taxonomy($user_id, $word_id, $used);
 
-		return $this->db->insert('words_taxonomy', $data);
-    }
+	  if ($word_taxonomy):
+		  $this->update_word_taxonomy($word_taxonomy->word_taxonomy_id, $word_total);
+	  else:
+		  $this->add_word_taxonomy($user_id, $word_id, $word_total, $used);
+	  endif;
+  }
 
-    /**
-     * update_word_taxonomy function.
-     * 
-     * @access public
-     * @param mixed $word_taxonomy_id
-     * @param mixed $count
-     * @return void
-     */
-    function update_word_taxonomy($word_taxonomy_id, $count)
-    {
-		$this->db->where('word_taxonomy_id', $word_taxonomy_id);
-		$this->db->update('words_taxonomy', array('count' => $count));        
-    }
+  /**
+   * get_word_taxonomy function.
+   * 
+   * @access public
+   * @param mixed $user_id
+   * @param mixed $word_id
+   * @param mixed $used
+   * @return void
+   */
+  function get_word_taxonomy($user_id, $word_id, $used)
+  {
+		$this->db->select('*');
+		$this->db->from('words_taxonomy');    
+		$this->db->where(array('user_id' => $user_id, 'word_id' => $word_id, 'used' => $used)); 				
+		$result = $this->db->get()->row();	
+		return $result;    	
+  }
+
+  /**
+   * add_word_taxonomy function.
+   * 
+   * @access public
+   * @param mixed $user_id
+   * @param mixed $word_id
+   * @param mixed $count
+   * @param mixed $used
+   * @return void
+   */
+  function add_word_taxonomy($user_id, $word_id, $count, $used)
+  {
+		$data = array(
+			'user_id'	=> $user_id,
+		  'word_id'	=> $word_id,
+		  'count' 	=> $count,
+		  'used'		=> $used
+	  );
+
+	  return $this->db->insert('words_taxonomy', $data);
+  }
+
+  /**
+   * update_word_taxonomy function.
+   * 
+   * @access public
+   * @param mixed $word_taxonomy_id
+   * @param mixed $count
+   * @return void
+   */
+  function update_word_taxonomy($word_taxonomy_id, $count)
+  {
+	  $this->db->where('word_taxonomy_id', $word_taxonomy_id);
+	  $this->db->update('words_taxonomy', array('count' => $count));        
+  }
 
 }

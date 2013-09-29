@@ -261,6 +261,39 @@ class Utilities extends MY_Controller
 			$this->words_model->update_word($word->word_id, array($this->uri->segment(4) => 'U'));
 		}
 	}
+	
+	
+	
+	/**
+	 * update_word_link_experiences function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	function update_word_link_experiences($user_id)
+	{
+  	$logs = $this->logs_model->get_logs_user($user_id);
+
+  	foreach ($logs as $log):
+  	
+  	  $experience_words = explode(' ', $log->experience);
+
+  	  echo '<h4>'.$log->experience.'</h4>';
+
+      foreach ($experience_words as $word):
+
+        $word     = preg_replace('/[^a-zA-Z0-9]/', '', $word);
+        $add_link = $this->words_model->add_word_link($log->log_id, $user_id, $word, 'E');
+
+        echo $add_link.' - '.$word.'<br>';
+
+      endforeach;
+
+      echo '<hr>';
+
+  	endforeach;
+	}
+	
 
 	/**
 	 * update_word_taxonomy function.

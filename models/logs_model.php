@@ -74,11 +74,10 @@ class Logs_model extends CI_Model
 		$this->db->order_by('logs.created_date', 'desc');
 		$this->db->where('user_id', $user_id);
 		
-		if ($limit)
-		{
+		if ($limit):
 			$this->db->limit($limit);
-		}
-		
+		endif;
+
  		$logs = $this->db->get()->result();
  		return $logs;	
 	}
@@ -95,17 +94,14 @@ class Logs_model extends CI_Model
      */
     function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
     {
-    	if ($user_id)
-    	{
+    	if ($user_id):
     		$actions	= 'JOIN';
     		$user_where = 'AND logs.user_id = '.$user_id;
-    	}
-    	else
-    	{
+    	else:
     		$user_where = '';
-    	}
+    	endif;
     
-		$sql = "SELECT logs.log_id, logs.geo_lat, logs.geo_lon, logs.created_at, words.word,  words.type, experiences.action,     
+		  $sql = "SELECT logs.log_id, logs.geo_lat, logs.geo_lon, logs.created_at, words.word,  words.type, experiences.action,     
 				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
 				FROM emoome_log
 				JOIN experiences ON experiences.log_id = logs.log_id
@@ -115,7 +111,7 @@ class Logs_model extends CI_Model
 				ORDER BY distance ASC
 				LIMIT 0,".$distance;
 
-		$query = $this->db->query($sql);	
+		  $query = $this->db->query($sql);	
 				
 		if($query->num_rows() > 0)
 		{
