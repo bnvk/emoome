@@ -44,17 +44,15 @@ class Logs_model extends CI_Model
 		$this->db->where('logs.log_id', $log_id);
  		$log = $this->db->get()->row();
  		
- 		if ($log)
- 		{
+ 		if ($log):
 	 		$this->db->select('*');
 			$this->db->from('words_link');
 			$this->db->join('words', 'words_link.word_id = words.word_id');
 			$this->db->where('words_link.log_id', $log_id);
-	 		$log->words = $this->db->get()->result();			
- 		 		
-	 		return $log;	 		
- 		}
- 		
+	 		$log->words = $this->db->get()->result();
+	 		return $log;
+ 		endif;
+
  		return FALSE;
 	}
 
@@ -81,48 +79,47 @@ class Logs_model extends CI_Model
  		$logs = $this->db->get()->result();
  		return $logs;	
 	}
+	
+	
 
-    /**
-     * get_nearby_feelings function.
-     * 
-     * @access public
-     * @param mixed $geo_lat
-     * @param mixed $geo_lon
-     * @param mixed $distance
-     * @param mixed $user_id (default: FALSE)
-     * @return void
-     */
-    function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
-    {
-    	if ($user_id):
-    		$actions	= 'JOIN';
-    		$user_where = 'AND logs.user_id = '.$user_id;
-    	else:
-    		$user_where = '';
-    	endif;
-    
-		  $sql = "SELECT logs.log_id, logs.geo_lat, logs.geo_lon, logs.created_at, words.word,  words.type, experiences.action,     
-				((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
-				FROM emoome_log
-				JOIN experiences ON experiences.log_id = logs.log_id
-				JOIN words_link ON words_link.log_id = logs.log_id
-				JOIN words ON words.word_id = words_link.word_id
-				WHERE logs.geo_lat IS NOT NULL AND logs.geo_lon IS NOT NULL ".$user_where." AND words_link.used = 'F' 
-				ORDER BY distance ASC
-				LIMIT 0,".$distance;
+  /**
+   * get_nearby_feelings function.
+   * 
+   * @access public
+   * @param mixed $geo_lat
+   * @param mixed $geo_lon
+   * @param mixed $distance
+   * @param mixed $user_id (default: FALSE)
+   * @return void
+   */
+  function get_nearby_feelings($geo_lat, $geo_lon, $distance, $user_id=FALSE)
+  {
+    if ($user_id):
+      $actions = 'JOIN';
+      $user_where = 'AND logs.user_id = '.$user_id;
+    else:
+      $user_where = '';
+    endif;
 
-		  $query = $this->db->query($sql);	
+	  $sql = "SELECT logs.log_id, logs.geo_lat, logs.geo_lon, logs.created_at, words.word,  words.type, experiences.action,     
+			((geo_lat - '.$geo_lat.') * (geo_lat - '.$geo_lat.') + (geo_lon - '.$geo_lon.')*(geo_lon - '.$geo_lon.')) distance
+			FROM emoome_log
+			JOIN experiences ON experiences.log_id = logs.log_id
+			JOIN words_link ON words_link.log_id = logs.log_id
+			JOIN words ON words.word_id = words_link.word_id
+			WHERE logs.geo_lat IS NOT NULL AND logs.geo_lon IS NOT NULL ".$user_where." AND words_link.used = 'F'
+			ORDER BY distance ASC
+			LIMIT 0,".$distance;
+
+	  $query = $this->db->query($sql);
 				
-		if($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{				
+		if($query->num_rows() > 0):
+			foreach ($query->result() as $row):
 				$result[] = $row;
-			}
-
+			endforeach;
 			return $result;
-		}
-    }
+		endif;
+  }
 
 	/**
 	 * get_logs_range_time function.
@@ -146,17 +143,15 @@ class Logs_model extends CI_Model
 		$this->db->join('experiences', 'experiences.log_id = logs.log_id');
 		$this->db->where('logs.user_id', $user_id);
 		
-		if ($end_time < $start_time)
-		{
+		if ($end_time < $start_time):
+		
 			$this->db->where('logs.created_time >=', $start_time);
 			$this->db->where('logs.created_time >=', $end_time);		
-		}
-		else
-		{
+		else:
 			$this->db->where('logs.created_time >=', $start_time);
 			$this->db->where('logs.created_time <=', $end_time);
-		}
-		
+		endif;
+
 		$this->db->order_by('logs.created_time', 'asc');
  		$result = $this->db->get();
  		$results = $result->result();
@@ -180,12 +175,11 @@ class Logs_model extends CI_Model
 
 		$this->db->insert('logs', $log_data);
 
-		if ($log_id = $this->db->insert_id())
-		{
+		if ($log_id = $this->db->insert_id()):
 			return $log_id;
-    	}
+    endif;
 
-	    return FALSE;
+    return FALSE;
 	}
 
 	/**

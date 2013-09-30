@@ -197,6 +197,24 @@ class Words_model extends CI_Model
  		return $result->result();
 	}
 
+
+  function get_word_links_log_ids($user_id, $word_id)
+  {
+		$this->db->select('words_link.log_id, words_link.used');
+		$this->db->from('words_link');
+		$this->db->join('words', 'words.word_id = words_link.word_id');
+ 		$this->db->where(array('words_link.user_id' => $user_id, 'words_link.word_id' => $word_id));
+ 		$result = $this->db->get()->result();
+ 	
+    $log_ids = array('F' => array(), 'E' => array(), 'D' => array());
+ 	
+    foreach($result as $item):
+      $log_ids[$item->used][] = $item->log_id;
+    endforeach;
+    
+    return $log_ids;
+  }
+
 	/**
 	 * get_words_links function.
 	 * 

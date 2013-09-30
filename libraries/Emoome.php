@@ -17,13 +17,13 @@ class Emoome
 		$this->ci->load->config('emoome');
 		$this->ci->load->helper('math');
 		$this->ci->load->helper('emoome');
-        $this->ci->load->model('experiences_model');
-        $this->ci->load->model('emoome_model');
-        $this->ci->load->model('logs_model');
-        $this->ci->load->model('thoughts_model');
-        $this->ci->load->model('words_model');
+    $this->ci->load->model('experiences_model');
+    $this->ci->load->model('emoome_model');
+    $this->ci->load->model('logs_model');
+    $this->ci->load->model('thoughts_model');
+    $this->ci->load->model('words_model');
 
-        // Language Files
+    // Language Files
 		$this->ci->lang->load('common');
 	}
 
@@ -92,16 +92,16 @@ class Emoome
 	/* Analyze Words */
 	function analyze_words_link($words_link, $details=FALSE)
 	{
-		$analysis				= array();
-		$log_ids				= array();
-		$language				= array();
-		$words					= array();
-		$word_used				= config_item('emoome_word_used');
-		$word_type				= config_item('emoome_word_types');
-		$word_type_sub			= config_item('emoome_word_types_sub');
-		$word_type_count		= make_counter_array(config_item('emoome_word_types'));
+		$analysis             = array();
+		$log_ids              = array();
+		$language             = array();
+		$words                = array();
+		$word_used				    = config_item('emoome_word_used');
+		$word_type				    = config_item('emoome_word_types');
+		$word_type_sub        = config_item('emoome_word_types_sub');
+		$word_type_count      = make_counter_array(config_item('emoome_word_types'));
 		$word_type_sub_count	= make_counter_array(config_item('emoome_word_types_sub'));
-		$sentiment				= 0;
+		$sentiment            = 0;
 		$sentiment_normalize	= array('F' => 3, 'D' => 2, 'E' => 1); 			// Gives more priority to Feeling, Descriptor, Experience respectively 	
 
 		// Analyze Words
@@ -154,11 +154,11 @@ class Emoome
 		endforeach;
 
 		// Output Sentiment
-		$analysis['sentiment']	= $sentiment;
-		
+		$analysis['sentiment']  = $sentiment;
+
 		// Output Words
 		arsort($words);
-		$analysis['words']		= $words;
+		$analysis['words']      = $words;
 		$analysis['log_count']	= count($log_ids);		
 
 		return $analysis;
@@ -246,8 +246,8 @@ class Emoome
 	function analyze_text($text, $filter_common=FALSE, $filter_mentions=FALSE)
 	{
 		// Clean Text
-		$words_split			= explode(' ', $text);
-		$words 					= array_map('strtolower', $words_split);
+		$words_split  = explode(' ', $text);
+		$words        = array_map('strtolower', $words_split);
 
 		// Filter Common
 		if ($filter_common):
@@ -259,20 +259,19 @@ class Emoome
 			$words = array_diff($words, $filter_mentions);
 		endif;
 
-		$words_trans	= implode(' ', $words);
-		$words_clean 	= preg_replace('/[^A-Za-z0-9-\ ]/i', '', $words_trans);
-		$words 			= explode(' ', $words_clean);
+		$words_trans  = implode(' ', $words);
+		$words_clean  = preg_replace('/[^A-Za-z0-9-\ ]/i', '', $words_trans);
+		$words        = explode(' ', $words_clean);
 
 		// Get Words from DB
 		$experience_words = $this->ci->words_model->get_words_words($words);
 
-
 		// Set Vars
-		$analysis				= array();
+		$analysis				  = array();
 		$word_used				= config_item('emoome_word_used');
 		$word_type				= config_item('emoome_word_types');
-		$word_type_sub			= config_item('emoome_word_types_sub');
-		$word_type_count		= make_counter_array(config_item('emoome_word_types'));
+		$word_type_sub    = config_item('emoome_word_types_sub');
+		$word_type_count  = make_counter_array(config_item('emoome_word_types'));
 		$word_type_sub_count	= make_counter_array(config_item('emoome_word_types_sub'));
 		$sentiment				= 0;
 
