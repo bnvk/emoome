@@ -31,6 +31,16 @@ class Experiences_model extends CI_Model
  		return $result->result();	      
 	}
 
+
+  function get_experiences($log_array)
+  {
+		$this->db->select('*');
+		$this->db->from('experiences');
+ 		$this->db->or_where_in('log_id', $log_array);
+ 		$result = $this->db->get()->result();
+ 		return $result;
+  }
+
 	/**
 	 * add_experience function.
 	 * 
