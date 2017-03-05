@@ -3,14 +3,14 @@ class Experiments extends MY_Controller
 {
     function __construct()
     {
-        parent::__construct();       
+      parent::__construct();       
 
-		// Load Things
-        $this->load->library('emoome');
-	}
-	
+      // Load Things
+      $this->load->library('emoome');
+    }
+
 	function my_twitter_friends()
-	{		
+	{
 		$check_connection = $this->social_auth->check_connection_user($this->session->userdata('user_id'), 'twitter', 'primary');
 
 		if (!$check_connection) {

@@ -17,17 +17,24 @@ class Emoome
 		$this->ci->load->config('emoome');
 		$this->ci->load->helper('math');
 		$this->ci->load->helper('emoome');
-        $this->ci->load->model('experiences_model');
-        $this->ci->load->model('emoome_model');
-        $this->ci->load->model('logs_model');
-        $this->ci->load->model('thoughts_model');
-        $this->ci->load->model('words_model');
+    $this->ci->load->model('experiences_model');
+    $this->ci->load->model('emoome_model');
+    $this->ci->load->model('logs_model');
+    $this->ci->load->model('thoughts_model');
+    $this->ci->load->model('words_model');
 
-        // Language Files
+    // Language Files
 		$this->ci->lang->load('common');
 	}
 
-	/* Users Meta Maps */
+
+	/**
+	 * update_users_meta_map function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return void
+	 */
 	function update_users_meta_map($user_id)
 	{
 		$users_meta	= $this->ci->emoome_model->get_users_meta_map($user_id);
@@ -57,7 +64,15 @@ class Emoome
 		return FALSE;
 	}
 	
-	// Used for getting unique IDs for Words Link
+
+	/**
+	 * generate_object_ids function.
+	 * 
+	 * @access public
+	 * @param mixed $object
+	 * @param mixed $param
+	 * @return void
+	 */
 	function generate_object_ids($object, $param)
 	{
 		$ids = array();
@@ -70,7 +85,14 @@ class Emoome
 		
 	}
 	
-	// Takes array of 'words' & 'words_link'
+
+	/**
+	 * generate_moods_log_ids function.
+	 * 
+	 * @access public
+	 * @param mixed $words
+	 * @return void
+	 */
 	function generate_moods_log_ids($words)
 	{
 		// GENERATE MOOD log_ids
@@ -89,7 +111,14 @@ class Emoome
 	}
 
 
-	/* Analyze Words */
+	/**
+	 * analyze_words_link function.
+	 * 
+	 * @access public
+	 * @param mixed $words_link
+	 * @param mixed $details (default: FALSE)
+	 * @return void
+	 */
 	function analyze_words_link($words_link, $details=FALSE)
 	{
 		$analysis				= array();
@@ -165,7 +194,14 @@ class Emoome
 	}
 
 
-	/* Analyze Log  */
+	/**
+	 * analyze_log function.
+	 * 
+	 * @access public
+	 * @param mixed $log
+	 * @param mixed $details (default: FALSE)
+	 * @return void
+	 */
 	function analyze_log($log, $details=FALSE)
 	{
 		$analysis				= array();
@@ -249,7 +285,16 @@ class Emoome
 		return $analysis;
 	}
 
-	/* Analyze Log  */
+
+	/**
+	 * analyze_text function.
+	 * 
+	 * @access public
+	 * @param mixed $text
+	 * @param mixed $filter_common (default: FALSE)
+	 * @param mixed $filter_mentions (default: FALSE)
+	 * @return void
+	 */
 	function analyze_text($text, $filter_common=FALSE, $filter_mentions=FALSE)
 	{
 		// Clean Text
@@ -258,7 +303,10 @@ class Emoome
 
 		// Filter Common
 		if ($filter_common):
-			$words = array_diff($words, $this->ci->lang->line('common'));
+      print_r($words);
+      $this->ci->lang->line('common');
+      die();
+//			$words = array_diff($words, $this->ci->lang->line('common'));
 		endif;
 
 		// Filter Mentions

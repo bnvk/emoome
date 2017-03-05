@@ -15,6 +15,13 @@ class Analyze extends Oauth_Controller
     	$this->form_validation->set_error_delimiters('', '');        
 	}
 
+
+	/**
+	 * me_authd_get function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function me_authd_get()
 	{
 		$word_types = config_item('emoome_word_types');
@@ -160,6 +167,12 @@ class Analyze extends Oauth_Controller
 	}
 
 
+	/**
+	 * log_authd_get function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function log_authd_get()
 	{
 		if ($log = $this->logs_model->get_log($this->get('id')))
@@ -184,6 +197,12 @@ class Analyze extends Oauth_Controller
 	}
 
 	
+	/**
+	 * last_five_get function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function last_five_get()
 	{
 		// Get Logs
@@ -209,6 +228,12 @@ class Analyze extends Oauth_Controller
 	}
 
 
+	/**
+	 * time_get function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function time_get()
 	{
 		if (($this->get('start')) AND ($this->get('end')))
@@ -277,6 +302,12 @@ class Analyze extends Oauth_Controller
 	}
 
 
+	/**
+	 * date_authd_get function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function date_authd_get()
 	{
 		if (($this->get('start') != '') AND ($this->get('end') != ''))
@@ -302,6 +333,12 @@ class Analyze extends Oauth_Controller
 	}
 
 
+	/**
+	 * text_post function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function text_post()
 	{
 	   	$this->form_validation->set_rules('text', 'Text', 'required');

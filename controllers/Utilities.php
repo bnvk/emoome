@@ -355,18 +355,23 @@ class Utilities extends MY_Controller
 							// Does Existing Word have Type specified
 							if ($check->type == 'U'):
 								$word_update = array('type' => $key, 'type_sub' => $dictionary->topic);
-								$type_update = $key;
+								
+								if ($key != 'U'):
+									$type_update = $check->type.' ---> '.$key;
+								else: 
+									$type_update = $check->type;
+								endif;
 							else:
 								$word_update = array('type_sub' => $dictionary->topic);
-								$type_update = $check->type_sub;
+								$type_update = $check->type;
 							endif;
 
 							$this->words_model->update_word($check->word_id, $word_update);
 
 							$output_update .= 
 							'<li><b>'.$word.'</b><ul>'.
-								'<li> type: '.$check->type.' ---> '.$type_update.'</li>
-								<li> type_sub: ' .$type_update.' ---> '.$dictionary->topic.'</li>'.
+								'<li> type: '.$type_update.'</li>
+								<li> type_sub: '.$check->type_sub.' ---> '.$dictionary->topic.'</li>'.
 							'</ul></li>';
 
 						else:
